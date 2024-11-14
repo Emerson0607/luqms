@@ -51,8 +51,8 @@ class ClientController extends Controller
         $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
     
         $window_queue = Window::where('department', $department->name) // Filter by department name
-        ->join('window_list', 'window.w_id', '=', 'window_list.w_id') // Join with window_list table
-        ->select('window.*', 'window_list.name as window_name') // Select all columns from window and the window name
+        ->join('qms_window_list', 'qms_window.w_id', '=', 'qms_window_list.w_id') // Join with window_list table
+        ->select('qms_window.*', 'qms_window_list.name as window_name') // Select all columns from window and the window name
         ->get();
     
 

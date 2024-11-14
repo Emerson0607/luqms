@@ -52,6 +52,12 @@
                           <p>Window</p>
                       </a>
                   </li>
+                  <li class="nav-item">
+                      <a href="/#">
+                          <i class="fas fa-layer-group"></i>
+                          <p>Logs</p>
+                      </a>
+                  </li>
                   {{-- <li class="nav-item">
                       <a href="/user">
                           <i class="fas fa-layer-group"></i>
