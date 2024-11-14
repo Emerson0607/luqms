@@ -1,0 +1,8 @@
+.all-window-queue {
+    width: 100%;
+    height: 400px;
+    padding: 24px;
+}
+
+
+@media (max-width: 480px) {}

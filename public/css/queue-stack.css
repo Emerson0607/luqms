@@ -1,0 +1,84 @@
+.queue-stack-card {
+    width: 365px;
+    max-height: 550px;
+    height: 550px;
+}
+
+.queue-ongoing-card {
+    width: 100%;
+    height: 400px;
+    padding: 24px;
+}
+
+.queue-ongoing-card .queue-window {
+    margin-bottom: 48px;
+}
+
+.queue-ongoing-card .queue-window h5,
+.queue-ongoing-card .queue-window h1,
+.queue-ongoing-card .queue-window h6 {
+    font-weight: 900;
+}
+
+.queue-ongoing-card .queue-window h5 {
+    font-size: 24px;
+    color: rgb(152, 244, 14);
+}
+
+.queue-ongoing-card .queue-window h1 {
+    font-size: 82px;
+    color: rgb(63, 63, 63);
+}
+
+.queue-ongoing-card .queue-window h6 {
+    font-size: 24px;
+    color: rgb(63, 63, 63);
+}
+
+
+.queue-waiting {
+    background-color: rgb(237, 212, 166);
+}
+
+@media (max-width: 480px) {
+    .queue-stack-card {
+        width: 100%;
+        height: 300px;
+    }
+
+    .queue-ongoing-card {
+        width: 100%;
+        height: 200px;
+        padding: 12px;
+    }
+
+    .queue-ongoing-card .queue-window {
+        margin-bottom: 5px;
+    }
+
+    .queue-ongoing-card .queue-window h5,
+    .queue-ongoing-card .queue-window h1,
+    .queue-ongoing-card .queue-window h6 {
+        font-weight: 900;
+    }
+
+    .queue-ongoing-card .queue-window h5 {
+        font-size: 6px;
+        color: rgb(152, 244, 14);
+    }
+
+    .queue-ongoing-card .queue-window h1 {
+        font-size: 24px;
+        color: rgb(63, 63, 63);
+    }
+
+    .queue-ongoing-card .queue-window h6 {
+        font-size: 6px;
+        color: rgb(63, 63, 63);
+    }
+
+    .queue-waiting {
+        background-color: rgb(237, 212, 166);
+    }
+
+}
