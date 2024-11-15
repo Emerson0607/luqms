@@ -20,6 +20,10 @@ Route::middleware('auth')->controller(ClientController::class)->group(function (
     // Route::post('/user', 'store');
     // Route::put('/user/{user}', 'update');
     // Route::delete('/user/{user}','destroy');
+    Route::get('/logs', 'logs');
+    Route::get('/personnel', 'personnel')->name('personnel');
+    Route::post('/personnel', 'p_store')->name('p_store');
+    Route::delete('/personnel/{pId}','destroy')->name('personnel.destroy');
 
 });
 

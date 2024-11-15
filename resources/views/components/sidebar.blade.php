@@ -30,15 +30,6 @@
                           <p>Dashboard</p>
                           {{-- <span class="caret"></span> --}}
                       </a>
-                      {{-- <div class="collapse" id="dashboard">
-                          <ul class="nav nav-collapse">
-                              <li>
-                                  <a href="#">
-                                      <span class="sub-item">Dashboard 1</span>
-                                  </a>
-                              </li>
-                          </ul>
-                      </div> --}}
                   </li>
                   <li class="nav-section">
                       <span class="sidebar-mini-icon">
@@ -53,7 +44,13 @@
                       </a>
                   </li>
                   <li class="nav-item">
-                      <a href="/#">
+                      <a href="/personnel">
+                          <i class="fas fa-layer-group"></i>
+                          <p>Personnel</p>
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a href="/logs">
                           <i class="fas fa-layer-group"></i>
                           <p>Logs</p>
                       </a>
@@ -67,14 +64,19 @@
                   <li class="nav-item">
                       <a data-bs-toggle="collapse" href="#base">
                           <i class="fas fa-layer-group"></i>
-                          <p>Base</p>
+                          <p>Other</p>
                           <span class="caret"></span>
                       </a>
                       <div class="collapse" id="base">
                           <ul class="nav nav-collapse">
                               <li>
-                                  <a href="#">
-                                      <span class="sub-item">Avatars</span>
+                                  <a href="/logs">
+                                      <span class="sub-item">Personnel</span>
+                                  </a>
+                              </li>
+                              <li>
+                                  <a href="/logs">
+                                      <span class="sub-item">Client</span>
                                   </a>
                               </li>
 

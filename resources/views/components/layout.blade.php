@@ -10,7 +10,7 @@
     <x-header-bootstrap-import />
 </head>
 
-<body>
+<body class="overflow-hidden" style="height: 100%;">
 
     <div class="wrapper">
         <x-sidebar />
@@ -93,7 +93,7 @@
 
             </div>
 
-            <div class="container">
+            <div class="container overflow-auto" style="height: 100%;">
                 {{ $slot }}
 
             </div>
