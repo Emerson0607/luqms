@@ -30,19 +30,22 @@
                                         <div class="col-md-6 pe-0">
                                             <div class="form-group form-group-default">
                                                 <label for="w_id">Window</label>
-                                                <select id="w_id" class="form-control" name="w_id">
+                                                <select id="w_id" class="form-control" name="w_id" required>
                                                     <option value="" disabled selected>Select a Window</option>
                                                     @foreach ($all_windows as $all_window)
                                                         <option value="{{ $all_window->w_id }}">{{ $all_window->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                                @error('w_id')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
                                         <div class="col-md-6 pe-0">
                                             <div class="form-group form-group-default">
                                                 <label for="p_id">Personnel</label>
-                                                <select id="p_id" class="form-control" name="p_id">
+                                                <select id="p_id" class="form-control" name="p_id" required>
                                                     <option value="" disabled selected>Select a personnel</option>
                                                     @foreach ($departments as $department)
                                                         <option value="{{ $department->p_id }}">
@@ -52,6 +55,9 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                                @error('p_id')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
 
@@ -63,6 +69,9 @@
                                                     <option value=" {{ $currentDepartment }}"> {{ $currentDepartment }}
                                                     </option>
                                                 </select>
+                                                @error('department')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
 
@@ -201,6 +210,14 @@
             </div>
         </div>
     </div>
+    @if (session('error'))
+        <script>
+            window.onload = function() {
+                alert("{{ session('error') }}");
+            };
+        </script>
+    @endif
+
 
     <script>
         // // Edit user function
