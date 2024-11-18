@@ -103,9 +103,9 @@
                                 <div class="modal-body">
                                     <div class="col-md-6 pe-0">
                                         <div class="form-group form-group-default">
-                                            <label for="editWindow">Window</label>
+                                            <label for="editWindow">Personnel</label>
                                             <select id="editWindow" class="form-control" name="editWindow" required>
-                                                <option value="" disabled selected>Select</option>
+                                                <option value="" disabled selected></option>
                                                 @foreach ($all_windows as $all_window)
                                                     <option value="{{ $all_window->w_id }}">
                                                         {{ $all_window->name }}
@@ -116,7 +116,6 @@
                                         </div>
                                     </div>
 
-
                                     <div class="col-md-6 pe-0">
                                         <div class="form-group form-group-default">
                                             <label for="editName">Personnel</label>
@@ -125,6 +124,7 @@
                                                 @foreach ($departments as $department)
                                                     <option value="{{ $department->p_id }}">
                                                         {{ $department->firstname }}
+
                                                         {{ $department->lastname }}
                                                     </option>
                                                 @endforeach
@@ -135,7 +135,7 @@
 
                                     <div class="form-group">
                                         <label for="editDepartment">Department</label>
-                                        <input type="text" readonly name="editDepartment" id="editDepartment"
+                                        <input type="text" name="editDepartment" id="editDepartment"
                                             class="form-control" required>
                                     </div>
                                 </div>
@@ -496,50 +496,19 @@
         function editUser(pId) {
             const selectedWindow = @json($users).find(user => user.id == pId);
 
-
             if (selectedWindow) {
-                const editWindow = document.getElementById('editWindow');
-                const selectedWId = selectedWindow?.w_id
-                    ?.trim(); // Use optional chaining to avoid errors if `selectedWindow` or `w_id` is null
-                const selectedWName = selectedWindow?.w_name || ''; // Extract `w_name` for display text
-                if (!selectedWId) {
-                    console.error("Selected window ID is invalid or missing");
-                    return;
-                }
-
-                let optionExists = false;
-
-                // Check if the selected value exists in the dropdown
-                Array.from(editWindow.options).forEach(option => {
-                    if (option.value === selectedWId) {
-                        optionExists = true;
-                    }
-                });
-
-                if (optionExists) {
-                    // If the value exists in the dropdown, set it as the selected value
-                    editWindow.value = selectedWId;
-                } else {
-                    // If the value doesn't exist, create a new option and add it
-                    const customOption = new Option(selectedWName,
-                        selectedWId); // Set display text to `w_name` and value to `w_id`
-                    editWindow.add(customOption);
-                    customOption.style.display = "none"; // Hide the new option in the dropdown
-                    editWindow.value = selectedWId; // Set the new value as the selected option
-                }
 
 
-                document.getElementById('editName').value = selectedWindow?.p_id || ""; // Optional chaining for safe access
-                document.getElementById('editDepartment').value = selectedWindow?.department ||
-                    ""; // Optional chaining for safe access
-
-                // Set the form action URL to match the PUT request for the user being edited
-                document.getElementById('editUserForm').action = `/personnel/${pId}`;
+                // Fill the edit form with the user's current data
+                document.getElementById('editWindow').value = selectedWindow
+                    .w_id; // Use w_id if you're selecting the window ID
+                document.getElementById('editName').value = selectedWindow
+                    .p_id; // This should be the personnel ID, not the name
+                document.getElementById('editDepartment').value = selectedWindow.department; // This assumes it's a string
+                document.getElementById('editUserForm').action = `/personnel/${pId}`; // Correct URL for PUT request
             } else {
                 console.error('Selected user not found.');
             }
-
-
         }
 
         // Delete user function

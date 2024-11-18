@@ -12,7 +12,7 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Hash;
 
 
-class PersonnelController extends Controller
+class PersonnelControllerExample extends Controller
 {
     
     public function personnel(){
@@ -92,7 +92,6 @@ class PersonnelController extends Controller
             return redirect()->back()->with('error', 'Window not found.');
         }
     }
-    
 
     public function update(Request $request, $pId){
         // Validate the incoming request
@@ -105,13 +104,6 @@ class PersonnelController extends Controller
         // Fetch the Window record
         $window = Window::findOrFail($pId); // Ensure it throws an exception if not found
     
-          // Update the status of the corresponding WindowList entry
-          $windowList = \App\Models\WindowList::where('w_id', $window->w_id)->first();
-          if ($windowList) {
-              $windowList->status = 0;
-              $windowList->save();
-          }
-
         // Update the model's attributes
         $window->w_id = $request->editWindow;
         $window->p_id = $request->editName;
@@ -119,15 +111,6 @@ class PersonnelController extends Controller
     
         // Save the changes
         $window->save();
-
-        // Update the status of the corresponding WindowList entry
-        $windowList = \App\Models\WindowList::where('w_id', $window->w_id)->first();
-        if ($windowList) {
-            $windowList->status = 1;
-            $windowList->save();
-        }
-
-       
     
         return redirect()->back()->with('success', 'User updated successfully.');
     }

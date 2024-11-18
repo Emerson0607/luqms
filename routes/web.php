@@ -19,10 +19,18 @@ Route::middleware('auth')->controller(ClientController::class)->group(function (
 });
 
 Route::middleware('auth')->controller(PersonnelController::class)->group(function () {
-    Route::get('/personnel', 'personnel')->name('personnel');
+    Route::get('/personnel', 'personnel')->name('personnel'); 
+
+    // for personnel
     Route::post('/personnel', 'p_store')->name('p_store');
     Route::delete('/personnel/{pId}','destroy')->name('personnel.destroy');
-    Route::get('/homepage', 'homepage');
+    Route::put('/personnel/{pId}', 'update');
+
+    // for table
+    Route::post('/personnel/table', 'table_store')->name('table_store');
+    Route::delete('/personnel/table/{pId}','table_destroy')->name('personnel.table_destroy');
+    Route::put('/personnel/table/{pId}', 'table_update');
+
 });
 
 Route::controller(RegisteredUserController::class)->group(function () {
