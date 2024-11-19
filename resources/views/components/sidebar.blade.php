@@ -43,25 +43,33 @@
                           <p>Window</p>
                       </a>
                   </li>
-                  <li class="nav-item">
-                      <a href="/personnel">
-                          <i class="fas fa-layer-group"></i>
-                          <p>Personnel</p>
-                      </a>
-                  </li>
-                  <li class="nav-item">
-                      <a href="/logs">
-                          <i class="fas fa-layer-group"></i>
-                          <p>Logs</p>
-                      </a>
-                  </li>
+
+                  @auth
+                      @php
+                          $isDeptHead = DB::table('dms_departments')
+                              ->where('dept_head', auth()->user()->p_id)
+                              ->exists();
+                      @endphp
+
+                      @if ($isDeptHead)
+                          <li class="nav-item">
+                              <a href="/personnel">
+                                  <i class="fas fa-layer-group"></i>
+                                  <p>Personnel</p>
+                              </a>
+                          </li>
+                          <li class="nav-item">
+                              <a href="/logs">
+                                  <i class="fas fa-layer-group"></i>
+                                  <p>Logs</p>
+                              </a>
+                          </li>
+                      @endif
+                  @endauth
+
+
+                  {{-- This is for dropdown --}}
                   {{-- <li class="nav-item">
-                      <a href="/user">
-                          <i class="fas fa-layer-group"></i>
-                          <p>User</p>
-                      </a>
-                  </li> --}}
-                  <li class="nav-item">
                       <a data-bs-toggle="collapse" href="#base">
                           <i class="fas fa-layer-group"></i>
                           <p>Other</p>
@@ -82,7 +90,7 @@
 
                           </ul>
                       </div>
-                  </li>
+                  </li> --}}
 
 
               </ul>

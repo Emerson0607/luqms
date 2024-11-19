@@ -64,7 +64,7 @@ class ClientController extends Controller
         $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
 
         $currentDepartment = $department->name;
-        $user_w_id = \App\Models\WindowList::where('p_id', Auth::user()->p_id)->first();
+        $user_w_id = \App\Models\Window::where('p_id', Auth::user()->p_id)->first();
         $client = Client::where('department', $currentDepartment)->oldest()->first();
 
         if ($client) {
@@ -102,7 +102,7 @@ class ClientController extends Controller
         $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
         $currentDepartment = $department->name;
 
-        $user_w_id = \App\Models\WindowList::where('p_id', Auth::user()->p_id)->first();
+        $user_w_id = \App\Models\Window::where('p_id', Auth::user()->p_id)->first();
 
         $window = Window::where('w_id', $user_w_id->w_id)
         ->where('department', $currentDepartment)

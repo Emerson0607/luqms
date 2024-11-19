@@ -12,10 +12,32 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Hash;
 
 
+
 class PersonnelController extends Controller
 {
+
+    // Add this function to the PersonnelController class
+
+    private function isDepartmentHead()
+    {
+        // Get the department for the authenticated user
+        $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id', Auth::user()->p_id)->first();
+        if ($dmsUserDepts) {
+            // Check if the user is the dept_head
+            $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
+            return $department && $department->dept_head == Auth::user()->p_id;
+        }
+        return false;
+    }
+
     
     public function personnel(){
+
+        // Check if the authenticated user is a department head
+        if (!$this->isDepartmentHead()) {
+            return redirect()->route('home')->with('error', 'You do not have access to this resource.');
+        }
+
         $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id', Auth::user()->p_id)->first();
         $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
         $currentDepartment = $department->name;
@@ -51,10 +73,16 @@ class PersonnelController extends Controller
             'department' => ['required'],
         ]);
 
-        // Check if p_id already exists in the Window table
+       // Check if p_id already exists in the Window table
         $pIdExists = \App\Models\Window::where('p_id', $validatedAttributes['p_id'])->exists();
         if ($pIdExists) {
-            return redirect()->back()->with('error', 'The provided p_id already exists.')->withInput();
+            return redirect()->back()->with('error', 'The provided personnel already exists.')->withInput();
+        }
+
+        // Check if w_id already exists in the Window table
+        $wIdExists = \App\Models\Window::where('w_id', $validatedAttributes['w_id'])->exists();
+        if ($wIdExists) {
+            return redirect()->back()->with('error', 'The provided window already exists.')->withInput();
         }
 
         // Create a new record in the Window table
@@ -93,7 +121,6 @@ class PersonnelController extends Controller
         }
     }
     
-
     public function update(Request $request, $pId){
         // Validate the incoming request
         $request->validate([
@@ -132,20 +159,19 @@ class PersonnelController extends Controller
         return redirect()->back()->with('success', 'User updated successfully.');
     }
     
-
-
     public function table_store()
     {
         $validatedAttributesTable = request()->validate([
-            'table_id' => ['required'],
+            // 'table_id' => ['required'],
             'table_window' => ['required'],
-            'table_status' => ['required', 'in:0,1'],  // Ensure it's either 0 or 1
+            'table_status' => ['required', 'in:0,1'],  
             'table_department' => ['required'],
         ]);
         
     
         // Map the form fields to database columns
-        $validatedAttributesTable['w_id'] = $validatedAttributesTable['table_id']; // table_id to w_id
+        $validatedAttributesTable['w_id'] =bin2hex(random_bytes(8));
+
         $validatedAttributesTable['name'] = $validatedAttributesTable['table_window']; // table_window to name
         $validatedAttributesTable['status'] = $validatedAttributesTable['table_status']; // table_status to status
         $validatedAttributesTable['department'] = $validatedAttributesTable['table_department']; // table_department to department
@@ -153,7 +179,13 @@ class PersonnelController extends Controller
         // Check if w_id already exists in the Window table
         $pIdExistsTable = \App\Models\WindowList::where('w_id', $validatedAttributesTable['w_id'])->exists();
         if ($pIdExistsTable) {
-            return redirect()->back()->with('error', 'The provided table already exists.')->withInput();
+            return redirect()->back()->with('error', 'The provided table ID already exists.')->withInput();
+        }
+
+
+        $wIdExistsTable = \App\Models\WindowList::where('name', $validatedAttributesTable['name'])->exists();
+        if ($wIdExistsTable) {
+            return redirect()->back()->with('error', 'The provided table name already exists.')->withInput();
         }
     
         // Create a new record in the Window table
@@ -170,9 +202,14 @@ class PersonnelController extends Controller
         // Check if the window exists
         if ($windowList) {
 
-            // Update the status of the corresponding WindowList entry
-            $window = \App\Models\Window::where('w_id', $windowList->w_id)->first();
-            $window->delete();
+            // If $windowList->w_id exists, execute the update
+            if ($windowList->w_id) {
+                $window = \App\Models\Window::where('w_id', $windowList->w_id)->first();
+                
+                if ($window) {
+                    $window->delete();
+                }
+            }
 
             // Delete the window record
             $windowList->delete();
@@ -185,27 +222,41 @@ class PersonnelController extends Controller
         }
     }
 
+
+
+
     public function table_update(Request $request, $pId){
-        // Validate the incoming request
+      
         $request->validate([
-            'edit_table_id' => 'required|string|max:255',
-            'edit_table_table' => 'required|string|max:255',
-            'edit_table_department' => 'required|string|max:255',
+            // 'edit_table_id' => 'required|max:255',
+            'edit_table_window' => 'required|max:255',
             'edit_table_status' => 'required',
+            'edit_table_department' => 'required|max:255',
         ]);
-    
+
+        
+
         // Fetch the Window record
-        $windowList = WindowList::findOrFail($pId); // Ensure it throws an exception if not found
+        $windowList = WindowList::findOrFail($pId);
     
+
+        // Update the status of the corresponding WindowList entry
+        $window = \App\Models\Window::where('w_id', $windowList->w_id)->first();
+        if ($window) {
+            $window->w_id = $request->edit_table_id;
+            $window->save();
+        }
+
         // Update the model's attributes
         $windowList->w_id = $request->edit_table_id;
-        $windowList->name = $request->edit_table_table;
+        $windowList->name = $request->edit_table_window;
         $windowList->department = $request->edit_table_department;
         $windowList->status = $request->edit_table_status;
     
         // Save the changes
         $windowList->save();
-    
+
+
         return redirect()->back()->with('success', 'User updated successfully.');
     }
 }

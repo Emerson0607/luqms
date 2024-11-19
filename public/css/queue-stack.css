@@ -40,6 +40,8 @@
     background-color: rgb(237, 212, 166);
 }
 
+
+
 @media (max-width: 480px) {
     .queue-stack-card {
         width: 100%;

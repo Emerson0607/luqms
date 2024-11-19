@@ -62,20 +62,11 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12 pe-0">
-                                            <div class="form-group form-group-default">
-                                                <label for="department">Department</label>
-
-                                                <select id="department" class="form-control" name="department">
-                                                    <option value=" {{ $currentDepartment }}"> {{ $currentDepartment }}
-                                                    </option>
-                                                </select>
-                                                @error('department')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
+                                        <div class="form-group">
+                                            <label for="department">Department</label>
+                                            <input type="text" readonly name="department" id="department"
+                                                value="{{ $currentDepartment }}" class="form-control" required>
                                         </div>
-
                                     </div>
                                 </div>
                                 <div class="modal-footer border-0">
@@ -101,38 +92,39 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="modal-body">
-                                    <div class="col-md-6 pe-0">
-                                        <div class="form-group form-group-default">
-                                            <label for="editWindow">Window</label>
-                                            <select id="editWindow" class="form-control" name="editWindow" required>
-                                                <option value="" disabled selected>Select</option>
-                                                @foreach ($all_windows as $all_window)
-                                                    <option value="{{ $all_window->w_id }}">
-                                                        {{ $all_window->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                    <div class="row">
+                                        <div class="col-md-4 pe-0">
+                                            <div class="form-group form-group-default">
+                                                <label for="editWindow">Window</label>
+                                                <select id="editWindow" class="form-control" name="editWindow" required>
+                                                    <option value="" disabled selected>Select</option>
+                                                    @foreach ($all_windows as $all_window)
+                                                        <option value="{{ $all_window->w_id }}">
+                                                            {{ $all_window->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
 
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-8 pe-0">
+                                            <div class="form-group form-group-default">
+                                                <label for="editName">Personnel</label>
+                                                <select id="editName" class="form-control" name="editName" required>
+                                                    <option value="" disabled selected></option>
+                                                    @foreach ($departments as $department)
+                                                        <option value="{{ $department->p_id }}">
+                                                            {{ $department->firstname }}
+                                                            {{ $department->lastname }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
+                                            </div>
                                         </div>
                                     </div>
-
-
-                                    <div class="col-md-6 pe-0">
-                                        <div class="form-group form-group-default">
-                                            <label for="editName">Personnel</label>
-                                            <select id="editName" class="form-control" name="editName" required>
-                                                <option value="" disabled selected></option>
-                                                @foreach ($departments as $department)
-                                                    <option value="{{ $department->p_id }}">
-                                                        {{ $department->firstname }}
-                                                        {{ $department->lastname }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-
-                                        </div>
-                                    </div>
-
                                     <div class="form-group">
                                         <label for="editDepartment">Department</label>
                                         <input type="text" readonly name="editDepartment" id="editDepartment"
@@ -222,9 +214,6 @@
         </div>
     </div>
 
-
-
-
     {{-- for table --}}
 
     <div class="col-md-12 m-5" style="width:95%">
@@ -258,26 +247,25 @@
                                 <div class="modal-body" style="margin-right:10px;">
                                     <p class="small">Create a new table.</p>
                                     <div class="row">
-                                        <div class="col-md-4 pe-0">
+                                        {{-- <div class="col-md-4 pe-0">
                                             <div class="form-group form-group-default">
                                                 <label for="table_id">ID</label>
                                                 <input name="table_id" id="table_id" type="text"
-                                                    oninput="formatInput(this)">
-                                                @error('table_id')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
+                                                    class="form-control" oninput="formatInput(this)">
                                             </div>
-                                        </div>
-
+                                            @error('table_id')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div> --}}
                                         <div class="col-md-4 pe-0">
                                             <div class="form-group form-group-default">
                                                 <label for="table_window">Window</label>
                                                 <input name="table_window" id="table_window" type="text"
-                                                    oninput="formatInput(this)">
-                                                @error('table_window')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
+                                                    class="form-control" oninput="formatInput(this)">
                                             </div>
+                                            @error('table_window')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
 
                                         <div class="col-md-4 pe-0">
@@ -292,24 +280,12 @@
                                                 @enderror
                                             </div>
                                         </div>
-
-
-                                        <div class="col-md-12 pe-0">
-                                            <div class="form-group form-group-default">
-                                                <label for="table_department">Department</label>
-
-                                                <select id="table_department" class="form-control"
-                                                    name="table_department">
-                                                    <option value=" {{ $currentDepartment }}">
-                                                        {{ $currentDepartment }}
-                                                    </option>
-                                                </select>
-                                                @error('department')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
+                                        <div class="form-group">
+                                            <label for="table_department">Department</label>
+                                            <input type="text" readonly name="table_department"
+                                                id="table_department" value="{{ $currentDepartment }}"
+                                                class="form-control" required>
                                         </div>
-
                                     </div>
                                 </div>
                                 <div class="modal-footer border-0">
@@ -322,73 +298,72 @@
                     </div>
                 </form>
 
-                <!-- Edit Personnel Window Modal -->
+                <!-- Edit Table Window Modal -->
                 <div class="modal fade" id="editModal1" tabindex="-1" aria-labelledby="editModalLabel1"
                     aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="editModalLabel1">Edit User</h5>
+                                <h5 class="modal-title" id="editModalLabel1">Edit Table</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
-                            <form id="editUserForm" method="POST" action="">
+                            <form id="editTableForm" method="POST" action="">
                                 @csrf
                                 @method('PUT')
                                 <div class="modal-body">
+                                    <input type="hidden" name="table_id_hidden" id="table_id_hidden">
 
-                                    <div class="col-md-4 pe-0">
-                                        <div class="form-group form-group-default">
-                                            <label for="edit_table_id">ID</label>
-                                            <input name="edit_table_id" id="edit_table_id" type="text"
-                                                oninput="formatInput(this)">
+                                    <div class="row">
+                                        <div class="col-md-4 pe-0" style="display: none">
+                                            <div class="form-group form-group-default"
+                                                style="background: #e8e8e8!important">
+                                                <label for="edit_table_id">ID</label>
+                                                <input name="edit_table_id" id="edit_table_id" type="text"
+                                                    class="form-control" readonly oninput="formatInput(this)">
+                                            </div>
                                             @error('edit_table_id')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                    </div>
 
-                                    <div class="col-md-4 pe-0">
-                                        <div class="form-group form-group-default">
-                                            <label for="edit_table_window">Window</label>
-                                            <input name="edit_table_window" id="edit_table_window" type="text"
-                                                oninput="formatInput(this)">
+                                        <div class="col-md-4 pe-0">
+                                            <div class="form-group form-group-default">
+                                                <label for="edit_table_window">Window</label>
+                                                <input name="edit_table_window" id="edit_table_window" type="text"
+                                                    class="form-control" placeholder="Fill Name"
+                                                    oninput="formatInput(this)">
+
+
+                                            </div>
                                             @error('edit_table_window')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                    </div>
 
-                                    <div class="col-md-4 pe-0">
-                                        <div class="form-group form-group-default">
-                                            <label for="edit_table_status">Status</label>
-                                            <select name="edit_table_status" id="edit_table_status"
-                                                class="form-control">
-                                                <option value="1" selected>Active</option>
-                                                <option value="0">Inactive</option>
-                                            </select>
-                                            @error('edit_table_status')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
+                                        <div class="col-md-4 pe-0">
+                                            <div class="form-group form-group-default">
+                                                <label for="edit_table_status">Status</label>
+                                                <select name="edit_table_status" id="edit_table_status"
+                                                    class="form-control">
+                                                    <option value="1" selected>Active</option>
+                                                    <option value="0">Inactive</option>
+                                                </select>
+                                                @error('edit_table_status')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
                                         </div>
                                     </div>
-
-
-                                    <div class="col-md-12 pe-0">
-                                        <div class="form-group form-group-default">
-                                            <label for="edit_table_department">Department</label>
-
-                                            <select id="edit_table_department" class="form-control"
-                                                name="edit_table_department">
-                                                <option value=" {{ $currentDepartment }}">
-                                                    {{ $currentDepartment }}
-                                                </option>
-                                            </select>
-                                            @error('edit_table_department')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+                                    <div class="form-group">
+                                        <label for="edit_table_department">Department</label>
+                                        <input type="text" readonly name="edit_table_department"
+                                            id="edit_table_department" value="{{ $currentDepartment }}"
+                                            class="form-control" required>
                                     </div>
+
+
+
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary">Save changes</button>
@@ -432,7 +407,7 @@
                         <thead>
                             <tr>
                                 <th>#</th> <!-- Add this for the number column -->
-                                <th>ID</th>
+                                <th style="display: none">ID</th>
                                 <th>Window</th>
                                 <th>Status</th>
                                 <th>Department</th>
@@ -444,7 +419,7 @@
                             @foreach ($all_windows_tables as $index => $all_windows_table)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
-                                    <td>{{ $all_windows_table->w_id }}</td>
+                                    <td style="display: none">{{ $all_windows_table->w_id }}</td>
                                     <td>{{ $all_windows_table->name }}</td>
                                     <td>
                                         @if ($all_windows_table->status == 1)
@@ -531,7 +506,7 @@
 
                 document.getElementById('editName').value = selectedWindow?.p_id || ""; // Optional chaining for safe access
                 document.getElementById('editDepartment').value = selectedWindow?.department ||
-                    ""; // Optional chaining for safe access
+                    "";
 
                 // Set the form action URL to match the PUT request for the user being edited
                 document.getElementById('editUserForm').action = `/personnel/${pId}`;
@@ -546,7 +521,9 @@
         function deleteUser(pId) {
             document.getElementById('deleteUserForm').action = `/personnel/${pId}`;
         }
+    </script>
 
+    <script>
         // format input
         function formatInput(input) {
             // Remove leading spaces
@@ -558,19 +535,25 @@
             // Convert to uppercase
             input.value = input.value.toUpperCase();
         }
-
-
+        // Locate the input field by its ID and add an event listener
+        document.getElementById('table_id').addEventListener('input', function() {
+            // Remove spaces from the input's value
+            this.value = this.value.replace(/\s/g, '');
+        });
 
         function editTable(pId) {
+            // Find the selected table row by matching the ID
             const selectedTable = @json($all_windows_tables).find(all_windows_table => all_windows_table.id == pId);
 
             if (selectedTable) {
                 // Fill the edit form with the user's current data
-                document.getElementById('edit_table_id').value = selectedTable.w_id
-                document.getElementById('edit_table_name').value = selectedTable.name;
+                document.getElementById('edit_table_id').value = selectedTable.w_id;
+                document.getElementById('edit_table_window').value = selectedTable.name;
                 document.getElementById('edit_table_department').value = selectedTable.department;
                 document.getElementById('edit_table_status').value = selectedTable.status;
-                document.getElementById('editUserForm').action = `/personnel/table/${pId}`; // Correct URL for PUT request
+
+                // Update the form action to target the correct route
+                document.getElementById('editTableForm').action = `/personnel/table/${pId}`;
             } else {
                 console.error('Selected user not found.');
             }

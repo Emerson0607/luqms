@@ -9,7 +9,7 @@ use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\PersonnelController;
 
 Route::middleware('auth')->controller(ClientController::class)->group(function () {
-    Route::get('/', 'index');
+    Route::get('/', 'index')->name('home'); 
     Route::get('/client', 'getAllClients');
     Route::get('/get-oldest-client', 'getOldestClient');
     Route::get('/windows', 'getAllWindows');
@@ -29,7 +29,7 @@ Route::middleware('auth')->controller(PersonnelController::class)->group(functio
     // for table
     Route::post('/personnel/table', 'table_store')->name('table_store');
     Route::delete('/personnel/table/{pId}','table_destroy')->name('personnel.table_destroy');
-    Route::put('/personnel/table/{pId}', 'table_update');
+    Route::put('/personnel/table/{pId}', 'table_update')->name('table_update');
 
 });
 
