@@ -50,8 +50,13 @@
                                             class="avatar-img rounded-circle" />
                                     </div>
                                     <span class="profile-username">
-                                        <span class="op-7">Hi,</span>
-                                        <span class="fw-bold">Emerson</span>
+
+                                        @auth
+                                            <span class="profile-username">
+                                                <span class="op-7">Hi,</span>
+                                                <span class="fw-bold">{{ Auth::user()->p_fname }}</span>
+                                            </span>
+                                        @endauth
                                     </span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -63,10 +68,29 @@
                                                         alt="image profile" class="avatar-img rounded" />
                                                 </div>
                                                 <div class="u-text">
-                                                    <h4>Hizrian</h4>
-                                                    <p class="text-muted">emerson@gmail.com</p>
-                                                    <a href="profile.html" class="btn btn-xs btn-secondary btn-sm">View
-                                                        Profile</a>
+
+                                                    @auth
+
+                                                        <h4>{{ Auth::user()->p_fname }} {{ Auth::user()->p_lname }}
+                                                        </h4>
+
+                                                    @endauth
+                                                    <p class="text-muted">
+                                                        @php
+                                                            $dmsUserDepts = \App\Models\DmsUserDepts::where(
+                                                                'p_id',
+                                                                Auth::user()->p_id,
+                                                            )->first();
+                                                            $department = \App\Models\DmsDepartment::find(
+                                                                $dmsUserDepts->dept_id,
+                                                            );
+
+                                                        @endphp
+                                                        {{ $department ? $department->name : 'No department assigned' }}
+                                                    </p>
+
+                                                    {{-- <a href="profile.html" class="btn btn-xs btn-secondary btn-sm">View
+                                                        Profile</a> --}}
                                                 </div>
                                             </div>
                                         </li>

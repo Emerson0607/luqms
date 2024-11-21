@@ -1,33 +1,41 @@
-<x-layout>
+<!DOCTYPE html>
+<html lang="en">
 
-    <!-- Button to Open Modal -->
-    <div class="text-end ">
-        <button type="button" style="margin-right:1rem; margin-top:1rem" class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#myModal">
-            Add
-        </button>
+<head>
+    <title>LU-QMS</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+
+    <link rel="stylesheet" href="css/all-window-queue.css" />
+    <link rel="icon" href="bootstrap-template/assets/img/emerson.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="bootstrap-template/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/queue-stack.css" />
+    <link rel="stylesheet" href="css/all-window-queue.css" />
+
+</head>
+
+<body>
+
+    <div class="main-header">
+        <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom justify-content-between"
+            style="height: 70px">
+            <img style="width:50px; height:50px; border-radius:50%" src="bootstrap-template\assets\img\emerson.jpg">
+            <img style="width:50px; height:50px; border-radius:50%" src="bootstrap-template\assets\img\emerson.jpg">
+
+        </nav>
     </div>
 
-    <!-- Modal Structure -->
-    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Modal Title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
+    <div class="container overflow-auto" style="height: 100%; margin-top:2rem;">
+        <div id="window-container" class="row all-window-queue1 ">
         </div>
     </div>
-    <div id="window-container" class="row all-window-queue ">
 
-    </div>
 
-</x-layout>
+    <x-js-bootstrap-down />
+    <x-queue />
+
+
+
+</body>
+
+</html>

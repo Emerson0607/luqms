@@ -23,22 +23,32 @@
       <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
               <ul class="nav nav-secondary">
-                  <li class="nav-item active">
+                  <li class="nav-item {{ request()->is('/') ? 'active' : '' }}">
                       {{-- <a data-bs-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false"> --}}
                       <a href="/">
                           <i class="fas fa-home"></i>
-                          <p>Dashboard</p>
+                          <p>Home</p>
                           {{-- <span class="caret"></span> --}}
                       </a>
                   </li>
+
                   <li class="nav-section">
                       <span class="sidebar-mini-icon">
                           <i class="fa fa-ellipsis-h"></i>
                       </span>
                       <h4 class="text-section">Components</h4>
                   </li>
-                  <li class="nav-item">
+
+
+                  {{-- <li class="nav-item {{ request()->is('window') ? 'active' : '' }}">
                       <a href="/window">
+                          <i class="fas fa-layer-group"></i>
+                          <p>Window</p>
+                      </a>
+                  </li> --}}
+
+                  <li class="nav-item {{ request()->is('window') ? 'active' : '' }}">
+                      <a href="/window" target="_blank">
                           <i class="fas fa-layer-group"></i>
                           <p>Window</p>
                       </a>
@@ -52,13 +62,13 @@
                       @endphp
 
                       @if ($isDeptHead)
-                          <li class="nav-item">
+                          <li class="nav-item {{ request()->is('personnel') ? 'active' : '' }}">
                               <a href="/personnel">
                                   <i class="fas fa-layer-group"></i>
                                   <p>Personnel</p>
                               </a>
                           </li>
-                          <li class="nav-item">
+                          <li class="nav-item {{ request()->is('logs') ? 'active' : '' }}">
                               <a href="/logs">
                                   <i class="fas fa-layer-group"></i>
                                   <p>Logs</p>

@@ -37,11 +37,8 @@ class PersonnelController extends Controller
         if (!$this->isDepartmentHead()) {
             return redirect()->route('home')->with('error', 'You do not have access to this resource.');
         }
-
-        $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id', Auth::user()->p_id)->first();
-        $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
-        $currentDepartment = $department->name;
     
+        $currentDepartment = session('user_department');
         $users = \App\Models\Window::where('department', $currentDepartment)->get();
     
         foreach ($users as $user) {
@@ -49,18 +46,25 @@ class PersonnelController extends Controller
             $windows_name = \App\Models\WindowList::where('w_id', $user->w_id)->first();
             $user->w_name = $windows_name -> name;
 
+
+            $department = \App\Models\DmsDepartment::where('name', $currentDepartment)->first();
+            $dmsUserDepts = \App\Models\DmsUserDepts::where('dept_id', $department->id)->first();
+
             $personnel = \App\Models\DmsUserDepts::where('p_id', $user->p_id)->first();
 
             $user->p_fname = $personnel->firstname ;
             $user->p_lname = $personnel->lastname ;
         }
+
+         // Sort the $users collection by 'w_name' in ascending order
+        $users = $users->sortBy('w_name');
     
         $departments = \App\Models\DmsUserDepts::where('dept_id', $dmsUserDepts->dept_id)->get();
         $all_windows = \App\Models\WindowList::where('department', $currentDepartment)
         ->where('status', 0)
         ->get();
 
-        $all_windows_tables = \App\Models\WindowList::where('department', $currentDepartment)->get();
+        $all_windows_tables = \App\Models\WindowList::where('department', $currentDepartment)->orderBy('name', 'asc')->get();
 
 
         return view('user.personnel', compact(['users', 'departments', 'all_windows', 'currentDepartment', 'all_windows_tables']));
@@ -74,13 +78,17 @@ class PersonnelController extends Controller
         ]);
 
        // Check if p_id already exists in the Window table
-        $pIdExists = \App\Models\Window::where('p_id', $validatedAttributes['p_id'])->exists();
+        $pIdExists = \App\Models\Window::where('p_id', $validatedAttributes['p_id'])
+        ->where('department', $validatedAttributes['department'])
+        ->exists();
         if ($pIdExists) {
             return redirect()->back()->with('error', 'The provided personnel already exists.')->withInput();
         }
 
         // Check if w_id already exists in the Window table
-        $wIdExists = \App\Models\Window::where('w_id', $validatedAttributes['w_id'])->exists();
+        $wIdExists = \App\Models\Window::where('w_id', $validatedAttributes['w_id'])
+        ->where('department', $validatedAttributes['department'])
+        ->exists();
         if ($wIdExists) {
             return redirect()->back()->with('error', 'The provided window already exists.')->withInput();
         }
@@ -176,14 +184,21 @@ class PersonnelController extends Controller
         $validatedAttributesTable['status'] = $validatedAttributesTable['table_status']; // table_status to status
         $validatedAttributesTable['department'] = $validatedAttributesTable['table_department']; // table_department to department
     
-        // Check if w_id already exists in the Window table
-        $pIdExistsTable = \App\Models\WindowList::where('w_id', $validatedAttributesTable['w_id'])->exists();
+       
+       // Check if w_id and department already exist in the Window table
+        $pIdExistsTable = \App\Models\WindowList::where('w_id', $validatedAttributesTable['w_id'])
+        ->where('department', $validatedAttributesTable['department'])
+        ->exists();
+
         if ($pIdExistsTable) {
-            return redirect()->back()->with('error', 'The provided table ID already exists.')->withInput();
+        return redirect()->back()->with('error', 'The provided table ID and department combination already exists.')->withInput();
         }
 
 
-        $wIdExistsTable = \App\Models\WindowList::where('name', $validatedAttributesTable['name'])->exists();
+        $wIdExistsTable = \App\Models\WindowList::where('name', $validatedAttributesTable['name'])
+        ->where('department', $validatedAttributesTable['department'])
+        ->exists();
+
         if ($wIdExistsTable) {
             return redirect()->back()->with('error', 'The provided table name already exists.')->withInput();
         }
@@ -240,8 +255,21 @@ class PersonnelController extends Controller
         $windowList = WindowList::findOrFail($pId);
     
 
+        // Check if the updated combination already exists in the database
+        $existingRecord1 = WindowList::where('name', $request->edit_table_window)
+        ->where('name', $request->edit_table_window)
+        ->where('department', $request->edit_table_department)
+        ->where('id', '!=', $pId) // Exclude the current record
+        ->first();
+
+        if ($existingRecord1) {
+            return redirect()->back()->with('error', 'The provided table name already exists.');
+
+        }
+
+
         // Update the status of the corresponding WindowList entry
-        $window = \App\Models\Window::where('w_id', $windowList->w_id)->first();
+        $window = \App\Models\Window::where('w_id', $windowList->w_id)->where('department', $windowList->department)->first();
         if ($window) {
             $window->w_id = $request->edit_table_id;
             $window->save();

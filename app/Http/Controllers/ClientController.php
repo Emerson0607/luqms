@@ -29,15 +29,22 @@ class ClientController extends Controller
 
     public function logs()
     {
-        return view('queue.logs');
+        // $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id', Auth::user()->p_id)->first();
+        // $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
+        // $currentDepartment = $department->name;
+
+        // Get the department from the session
+        $currentDepartment = session('user_department');
+
+        $logs = \App\Models\Logs::where('department', $currentDepartment)->get();
+        return view('queue.logs',compact('logs'));
     }
 
 
      // display in queue stack
     public function getAllClients(){
-        $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id',  Auth::user()->p_id)->first();
-        $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
-        $clients = \App\Models\Client::where('department', $department->name)->get();
+        $currentDepartment = session('user_department');
+        $clients = \App\Models\Client::where('department', $currentDepartment)->get();
 
         return response()->json($clients);
     }
@@ -45,10 +52,11 @@ class ClientController extends Controller
     // display all window per department
     public function getAllWindows(){
 
-        $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id',  Auth::user()->p_id)->first();
-        $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
+        // $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id',  Auth::user()->p_id)->first();
+        // $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
+        $currentDepartment = session('user_department');
     
-        $window_queue = Window::where('qms_window.department', $department->name) // Filter by department name
+        $window_queue = Window::where('qms_window.department', $currentDepartment) // Filter by department name
         ->join('qms_window_list', 'qms_window.w_id', '=', 'qms_window_list.w_id') // Join with window_list table
         ->select('qms_window.*', 'qms_window_list.name as window_name') // Select all columns from window and the window name
         ->get();
@@ -60,10 +68,11 @@ class ClientController extends Controller
     // get the first data in the stack which is the oldest  
     public function getOldestClient(){
         
-        $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id',  Auth::user()->p_id)->first();
-        $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
+        // $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id',  Auth::user()->p_id)->first();
+        // $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
+        // $currentDepartment = $department->name;
 
-        $currentDepartment = $department->name;
+        $currentDepartment = session('user_department');
         $user_w_id = \App\Models\Window::where('p_id', Auth::user()->p_id)->first();
         $client = Client::where('department', $currentDepartment)->oldest()->first();
 
@@ -98,9 +107,11 @@ class ClientController extends Controller
 
     public function waitingQueue(){
 
-        $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id',  Auth::user()->p_id)->first();
-        $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
-        $currentDepartment = $department->name;
+        // $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id',  Auth::user()->p_id)->first();
+        // $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
+        // $currentDepartment = $department->name;
+
+        $currentDepartment = session('user_department');
 
         $user_w_id = \App\Models\Window::where('p_id', Auth::user()->p_id)->first();
 
@@ -133,4 +144,12 @@ class ClientController extends Controller
             ], 404);
         }
     }
+
+    // In ClientController.php
+    public function generateClient()
+    {
+        Client::factory(50)->create(); // Adjust to your intended model
+        return back()->with('success', 'Client generated successfully!');
+    }
+
 }

@@ -458,13 +458,7 @@
     </div>
 
 
-    @if (session('error'))
-        <script>
-            window.onload = function() {
-                alert("{{ session('error') }}");
-            };
-        </script>
-    @endif
+
 
     <script>
         // edit user
@@ -522,6 +516,13 @@
             document.getElementById('deleteUserForm').action = `/personnel/${pId}`;
         }
     </script>
+    @if (session('error'))
+        <script>
+            window.onload = function() {
+                alert("{{ session('error') }}");
+            };
+        </script>
+    @endif
 
     <script>
         // format input

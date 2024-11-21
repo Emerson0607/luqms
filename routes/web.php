@@ -16,6 +16,8 @@ Route::middleware('auth')->controller(ClientController::class)->group(function (
     Route::get('/waitingQueue', 'waitingQueue');
     Route::get('/window', 'window');
     Route::get('/logs', 'logs');
+    Route::post('/client-factory', 'generateClient')->name('generate.client');
+
 });
 
 Route::middleware('auth')->controller(PersonnelController::class)->group(function () {

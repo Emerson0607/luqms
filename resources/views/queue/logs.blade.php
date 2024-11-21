@@ -5,21 +5,13 @@
             <div class="page-header">
                 <h3 class="fw-bold mb-3">Logs</h3>
                 <ul class="breadcrumbs mb-3">
-                    <li class="nav-home">
-                        <a href="#">
-                            <i class="icon-home"></i>
-                        </a>
+                    <li class="nav-item {{ request()->is('/logs') ? 'active' : '' }}">
+                        <a href="logs">Personnel</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
-                    <li class="nav-item">
-                        <a href="#">Personnel</a>
-                    </li>
-                    <li class="separator">
-                        <i class="icon-arrow-right"></i>
-                    </li>
-                    <li class="nav-item">
+                    <li class="nav-item {{ request()->is('#') ? 'active' : '' }}">
                         <a href="#">Client</a>
                     </li>
                 </ul>
@@ -36,33 +28,27 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Position</th>
-                                            <th>Office</th>
-                                            <th>Age</th>
-                                            <th>Start date</th>
-                                            <th>Salary</th>
+                                            <th>Department</th>
+                                            <th>In</th>
+                                            <th>Out</th>
+                                            <th>Date</th>
                                         </tr>
                                     </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Position</th>
-                                            <th>Office</th>
-                                            <th>Age</th>
-                                            <th>Start date</th>
-                                            <th>Salary</th>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        <tr>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
-                                            <td>61</td>
-                                            <td>2011/04/25</td>
-                                            <td>$320,800</td>
-                                        </tr>
 
+                                    <tbody>
+                                        @foreach ($logs as $log)
+                                            <tr>
+                                                <td>{{ $log->p_fname }} {{ $log->p_lname }}</td> <!-- Full name -->
+                                                <td>{{ $log->department }}</td> <!-- Department -->
+                                                <td>{{ \Carbon\Carbon::parse($log->time_in)->format('h:i A') }}</td>
+                                                <!-- Time In -->
+                                                <td>{{ $log->time_out ? \Carbon\Carbon::parse($log->time_out)->format('h:i A') : 'Still logged in' }}
+                                                </td>
+
+
+                                                <td>{{ $log->date }}</td> <!-- Date -->
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
