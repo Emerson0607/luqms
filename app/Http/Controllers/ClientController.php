@@ -12,9 +12,42 @@ use Illuminate\Support\Facades\Hash;
 
 class ClientController extends Controller
 {
-    public function index()
+
+    public function userCurrentDepartment(Request $request)
     {
-        return view('queue.dashboard');
+        // Validate the selected department ID
+        $validated = $request->validate([
+            'department' => 'required|exists:dms_departments,id',
+        ]);
+    
+        // Update the session with the new department ID and department name
+        $department = \App\Models\DmsDepartment::find($validated['department']);
+        session(['current_department' => $department->id, 'current_department_name' => $department->name]);
+    
+        // Return the updated department name in the response
+        return response()->json([
+            'success' => true,
+            'department_name' => $department->name
+        ]);
+    }
+
+    public function getCurrentDepartment(Request $request)
+    {
+        $departmentName = session('current_department_name', 'No department selected');
+        return response()->json([
+            'success' => true,
+            'department_name' => $departmentName,
+        ]);
+    }
+
+    
+
+    
+    public function index()
+    { 
+        $departmentName = session('current_department_name');
+      return view('queue.dashboard', ['current_department_name' => $departmentName]);
+
     }
 
     public function window()
@@ -43,8 +76,8 @@ class ClientController extends Controller
 
      // display in queue stack
     public function getAllClients(){
-        $currentDepartment = session('user_department');
-        $clients = \App\Models\Client::where('department', $currentDepartment)->get();
+        $departmentName = session('current_department_name');
+        $clients = \App\Models\Client::where('department', $departmentName)->get();
 
         return response()->json($clients);
     }

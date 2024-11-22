@@ -55,63 +55,7 @@
     });
 </script>
 
-{{-- for all window queue --}}
-{{-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        let fetchIntervalWindow;
-
-        function fetchWindows() {
-            $.get('/windows', function(window_queue) {
-                console.log(window_queue);
-
-
-                // Clear existing window data
-                $('#window-container').empty();
-
-                // Loop through each window in the window_queue
-                window_queue.forEach(function(window) {
-                    // Create a new window card dynamically
-                    const windowCard =
-                        `
-                    <div class="col-md-4 mb-3">
-                        <div class="d-flex align-items-center card queue-ongoing-card pb-2">
-                             <p class="text-start w-100">
-                                    <span class="window-name" style="font-size: 12px;">${window.window_name || '---'}</span>
-                                </p>
-                            <div class="d-flex flex-column justify-content-center align-items-center queue-window text-center">
-                               
-                                <h5 style="font-size: 24px;">${window.status || 'Waiting...'}</h5>
-                                <h1 style="font-size: 48px;">
-                                    <span class="window-number">${window.number || '---'}</span>
-                                </h1>
-                                <h1 style="font-size: 24px;">
-                                    <span class="window-number">${window.name || '---'}</span>
-                                </h1>
-                                <h6 style="font-size: 16px;">${window.department || 'window-department'}</h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    `;
-
-                    // Append the new window card to the container
-                    $('#window-container').append(windowCard);
-                });
-
-            }).fail(function() {
-                console.error('Error fetching windows');
-            });
-        }
-
-        // Start fetching windows every 2 seconds
-        function startAutoRefresh() {
-            fetchIntervalWindow = setInterval(fetchWindows, 1000);
-        }
-
-        startAutoRefresh();
-    });
-</script> --}}
-
+{{-- All window --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         let fetchIntervalWindow;
@@ -172,8 +116,6 @@
         startAutoRefresh();
     });
 </script>
-
-
 
 {{-- display queueing window --}}
 <script>

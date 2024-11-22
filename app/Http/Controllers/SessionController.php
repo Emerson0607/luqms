@@ -6,41 +6,25 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use App\Models\Department;
 
-class SessionController extends Controller
-{
-    public function create()
-    {
-        $allDepartment = \App\Models\DmsDepartment::orderBy('name', 'asc')->get();
-        return view('auth.login', compact('allDepartment'));
+class SessionController extends Controller{
+
+    public function create(){
+       
+        return view('auth.login');
     }
 
-    public function store()
-    {
-        // $validatedattributes = request()->validate([
-        //     'username2' => ['required'],
-        //     'password' => ['required'],
-        //     'department' => ['required'], 
-        // ]);
-    
-        // if (!Auth::attempt($validatedattributes)) {
-        //     throw ValidationException::withMessages([
-        //         'username2' => trans('Sorry, credentials do not match'),
-        //     ]);
-        // }
-    
-        // request()->session()->regenerate();
-
+    public function store(){
 
         // Validate the incoming request data
         $validatedAttributes = request()->validate([
             'username2' => ['required'],
             'password' => ['required'],
-            'department' => ['required'],  // Ensure a department is selected
+            // 'department' => ['required'], 
         ]);
 
         // Check if the credentials match
         $user = Auth::attempt([
-            'username2' => $validatedAttributes['username2'], // Assuming your users use 'username' to log in
+            'username2' => $validatedAttributes['username2'], 
             'password' => $validatedAttributes['password'],
         ]);
 
@@ -48,22 +32,6 @@ class SessionController extends Controller
         if (!$user) {
             throw ValidationException::withMessages([
                 'username2' => trans('Sorry, credentials do not match'),
-            ]);
-        }
-
-        // Retrieve the department information for the authenticated user
-        $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id', Auth::user()->p_id)->first();
-        $department = \App\Models\DmsDepartment::find($dmsUserDepts->dept_id);
-        $currentDepartment = $department ? $department->name : null; // Ensure that department exists
-
-
-         // Store the department in the session
-        session(['user_department' => $currentDepartment]);
-
-        // Check if the selected department matches the user's department
-        if ($validatedAttributes['department'] != $currentDepartment) {
-            throw ValidationException::withMessages([
-                'department' => trans('The selected department does not match your profile'),
             ]);
         }
 
@@ -86,48 +54,30 @@ class SessionController extends Controller
             ]);
         }
 
-    
         // Log user login info
         \App\Models\Logs::create([
             'p_id' => $user->p_id,
             'p_fname' => $user->p_fname,
             'p_lname' => $user->p_lname,
-            'department' => $currentDepartment, // Make sure the `department` field exists on the User model
+            'department' => null,
             'time_in' => now(),
             'time_out' => null, // This can be updated later
             'date' => now()->toDateString(),
         ]);
-    
+
+        // Fetch all department associations for the authenticated user
+        $dmsUserDepts = \App\Models\DmsUserDepts::where('p_id', Auth::user()->p_id)->get();
+
+        // Fetch all departments related to the user (using the department ids)
+        $allDepartment = \App\Models\DmsDepartment::whereIn('id', $dmsUserDepts->pluck('dept_id'))->orderBy('name', 'asc')->get();
+
+        // Store the department IDs in the session
+        session(['user_department' => $allDepartment->pluck('id')->toArray()]);
+
+   
         return redirect('/');
     }
     
-
-    // public function destroy()
-    // {
-
-
-    //     $log = \App\Models\Logs::where('p_id', Auth::user()->p_id)
-    //     ->whereNull('time_out') // Only get logs where `time_out` is null
-    //     ->orderBy('created_at', 'desc') // Sort by created_at (most recent first)
-    //     ->first(); // Get the first (most recent) log entry
-
-    //     // If the log entry exists, update the time_outxa
-    //     if ($log) {
-    //     $log->time_out = now(); // Set the time_out to the current time
-    //     $log->save(); // Save the updated log entry
-    //     }
-
-    
-
-    //     Auth::logout();
-
-
-
-
-
-    //     return redirect('/');
-    // }
-
     // when destroy it automatic logout all session of specific account
     public function destroy()
     {
@@ -157,5 +107,4 @@ class SessionController extends Controller
     
         return redirect('/');
     }
-    
 }

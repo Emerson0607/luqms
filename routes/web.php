@@ -17,6 +17,10 @@ Route::middleware('auth')->controller(ClientController::class)->group(function (
     Route::get('/window', 'window');
     Route::get('/logs', 'logs');
     Route::post('/client-factory', 'generateClient')->name('generate.client');
+    Route::post('/userCurrentDepartment', 'userCurrentDepartment')->name('update.department.ajax');
+    Route::get('/current-department', 'getCurrentDepartment')->name('get.current.department');
+
+
 
 });
 

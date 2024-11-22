@@ -19,8 +19,8 @@
     <div class="main-header">
         <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom justify-content-between"
             style="height: 70px">
-            <img style="width:50px; height:50px; border-radius:50%" src="bootstrap-template\assets\img\emerson.jpg">
-            <img style="width:50px; height:50px; border-radius:50%" src="bootstrap-template\assets\img\emerson.jpg">
+            <img style="width:50px; height:50px; border-radius:50%" src="img\logo\LU.png">
+            <img style="width:50px; height:50px; border-radius:50%" src="img\logo\MIS.png">
 
         </nav>
     </div>

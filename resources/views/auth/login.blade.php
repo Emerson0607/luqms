@@ -16,7 +16,7 @@
         <form method="POST" action="/login">
             @csrf
 
-            <div class="row mb-3">
+            <div class="row mb-4">
                 <!-- Username Field -->
                 <div class="col-md-6">
                     <label for="username2" class="form-label">Username</label>
@@ -26,7 +26,7 @@
                 </div>
             </div>
 
-            <div class="row mb-3">
+            <div class="row mb-4">
                 <!-- Password Field -->
                 <div class="col-md-6">
                     <label for="password" class="form-label">Password</label>
@@ -35,21 +35,9 @@
                 </div>
             </div>
 
-            <div class="row mb-3">
-                <!-- Department Dropdown -->
-                <div class="col-md-6">
-                    <label for="department" class="form-label">Department</label>
-                    <select name="department" id="department" class="form-select">
-                        <option value="" disabled>Select Department</option>
-                        @foreach ($allDepartment as $department)
-                            <option value="{{ $department->name }}">{{ $department->name }}</option>
-                        @endforeach
-                    </select>
-                    <x-form-error name="department" />
-                </div>
-            </div>
 
-            <div class="row mb-3">
+
+            <div class="row mb-4">
                 <div class="col-md-6 d-flex justify-content-end">
                     <button type="button" class="btn btn-secondary me-2">Cancel</button>
                     <x-form-button class="btn btn-primary">Log In</x-form-button>
