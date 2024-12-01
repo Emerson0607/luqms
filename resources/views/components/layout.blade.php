@@ -8,9 +8,13 @@
 
     <link rel="icon" href="bootstrap-template/assets/img/emerson.ico" type="image/x-icon" />
     <x-header-bootstrap-import />
+    @livewireStyles
+
+
+
 </head>
 
-<body class="overflow-hidden" style="height: 100%;">
+<body class="overflow-hidden " style="height: 100%;">
 
     <div class="wrapper">
         <x-sidebar />
@@ -22,7 +26,9 @@
                     <div class="logo-header" data-background-color="dark">
                         <a href="index.html" class="logo">
                             LU-QMS
+
                         </a>
+
                         <div class="nav-toggle">
                             <button class="btn btn-toggle toggle-sidebar">
                                 <i class="gg-menu-right"></i>
@@ -39,6 +45,7 @@
                 </div>
                 <!-- Navbar Header -->
                 <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+
                     <div class="container-fluid">
                         <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                             <li>
@@ -67,13 +74,13 @@
                                 @endphp
 
                                 @if (!empty($departments) && $departments->isNotEmpty())
+
+
                                     @if (count($departments) === 1)
                                         <!-- Single department handling -->
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-
-                                                <span class="form-control"
-                                                    id="current-department-name">{{ $departments->first()->name }}</span>
+                                                <span class="form-control">{{ $departments->first()->name }}</span>
                                                 <input type="hidden" id="single-department-id"
                                                     value="{{ $departments->first()->id }}">
                                             </div>
@@ -86,29 +93,21 @@
                                                     onchange="updateDepartment(this)">
                                                     @foreach ($departments as $department)
                                                         <option value="{{ $department->id }}"
-                                                            {{ $department->id == $currentDepartmentId ? 'selected' : '' }}>
+                                                            {{ $department->id == session('current_department_id', $defaultDepartmentId) ? 'selected' : '' }}>
                                                             {{ $department->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
-
                                             </div>
                                         </div>
                                     @endif
                                 @endif
 
-
-
-
-
-
-
-
                             </li>
+
+
+
                             <li class="nav-item topbar-user dropdown hidden-caret">
-
-
-
                                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
                                     aria-expanded="false">
                                     <div class="avatar-sm">
@@ -140,13 +139,8 @@
                                                         </h4>
                                                     @endauth
                                                     <!-- Display the current department dynamically -->
-                                                    <p class="text-muted" id="current-department">
-                                                        @if ($currentDepartmentId)
-                                                            Current Department:
-                                                            {{ $departments->where('id', $currentDepartmentId)->first()->name }}
-                                                        @else
-                                                            No department selected.
-                                                        @endif
+                                                    <p class="text-muted current_department">
+                                                        {{ session('current_department_name') }}
                                                     </p>
                                                     {{-- <a href="profile.html" class="btn btn-xs btn-secondary btn-sm">View
                                                         Profile</a> --}}
@@ -176,59 +170,75 @@
 
             </div>
 
-            <div class="container overflow-auto" style="height: 100%;">
-                {{ $slot }}
+            <div class="container overflow-auto auto-refresh" style="height: 100%;">
 
+
+                {{ $slot }}
             </div>
 
             {{-- javascript import --}}
             <x-js-bootstrap-down />
-            <x-queue />
 
             <script>
-                $(document).ready(function() {
-                    // Trigger update for users with a single department
-                    var singleDepartmentId = $('#single-department-id').val();
-                    if (singleDepartmentId) {
-                        updateDepartment(singleDepartmentId);
-                    }
+                function updateDepartment(selectElement) {
+                    const departmentId = selectElement.value;
+                    const departmentName = selectElement.options[selectElement.selectedIndex].text;
 
-                    // Update department when the dropdown changes
-                    $('#department').change(function() {
-                        var selectedDepartmentId = $(this).val();
-                        updateDepartment(selectedDepartmentId);
-                    });
-
-                    // Update department via AJAX
-                    function updateDepartment(departmentId) {
-                        $.ajax({
-                            url: '{{ route('update.department.ajax') }}',
+                    fetch('{{ route('update-department') }}', {
                             method: 'POST',
-                            data: {
-                                department: departmentId,
-                                _token: '{{ csrf_token() }}'
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
-                            success: function(data) {
-                                if (data.success) {
-                                    // Update dynamic elements
-                                    $('#current-department-name').text(data
-                                        .department_name);
-                                    $('#current-department').text('Current Department: ' + data
-                                        .department_name);
-                                    $('#current-department-name-card').text(data
-                                        .department_name);
-                                    $('#current-department-name-dashboard').text(data
-                                        .department_name);
-                                }
-                            },
-                            error: function(xhr) {
-                                console.error('Failed to update department:', xhr.responseText);
+                            body: JSON.stringify({
+                                department_id: departmentId,
+                                department_name: departmentName
+                            })
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                return response.json();
                             }
-                        });
-                    }
-                });
-            </script>
+                            throw new Error('Failed to update department.');
+                        })
+                        .then(data => {
+                            // Update the department name in the UI
+                            document.querySelectorAll('.current_department').forEach(element => {
+                                element.textContent = departmentName;
+                            });
 
+                            // Reload the container content after successful department update
+                            reloadContainer();
+                            // reloadDashboard();
+
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            alert('An error occurred while updating the department.');
+                        });
+                }
+
+                function reloadContainer() {
+                    const containerDiv = document.querySelector('.auto-refresh');
+
+                    // Reload the content of the container div by re-fetching the page's HTML content.
+                    fetch(window.location.href) // Fetch the current page again
+                        .then(response => response.text())
+                        .then(html => {
+                            // Parse the response HTML and replace the content of the target div
+                            const newDoc = new DOMParser().parseFromString(html, 'text/html');
+                            const newContainer = newDoc.querySelector('.auto-refresh');
+
+                            // Replace the content of the div
+                            containerDiv.innerHTML = newContainer.innerHTML;
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            alert('An error occurred while reloading the content.');
+                        });
+                }
+            </script>
+            @livewireScripts
 </body>
 
 </html>

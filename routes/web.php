@@ -10,27 +10,17 @@ use App\Http\Controllers\PersonnelController;
 
 Route::middleware('auth')->controller(ClientController::class)->group(function () {
     Route::get('/', 'index')->name('home'); 
-    Route::get('/client', 'getAllClients');
-    Route::get('/get-oldest-client', 'getOldestClient');
-    Route::get('/windows', 'getAllWindows');
-    Route::get('/waitingQueue', 'waitingQueue');
     Route::get('/window', 'window');
     Route::get('/logs', 'logs');
-    Route::post('/client-factory', 'generateClient')->name('generate.client');
-    Route::post('/userCurrentDepartment', 'userCurrentDepartment')->name('update.department.ajax');
-    Route::get('/current-department', 'getCurrentDepartment')->name('get.current.department');
-
-
-
+    Route::post('/update-department', 'updateDepartment')->name('update-department');
 });
 
 Route::middleware('auth')->controller(PersonnelController::class)->group(function () {
     Route::get('/personnel', 'personnel')->name('personnel'); 
-
-    // for personnel
     Route::post('/personnel', 'p_store')->name('p_store');
     Route::delete('/personnel/{pId}','destroy')->name('personnel.destroy');
     Route::put('/personnel/{pId}', 'update');
+    Route::get('/get-associated-services/{wName}/{deptId}', 'getAssociatedServices');
 
     // for table
     Route::post('/personnel/table', 'table_store')->name('table_store');

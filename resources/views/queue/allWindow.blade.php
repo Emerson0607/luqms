@@ -16,25 +16,8 @@
 
 <body>
 
-    <div class="main-header">
-        <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom justify-content-between"
-            style="height: 70px">
-            <img style="width:50px; height:50px; border-radius:50%" src="img\logo\LU.png">
-            <img style="width:50px; height:50px; border-radius:50%" src="img\logo\MIS.png">
-
-        </nav>
-    </div>
-
-    <div class="container overflow-auto" style="height: 100%; margin-top:2rem;">
-        <div id="window-container" class="row all-window-queue1 ">
-        </div>
-    </div>
-
-
+    @livewire('current-department')
     <x-js-bootstrap-down />
-    <x-queue />
-
-
 
 </body>
 

@@ -8,16 +8,26 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Department;
 use App\Models\WindowList;
+use App\Models\QmsWindow;
+use App\Models\QmsService;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Hash;
-
-
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PersonnelController extends Controller
 {
 
-    // Add this function to the PersonnelController class
+    protected $currentDepartment;
+    protected $currentDepartmentId;
 
+    public function __construct()
+    {
+        $this->currentDepartment = session('current_department_name');
+        $this->currentDepartmentId = session('current_department_id');
+    }
+
+    // Add this function to the PersonnelController class
     private function isDepartmentHead()
     {
         // Get the department for the authenticated user
@@ -30,24 +40,22 @@ class PersonnelController extends Controller
         return false;
     }
 
-    
-    public function personnel(){
+    public function personnel()
+    {
 
         // Check if the authenticated user is a department head
         if (!$this->isDepartmentHead()) {
             return redirect()->route('home')->with('error', 'You do not have access to this resource.');
         }
-    
-        $currentDepartment = session('user_department');
-        $users = \App\Models\Window::where('department', $currentDepartment)->get();
+
+        $users = \App\Models\Window::where('department', $this->currentDepartment)->get();
     
         foreach ($users as $user) {
             // Get WindowList name for w_id
             $windows_name = \App\Models\WindowList::where('w_id', $user->w_id)->first();
             $user->w_name = $windows_name -> name;
 
-
-            $department = \App\Models\DmsDepartment::where('name', $currentDepartment)->first();
+            $department = \App\Models\DmsDepartment::where('name', $this->currentDepartment)->first();
             $dmsUserDepts = \App\Models\DmsUserDepts::where('dept_id', $department->id)->first();
 
             $personnel = \App\Models\DmsUserDepts::where('p_id', $user->p_id)->first();
@@ -59,114 +67,139 @@ class PersonnelController extends Controller
          // Sort the $users collection by 'w_name' in ascending order
         $users = $users->sortBy('w_name');
     
-        $departments = \App\Models\DmsUserDepts::where('dept_id', $dmsUserDepts->dept_id)->get();
-        $all_windows = \App\Models\WindowList::where('department', $currentDepartment)
+        $departments = \App\Models\DmsUserDepts::where('dept_id', $this->currentDepartmentId)->get();
+        $all_windows = \App\Models\WindowList::where('department', $this->currentDepartment)
         ->where('status', 0)
-        ->get();
+        ->get();    
 
-        $all_windows_tables = \App\Models\WindowList::where('department', $currentDepartment)->orderBy('name', 'asc')->get();
+        $queueWindowLists = QmsWindow::where('dept_id', $this->currentDepartmentId)->get();
 
+        $all_windows_tables = \App\Models\WindowList::where('department', $this->currentDepartment)->orderBy('name', 'asc')->get();
 
-        return view('user.personnel', compact(['users', 'departments', 'all_windows', 'currentDepartment', 'all_windows_tables']));
+        return view('user.personnel', compact(['users', 'departments', 'all_windows', 'all_windows_tables', 'queueWindowLists']))
+            ->with([
+                    'currentDepartment' => $this->currentDepartment,
+                    'currentDepartmentId' => $this->currentDepartmentId,
+                ]);
     }
     
+
     public function p_store(){
         $validatedAttributes = request()->validate([
             'p_id' => ['required'],
-            'w_id' => ['required'],
-            'department' => ['required'],
+            'w_name' => ['required'],
+            'dept_id' => ['required'],
+            'w_status' => ['required'],
+            'services' => ['array'],
+            'services.*' => ['exists:dms_service,service_id'],  // Validate that each service ID exists in the qms_services table
         ]);
 
-       // Check if p_id already exists in the Window table
-        $pIdExists = \App\Models\Window::where('p_id', $validatedAttributes['p_id'])
-        ->where('department', $validatedAttributes['department'])
-        ->exists();
-        if ($pIdExists) {
-            return redirect()->back()->with('error', 'The provided personnel already exists.')->withInput();
-        }
-
         // Check if w_id already exists in the Window table
-        $wIdExists = \App\Models\Window::where('w_id', $validatedAttributes['w_id'])
-        ->where('department', $validatedAttributes['department'])
+        $wIdExists = QmsWindow::where('w_name', $validatedAttributes['w_name'])
+        ->where('dept_id', $validatedAttributes['dept_id'])
         ->exists();
+
         if ($wIdExists) {
             return redirect()->back()->with('error', 'The provided window already exists.')->withInput();
         }
 
         // Create a new record in the Window table
-        Window::create($validatedAttributes);
+        QmsWindow::create($validatedAttributes);
 
-        // Update the status of the corresponding WindowList entry to 1
-        $windowList = \App\Models\WindowList::where('w_id', $validatedAttributes['w_id'])->first();
-        if ($windowList) {
-            $windowList->status = 1;
-            $windowList->save();
+            foreach ($validatedAttributes['services'] as $serviceId) {
+                // Store the service in qms_service table
+                QmsService::create([
+                    'w_name' => $validatedAttributes['w_name'],
+                    'dept_id' => $validatedAttributes['dept_id'],
+                    'service_id' => $serviceId,
+                ]);
+            }
+      
+
+        return redirect()->route('personnel');
+    }
+    
+    public function update(Request $request, $pId)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'editWName' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('qms_windows', 'w_name')->ignore($pId),
+            ],
+            'editDeptId' => ['required'],
+            'editPersonnel' => 'required|string|max:255',
+            'editStatus' => 'required|string|max:255',
+            'editService' => ['array'],
+            'editService.*' => ['exists:dms_service,service_id'],
+        ], [
+            // Custom error message for w_name uniqueness
+            'editWName.unique' => 'The window name already exists. Please choose a different name.',
+        ]);
+    
+        // Debug to ensure form is submitting correctly
+        // dd($request->all());
+        // Fetch the Window record
+        $window = QmsWindow::findOrFail($pId); 
+        
+
+        $qmsServiceWindow = QmsService::where('w_name', $window->w_name)
+                              ->where('dept_id', $window->dept_id);
+
+        if ($qmsServiceWindow->exists()) {
+            $qmsServiceWindow->delete();
         }
 
-        // Redirect to the personnel function after storing
-        return redirect()->route('personnel');
+
+        // Save new services
+        if ($request->editService) {
+            foreach ($request->editService as $serviceId) {
+                QmsService::create([
+                    'w_name' => $request->editWName,
+                    'dept_id' => $request->editDeptId,
+                    'service_id' => $serviceId,
+                ]);
+            }
+        }
+    
+        // Update the model's attributes
+        $window->w_name = $request->editWName;
+        $window->p_id = $request->editPersonnel;
+        $window->w_status = $request->editStatus;
+        $window->save();
+
+        return redirect()->back()->with('success', 'Window updated successfully.');
+    }
+
+    public function getAssociatedServices($wName, $deptId)
+    {
+        try {
+            // Replace QmsWindow with the correct table/model and adjust the query if needed
+            $associatedServices = QmsService::where('w_name', $wName)
+                                           ->where('dept_id', $deptId)
+                                           ->pluck('service_id');
+    
+            return response()->json($associatedServices);
+        } catch (\Exception $e) {
+            Log::error('Error fetching associated services: ' . $e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
     }
 
     public function destroy($pId){
-        // Find the Window record where p_id equals the provided $pId
-        $window = Window::where('p_id', $pId)->first();
-    
-        // Check if the window exists
+        $window = QmsWindow::where('id', $pId)->first();
+
         if ($window) {
-            // Delete the window record
             $window->delete();
-    
-            // Update the status of the corresponding WindowList entry
-            $windowList = \App\Models\WindowList::where('w_id', $window->w_id)->first();
-            if ($windowList) {
-                $windowList->status = 0;
-                $windowList->save();
-            }
             return redirect()->back()->with('success', 'Window deleted successfully.');
         } else {
-            // Handle case where window with the given p_id doesn't exist
             return redirect()->back()->with('error', 'Window not found.');
         }
     }
-    
-    public function update(Request $request, $pId){
-        // Validate the incoming request
-        $request->validate([
-            'editWindow' => 'required|string|max:255',
-            'editName' => 'required|string|max:255',
-            'editDepartment' => 'required|string|max:255',
-        ]);
-    
-        // Fetch the Window record
-        $window = Window::findOrFail($pId); // Ensure it throws an exception if not found
-    
-          // Update the status of the corresponding WindowList entry
-          $windowList = \App\Models\WindowList::where('w_id', $window->w_id)->first();
-          if ($windowList) {
-              $windowList->status = 0;
-              $windowList->save();
-          }
 
-        // Update the model's attributes
-        $window->w_id = $request->editWindow;
-        $window->p_id = $request->editName;
-        $window->department = $request->editDepartment;
-    
-        // Save the changes
-        $window->save();
 
-        // Update the status of the corresponding WindowList entry
-        $windowList = \App\Models\WindowList::where('w_id', $window->w_id)->first();
-        if ($windowList) {
-            $windowList->status = 1;
-            $windowList->save();
-        }
-
-       
-    
-        return redirect()->back()->with('success', 'User updated successfully.');
-    }
-    
     public function table_store()
     {
         $validatedAttributesTable = request()->validate([
@@ -178,7 +211,8 @@ class PersonnelController extends Controller
         
     
         // Map the form fields to database columns
-        $validatedAttributesTable['w_id'] =bin2hex(random_bytes(8));
+        $validatedAttributesTable['w_id'] = (string) bin2hex(random_bytes(8));
+
 
         $validatedAttributesTable['name'] = $validatedAttributesTable['table_window']; // table_window to name
         $validatedAttributesTable['status'] = $validatedAttributesTable['table_status']; // table_status to status
@@ -237,9 +271,6 @@ class PersonnelController extends Controller
         }
     }
 
-
-
-
     public function table_update(Request $request, $pId){
       
         $request->validate([
@@ -287,4 +318,105 @@ class PersonnelController extends Controller
 
         return redirect()->back()->with('success', 'User updated successfully.');
     }
+
+
+
+
+
+    // public function p_store(){
+    //     $validatedAttributes = request()->validate([
+    //         'p_id' => ['required'],
+    //         'w_id' => ['required'],
+    //         'department' => ['required'],
+    //     ]);
+
+    //    // Check if p_id already exists in the Window table
+    //     $pIdExists = \App\Models\Window::where('p_id', $validatedAttributes['p_id'])
+    //     ->where('department', $validatedAttributes['department'])
+    //     ->exists();
+    //     if ($pIdExists) {
+    //         return redirect()->back()->with('error', 'The provided personnel already exists.')->withInput();
+    //     }
+
+    //     // Check if w_id already exists in the Window table
+    //     $wIdExists = \App\Models\Window::where('w_id', $validatedAttributes['w_id'])
+    //     ->where('department', $validatedAttributes['department'])
+    //     ->exists();
+    //     if ($wIdExists) {
+    //         return redirect()->back()->with('error', 'The provided window already exists.')->withInput();
+    //     }
+
+    //     // Create a new record in the Window table
+    //     Window::create($validatedAttributes);
+
+    //     // Update the status of the corresponding WindowList entry to 1
+    //     $windowList = \App\Models\WindowList::where('w_id', $validatedAttributes['w_id'])->first();
+    //     if ($windowList) {
+    //         $windowList->status = 1;
+    //         $windowList->save();
+    //     }
+
+    //     // Redirect to the personnel function after storing
+    //     return redirect()->route('personnel');
+    // }
+
+    // public function update(Request $request, $pId){
+    //     // Validate the incoming request
+    //     $request->validate([
+    //         'editWindow' => 'required|string|max:255',
+    //         'editName' => 'required|string|max:255',
+    //         'editDepartment' => 'required|string|max:255',
+    //     ]);
+    
+    //     // Fetch the Window record
+    //     $window = Window::findOrFail($pId); // Ensure it throws an exception if not found
+    
+    //       // Update the status of the corresponding WindowList entry
+    //       $windowList = \App\Models\WindowList::where('w_id', $window->w_id)->first();
+    //       if ($windowList) {
+    //           $windowList->status = 0;
+    //           $windowList->save();
+    //       }
+
+    //     // Update the model's attributes
+    //     $window->w_id = $request->editWindow;
+    //     $window->p_id = $request->editName;
+    //     $window->department = $request->editDepartment;
+    
+    //     // Save the changes
+    //     $window->save();
+
+    //     // Update the status of the corresponding WindowList entry
+    //     $windowList = \App\Models\WindowList::where('w_id', $window->w_id)->first();
+    //     if ($windowList) {
+    //         $windowList->status = 1;
+    //         $windowList->save();
+    //     }
+
+       
+    
+    //     return redirect()->back()->with('success', 'User updated successfully.');
+    // }
+
+    // public function destroy($pId){
+    //     // Find the Window record where p_id equals the provided $pId
+    //     $window = Window::where('p_id', $pId)->first();
+    
+    //     // Check if the window exists
+    //     if ($window) {
+    //         // Delete the window record
+    //         $window->delete();
+    
+    //         // Update the status of the corresponding WindowList entry
+    //         $windowList = \App\Models\WindowList::where('w_id', $window->w_id)->first();
+    //         if ($windowList) {
+    //             $windowList->status = 0;
+    //             $windowList->save();
+    //         }
+    //         return redirect()->back()->with('success', 'Window deleted successfully.');
+    //     } else {
+    //         // Handle case where window with the given p_id doesn't exist
+    //         return redirect()->back()->with('error', 'Window not found.');
+    //     }
+    // }
 }

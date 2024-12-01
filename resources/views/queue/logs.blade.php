@@ -45,7 +45,6 @@
                                                 <td>{{ $log->time_out ? \Carbon\Carbon::parse($log->time_out)->format('h:i A') : 'Still logged in' }}
                                                 </td>
 
-
                                                 <td>{{ $log->date }}</td> <!-- Date -->
                                             </tr>
                                         @endforeach
@@ -55,9 +54,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
         </div>
     </div>

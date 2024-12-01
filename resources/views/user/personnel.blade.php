@@ -1,5 +1,6 @@
 <x-layout>
-    <div class="col-md-12 m-5" style="width:95%">
+
+    {{-- <div class="col-md-12 m-5" style="width:95%">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex align-items-center">
@@ -68,6 +69,7 @@
                                                 value="{{ $currentDepartment }}" class="form-control" required>
                                         </div>
                                     </div>
+
                                 </div>
                                 <div class="modal-footer border-0">
                                     <button type="submit" class="btn btn-primary">Add</button>
@@ -212,11 +214,14 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
+
+    {{-- for one table with checkbox --}}
+    @livewire('qms-service')
+
 
     {{-- for table --}}
-
-    <div class="col-md-12 m-5" style="width:95%">
+    {{-- <div class="col-md-12 m-5" style="width:95%">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex align-items-center">
@@ -239,24 +244,13 @@
                                     <h5 class="modal-title">
                                         <span class="fw-mediumbold"> New</span> <span class="fw-light">Table</span>
                                     </h5>
-                                    <button type="button" class="close" data-bs-dismiss="modal"
-                                        aria-label="Close">
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div class="modal-body" style="margin-right:10px;">
                                     <p class="small">Create a new table.</p>
                                     <div class="row">
-                                        {{-- <div class="col-md-4 pe-0">
-                                            <div class="form-group form-group-default">
-                                                <label for="table_id">ID</label>
-                                                <input name="table_id" id="table_id" type="text"
-                                                    class="form-control" oninput="formatInput(this)">
-                                            </div>
-                                            @error('table_id')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div> --}}
                                         <div class="col-md-4 pe-0">
                                             <div class="form-group form-group-default">
                                                 <label for="table_window">Window</label>
@@ -282,16 +276,15 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="table_department">Department</label>
-                                            <input type="text" readonly name="table_department"
-                                                id="table_department" value="{{ $currentDepartment }}"
-                                                class="form-control" required>
+                                            <input type="text" readonly name="table_department" id="table_department"
+                                                value="{{ session('current_department_name') }}" class="form-control"
+                                                required>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer border-0">
                                     <button type="submit" class="btn btn-primary">Add</button>
-                                    <button type="button" class="btn btn-danger"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -333,8 +326,6 @@
                                                 <input name="edit_table_window" id="edit_table_window" type="text"
                                                     class="form-control" placeholder="Fill Name"
                                                     oninput="formatInput(this)">
-
-
                                             </div>
                                             @error('edit_table_window')
                                                 <div class="text-danger">{{ $message }}</div>
@@ -358,8 +349,9 @@
                                     <div class="form-group">
                                         <label for="edit_table_department">Department</label>
                                         <input type="text" readonly name="edit_table_department"
-                                            id="edit_table_department" value="{{ $currentDepartment }}"
-                                            class="form-control" required>
+                                            id="edit_table_department"
+                                            value="{{ session('current_department_name') }}" class="form-control"
+                                            required>
                                     </div>
 
 
@@ -457,9 +449,6 @@
         </div>
     </div>
 
-
-
-
     <script>
         // edit user
         function editUser(pId) {
@@ -516,6 +505,7 @@
             document.getElementById('deleteUserForm').action = `/personnel/${pId}`;
         }
     </script>
+
     @if (session('error'))
         <script>
             window.onload = function() {
@@ -564,6 +554,6 @@
         function deleteTable(pId) {
             document.getElementById('deleteTableForm').action = `/personnel/table/${pId}`;
         }
-    </script>
+    </script> --}}
 
 </x-layout>
