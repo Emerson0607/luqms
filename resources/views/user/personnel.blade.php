@@ -1,6 +1,14 @@
 <x-layout>
 
-    {{-- <div class="col-md-12 m-5" style="width:95%">
+    {{-- for one table with checkbox --}}
+    <div class="windowRefresh">
+        @livewire('qms-service')
+    </div>
+
+</x-layout>
+
+
+{{-- <div class="col-md-12 m-5" style="width:95%">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex align-items-center">
@@ -216,12 +224,8 @@
         </div>
     </div> --}}
 
-    {{-- for one table with checkbox --}}
-    @livewire('qms-service')
-
-
-    {{-- for table --}}
-    {{-- <div class="col-md-12 m-5" style="width:95%">
+{{-- for table --}}
+{{-- <div class="col-md-12 m-5" style="width:95%">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex align-items-center">
@@ -555,5 +559,3 @@
             document.getElementById('deleteTableForm').action = `/personnel/table/${pId}`;
         }
     </script> --}}
-
-</x-layout>

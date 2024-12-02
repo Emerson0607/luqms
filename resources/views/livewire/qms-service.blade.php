@@ -298,10 +298,21 @@
                                         <td>
                                             <div class="form-button-action">
                                                 <!-- Edit Button -->
-                                                <button type="button" data-bs-toggle="modal"
+                                                {{-- <button type="button" data-bs-toggle="modal"
                                                     data-bs-target="#editQueueModal"
                                                     class="btn btn-link btn-primary btn-lg"
                                                     onclick="editQueueWindow({{ $i->id }}, '{{ $i->w_name }}', {{ $i->dept_id }})">
+                                                    <i class="fa fa-edit"></i>
+                                                </button> --}}
+
+                                                {{-- <button type="button" data-bs-toggle="modal"
+                                                    data-bs-target="#editQueueModal"
+                                                    class="btn btn-link btn-primary btn-lg"
+                                                    onclick="refreshAndEditQueueWindow({{ $i->id }}, '{{ $i->w_name }}', {{ $i->dept_id }})">
+                                                    <i class="fa fa-edit"></i>
+                                                </button> --}}
+                                                <button type="button" class="btn btn-link btn-primary btn-lg"
+                                                    onclick="refreshAndEditQueueWindow({{ $i->id }}, '{{ $i->w_name }}', {{ $i->dept_id }})">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
 
@@ -341,6 +352,48 @@
         input.value = input.value.toUpperCase();
     }
 </script>
+
+<script>
+    function refreshAndEditQueueWindow(id, wName, deptId) {
+        // Store the required data in localStorage
+        localStorage.setItem('editQueueWindowData', JSON.stringify({
+            id,
+            wName,
+            deptId
+        }));
+
+        // Refresh the page
+        location.reload();
+    }
+
+    // Execute after page reload
+    document.addEventListener('DOMContentLoaded', () => {
+        const data = localStorage.getItem('editQueueWindowData');
+
+        if (data) {
+            // Parse the stored data
+            const {
+                id,
+                wName,
+                deptId
+            } = JSON.parse(data);
+
+            // Clear the data from localStorage
+            localStorage.removeItem('editQueueWindowData');
+
+            // Call your existing function to populate modal content
+            editQueueWindow(id, wName, deptId);
+
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('editQueueModal'));
+            modal.show();
+        }
+    });
+</script>
+
+
+
+
 
 {{-- CRUD --}}
 <script>

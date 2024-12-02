@@ -139,12 +139,9 @@ class PersonnelController extends Controller
             'editWName.unique' => 'The window name already exists. Please choose a different name.',
         ]);
     
-        // Debug to ensure form is submitting correctly
-        // dd($request->all());
-        // Fetch the Window record
+     
         $window = QmsWindow::findOrFail($pId); 
-        
-
+    
         $qmsServiceWindow = QmsService::where('w_name', $window->w_name)
                               ->where('dept_id', $window->dept_id);
 
@@ -190,6 +187,13 @@ class PersonnelController extends Controller
 
     public function destroy($pId){
         $window = QmsWindow::where('id', $pId)->first();
+
+        $qmsServiceWindow = QmsService::where('w_name', $window->w_name)
+                              ->where('dept_id', $window->dept_id);
+
+        if ($qmsServiceWindow->exists()) {
+            $qmsServiceWindow->delete();
+        }
 
         if ($window) {
             $window->delete();

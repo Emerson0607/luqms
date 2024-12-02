@@ -1,49 +1,61 @@
-{{-- <div class="d-flex align-items-center card queue-ongoing-card pb-2">
-    <div class="d-flex flex-column justify-content-center align-items-center queue-window">
-        <h5 id="client-status">Waiting...</h5>
-        <h1><span id="client-number">---</span></h1>
-
-        <!-- Display current department dynamically -->
-        <h6 class="current_department">
-            {{ session('current_department_name') }}
-            <p><span id="client-name">---</span></p>
-        </h6>
-    </div>
-    <div>
-        <button class="btn btn-primary btn-sm" id="fetch-oldest-client">Next</button>
-        <button class="btn btn-primary btn-sm" id="notify-button">Notify</button>
-        <button class="btn btn-primary btn-sm" id="wait-button">Wait</button>
-    </div>
-
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <form action="{{ route('generate.client') }}" method="POST">
-        @csrf
-        <button type="submit" class="btn btn-primary">Generate Client</button>
-    </form>
-</div> --}}
-
 <div class="d-flex align-items-center card queue-ongoing-card pb-2">
     <div wire:poll.1s="renderQueue" class="d-flex flex-column justify-content-center align-items-center queue-window">
 
         @if ($currentUserWindow)
-            <h5 id="client-status">{{ $currentUserWindow->status }}</h5>
-            <h1><span id="client-number">{{ $currentUserWindow->number }}</span></h1>
+            <h5 id="client-status">{{ $currentUserWindow->c_status }}</h5>
+            <h1><span id="client-number">{{ $currentUserWindow->c_number }}</span></h1>
             <h6 class="current_department">{{ session('current_department_name') }}</h6>
-            <p><span id="client-name">{{ $currentUserWindow->name }}</span></p>
+            <p><span id="client-name">{{ $currentUserWindow->c_name }}</span></p>
 
             <div>
                 <button wire:click="nextQueue" class="btn btn-primary btn-sm" id="fetch-oldest-client">Next</button>
                 <button class="btn btn-primary btn-sm" id="notify-button">Notify</button>
                 <button wire:click="waitQueue" class="btn btn-primary btn-sm" id="wait-button">Wait</button>
+
+                {{-- <div class="col-md-6 pe-0">
+                    <div class="form-group form-group-default">
+                        <label for="w_service">Services</label>
+                        <select id="w_service" class="form-control" name="w_service" required>
+                            <option value="" disabled selected>Select a service</option>
+                            @if ($services)
+                                @foreach ($services as $service)
+                                    <option value="{{ $service->service_id }}">
+                                        {{ $service->service_id }}
+                                    </option>
+                                @endforeach
+                            @else
+                                <p>No service available for your department.</p>
+                            @endif
+                        </select>
+                        @error('p_id')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div> --}}
+
+
+                <div class="form-group form-group-default">
+                    <label for="w_service">Services</label>
+                    <select id="w_service" class="form-control" name="w_service" wire:model="selectedService" required>
+                        <option value="" disabled selected>Select a service</option>
+                        @if ($services)
+                            @foreach ($services as $service)
+                                <option value="{{ $service->service_id }}">
+                                    {{ $service->service_id }}
+                                </option>
+                            @endforeach
+                        @else
+                            <p>No service available for your department.</p>
+                        @endif
+                    </select>
+
+                </div>
+
+
             </div>
         @else
             <h5 id="client-status">Create Window</h5>
-            <h1><span id="client-number">No Window</span></h1>
+            <h1 style="font-size: 64px; margin-top:2rem;"><span id="client-number">No Active Window</span></h1>
             <h6 class="current_department">assigned to current personnel </h6>
         @endif
     </div>
@@ -80,5 +92,21 @@
                 speechSynthesis.speak(speech);
             });
         }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Listen for the 'no-client-to-serve' event and show SweetAlert
+        window.addEventListener('no-client-to-serve', event => {
+            Swal.fire({
+                icon: 'info',
+                title: 'No Clients Available',
+                text: 'There are currently no clients to serve.',
+                confirmButtonText: 'OK'
+            });
+        });
+
+
     });
 </script>

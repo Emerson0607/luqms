@@ -3,12 +3,13 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Window;
+use App\Models\QmsWindow;
 use App\Models\WindowList;
 
 class CurrentDepartment extends Component
 {
     public $currentUserDepartment;
+    public $currentUserDepartmentId;
     public $currentDepartmentImage;
     public $allWindowQueue = [];
 
@@ -59,13 +60,12 @@ class CurrentDepartment extends Component
 
     public function fetchAllWindows()
     {
+        $currentDepartmentId = session('current_department_id');
         $currentDepartment = session('current_department_name');
 
-        $this->allWindowQueue = Window::where('qms_window.department', $currentDepartment)
-            ->join('qms_window_list', 'qms_window.w_id', '=', 'qms_window_list.w_id')
-            ->select('qms_window.*', 'qms_window_list.name as window_name')
-            ->get()
-            ->toArray();
+        $this->allWindowQueue = QmsWindow::where('dept_id', $currentDepartmentId)
+            ->where('w_status', 1)
+            ->get();
     }
 
     public function render()

@@ -171,8 +171,6 @@
             </div>
 
             <div class="container overflow-auto auto-refresh" style="height: 100%;">
-
-
                 {{ $slot }}
             </div>
 
@@ -209,7 +207,7 @@
 
                             // Reload the container content after successful department update
                             reloadContainer();
-                            // reloadDashboard();
+                            // windowRefresh();
 
                         })
                         .catch(error => {
