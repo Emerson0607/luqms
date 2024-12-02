@@ -152,6 +152,8 @@ class QueueingWindow extends Component
             $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
                 ->where('dept_id', $currentDepartmentId)
                 ->first();
+
+                $this->selectedService = null;
         }
 
       

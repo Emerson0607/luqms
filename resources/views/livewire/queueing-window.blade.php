@@ -20,15 +20,7 @@
                     <label for="w_service">Services</label>
                     <select id="w_service" class="form-control" name="w_service" wire:model="selectedService" required>
                         <option value="" disabled selected>Select a service</option>
-                        {{-- @if ($services)
-                            @foreach ($services as $service)
-                                <option value="{{ $service->service_id }}">
-                                    {{ $service->service_id }}
-                                </option>
-                            @endforeach
-                        @else
-                            <p>No service available for your department.</p>
-                        @endif --}}
+
                         @if ($services)
                             @foreach ($services as $service)
                                 <option value="{{ $service['service_id'] }}">

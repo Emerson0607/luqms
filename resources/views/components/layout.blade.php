@@ -206,8 +206,9 @@
                             });
 
                             // Reload the container content after successful department update
-                            reloadContainer();
+                            // reloadContainer();
                             // windowRefresh();
+                            location.reload();
 
                         })
                         .catch(error => {
