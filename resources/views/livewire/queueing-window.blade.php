@@ -11,34 +11,16 @@
                 <button wire:click="nextQueue" class="btn btn-primary btn-sm" id="fetch-oldest-client">Next</button>
                 <button class="btn btn-primary btn-sm" id="notify-button">Notify</button>
                 <button wire:click="waitQueue" class="btn btn-primary btn-sm" id="wait-button">Wait</button>
-
-                {{-- <div class="col-md-6 pe-0">
-                    <div class="form-group form-group-default">
-                        <label for="w_service">Services</label>
-                        <select id="w_service" class="form-control" name="w_service" required>
-                            <option value="" disabled selected>Select a service</option>
-                            @if ($services)
-                                @foreach ($services as $service)
-                                    <option value="{{ $service->service_id }}">
-                                        {{ $service->service_id }}
-                                    </option>
-                                @endforeach
-                            @else
-                                <p>No service available for your department.</p>
-                            @endif
-                        </select>
-                        @error('p_id')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div> --}}
-
-
+                {{-- <button wire:click="doneQueue" class="btn btn-primary btn-sm" id="wait-button">Done</button> --}}
+                <div>
+                    <button type="button" class="btn btn-primary btn-sm" id="done-button"
+                        onclick="confirmDoneQueue()">Done</button>
+                </div>
                 <div class="form-group form-group-default">
                     <label for="w_service">Services</label>
                     <select id="w_service" class="form-control" name="w_service" wire:model="selectedService" required>
                         <option value="" disabled selected>Select a service</option>
-                        @if ($services)
+                        {{-- @if ($services)
                             @foreach ($services as $service)
                                 <option value="{{ $service->service_id }}">
                                     {{ $service->service_id }}
@@ -46,7 +28,17 @@
                             @endforeach
                         @else
                             <p>No service available for your department.</p>
+                        @endif --}}
+                        @if ($services)
+                            @foreach ($services as $service)
+                                <option value="{{ $service['service_id'] }}">
+                                    {{ $service['service_name'] }}
+                                </option>
+                            @endforeach
+                        @else
+                            <p>No service available for your department.</p>
                         @endif
+
                     </select>
 
                 </div>
@@ -96,6 +88,22 @@
 </script>
 
 <script>
+    function confirmDoneQueue() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You are about to mark the current client as Done.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, proceed!',
+            cancelButtonText: 'No, cancel',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('doneQueue');
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // Listen for the 'no-client-to-serve' event and show SweetAlert
         window.addEventListener('no-client-to-serve', event => {
@@ -103,6 +111,22 @@
                 icon: 'info',
                 title: 'No Clients Available',
                 text: 'There are currently no clients to serve.',
+                confirmButtonText: 'OK'
+            });
+        });
+        window.addEventListener('done-next', event => {
+            Swal.fire({
+                icon: 'info',
+                title: 'You still have a client currently being served in the queue',
+                text: 'Please complete their process before proceeding.',
+                confirmButtonText: 'OK'
+            });
+        });
+        window.addEventListener('no-service-selected', event => {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Service Selected',
+                text: 'Please select a service before proceeding.',
                 confirmButtonText: 'OK'
             });
         });
