@@ -1,4 +1,4 @@
-<div wire:poll.1s="renderClient">
+<div class="mt-5" wire:poll.1s="renderClient">
     <p class="current_department">
         {{ session('current_department_name', 'No department selected') }}</p>
     <ol id="user-list">

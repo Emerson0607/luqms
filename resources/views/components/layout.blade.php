@@ -111,8 +111,9 @@
                                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
                                     aria-expanded="false">
                                     <div class="avatar-sm">
-                                        <img src="bootstrap-template/assets/img/emerson.jpg" alt="..."
-                                            class="avatar-img rounded-circle" />
+                                        {{-- <img src="bootstrap-template/assets/img/emerson.jpg" alt="..."
+                                            class="avatar-img rounded-circle" /> --}}
+                                        @livewire('current-department-image')
                                     </div>
                                     <span class="profile-username">
 
@@ -129,8 +130,11 @@
                                         <li>
                                             <div class="user-box">
                                                 <div class="avatar-lg">
-                                                    <img src="bootstrap-template/assets/img/emerson.jpg"
-                                                        alt="image profile" class="avatar-img rounded" />
+                                                    {{-- <img src="bootstrap-template/assets/img/emerson.jpg"
+                                                        alt="image profile" class="avatar-img rounded" /> --}}
+
+
+                                                    @livewire('current-department-image')
                                                 </div>
                                                 <div class="u-text">
 

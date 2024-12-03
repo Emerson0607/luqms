@@ -1,5 +1,5 @@
 <div class="d-flex align-items-center card queue-ongoing-card pb-2">
-    <div wire:poll.1s="renderQueue" class="d-flex flex-column justify-content-center align-items-center queue-window">
+    <div wire:poll.1s="renderQueue" class="d-flex flex-column justify-content-center align-items-center queue-window ">
 
         @if ($currentUserWindow)
             <h5 id="client-status">{{ $currentUserWindow->c_status }}</h5>
@@ -7,14 +7,34 @@
             <h6 class="current_department">{{ session('current_department_name') }}</h6>
             <p><span id="client-name">{{ $currentUserWindow->c_name }}</span></p>
 
-            <div>
-                <button wire:click="nextQueue" class="btn btn-primary btn-sm" id="fetch-oldest-client">Next</button>
-                <button class="btn btn-primary btn-sm" id="notify-button">Notify</button>
-                <button wire:click="waitQueue" class="btn btn-primary btn-sm" id="wait-button">Wait</button>
-                {{-- <button wire:click="doneQueue" class="btn btn-primary btn-sm" id="wait-button">Done</button> --}}
-                <div>
-                    <button type="button" class="btn btn-primary btn-sm" id="done-button"
-                        onclick="confirmDoneQueue()">Done</button>
+            <div class="d-flex justify-content-between flex-wrap">
+                {{-- <div class="flex-grow-1 mx-1">
+                    <button wire:click="nextQueue" class="btn btn-primary btn-sm w-100" id="fetch-oldest-client">
+                        Next
+                    </button>
+                </div> --}}
+
+                <div class="flex-grow-1 mx-1">
+                    <button id="fetch-oldest-client" class="btn btn-primary btn-sm w-100">
+                        Next
+                    </button>
+                </div>
+
+                <div class="flex-grow-1 mx-1">
+                    <button class="btn btn-primary btn-sm w-100" id="notify-button">
+                        Notify
+                    </button>
+                </div>
+                <div class="flex-grow-1 mx-1">
+                    <button wire:click="waitQueue" class="btn btn-primary btn-sm w-100" id="wait-button">
+                        Wait
+                    </button>
+                </div>
+                <div class="flex-grow-1 mx-1">
+                    <button type="button" class="btn btn-primary btn-sm w-100" id="done-button"
+                        onclick="confirmDoneQueue()">
+                        Done
+                    </button>
                 </div>
                 <div class="form-group form-group-default">
                     <label for="w_service">Services</label>
@@ -34,8 +54,6 @@
                     </select>
 
                 </div>
-
-
             </div>
         @else
             <h5 id="client-status">Create Window</h5>
@@ -76,6 +94,28 @@
                 speechSynthesis.speak(speech);
             });
         }
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Attach event listener to the "Next" button
+        document.getElementById('fetch-oldest-client').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to proceed with the next client?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, proceed!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If confirmed, trigger Livewire method nextQueue
+                    @this.call('nextQueue');
+                }
+            });
+        });
     });
 </script>
 

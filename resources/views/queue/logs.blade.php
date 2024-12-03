@@ -1,5 +1,4 @@
 <x-layout>
-
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
@@ -20,7 +19,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Cashier Transaction</h4>
+                            <h4 class="card-title"> {{ session('current_department_name') }} Transaction</h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">

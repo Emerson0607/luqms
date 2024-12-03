@@ -298,23 +298,18 @@
                                         <td>
                                             <div class="form-button-action">
                                                 <!-- Edit Button -->
-                                                {{-- <button type="button" data-bs-toggle="modal"
+                                                <button type="button" data-bs-toggle="modal"
                                                     data-bs-target="#editQueueModal"
                                                     class="btn btn-link btn-primary btn-lg"
                                                     onclick="editQueueWindow({{ $i->id }}, '{{ $i->w_name }}', {{ $i->dept_id }})">
                                                     <i class="fa fa-edit"></i>
-                                                </button> --}}
-
-                                                {{-- <button type="button" data-bs-toggle="modal"
-                                                    data-bs-target="#editQueueModal"
-                                                    class="btn btn-link btn-primary btn-lg"
-                                                    onclick="refreshAndEditQueueWindow({{ $i->id }}, '{{ $i->w_name }}', {{ $i->dept_id }})">
-                                                    <i class="fa fa-edit"></i>
-                                                </button> --}}
-                                                <button type="button" class="btn btn-link btn-primary btn-lg"
-                                                    onclick="refreshAndEditQueueWindow({{ $i->id }}, '{{ $i->w_name }}', {{ $i->dept_id }})">
-                                                    <i class="fa fa-edit"></i>
                                                 </button>
+
+
+                                                {{-- <button type="button" class="btn btn-link btn-primary btn-lg"
+                                                    onclick="refreshAndEditQueueWindow({{ $i->id }}, '{{ $i->w_name }}', {{ $i->dept_id }})">
+                                                    <i class="fa fa-edit"></i>
+                                                </button> --}}
 
 
                                                 <!-- Delete Button -->
@@ -353,7 +348,8 @@
     }
 </script>
 
-<script>
+{{-- For edit button populate --}}
+{{-- <script>
     function refreshAndEditQueueWindow(id, wName, deptId) {
         // Store the required data in localStorage
         localStorage.setItem('editQueueWindowData', JSON.stringify({
@@ -389,7 +385,7 @@
             modal.show();
         }
     });
-</script>
+</script> --}}
 
 
 

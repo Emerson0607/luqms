@@ -9,13 +9,13 @@ use App\Models\QmsWindow;
 use App\Models\QmsService;
 use App\Models\DmsService;
 use Illuminate\Support\Facades\Auth;
+use App\Models\QmsClientLogs;
 
 class QueueingWindow extends Component
 {
 
     public $currentUserDepartment;
     public $currentUserWindow;
-
 
     public $currentUserDepartmentId;
     public $services;
@@ -41,11 +41,7 @@ class QueueingWindow extends Component
             ->where('dept_id', $currentDepartmentId)
             ->first()
             : null;
-            
-        // if ($user_w_id) {
-        //     $this->services = QmsService::where('w_name', $user_w_id->w_name)
-        //     ->where('dept_id', $currentDepartmentId)->get();
-        // }
+       
         if ($user_w_id) {
             $this->services = QmsService::where('w_name', $user_w_id->w_name)
                 ->where('dept_id', $currentDepartmentId)
@@ -83,9 +79,7 @@ class QueueingWindow extends Component
         $client = Client::where('department', $currentDepartment)->oldest()->first();
 
         if ($client) {
-            if ($user_w_id->c_service === "No service selected") {
-                $this->dispatch("done-next");
-            } else {
+           
                 QmsWindow::updateOrCreate(
                     ['w_name' => $user_w_id->w_name, 'dept_id' => $currentDepartmentId, 'p_id' => $user_w_id->p_id, 'w_status' => $user_w_id->w_status],
                     ['c_name' => $client->name, 'c_number' => $client->number, 'c_status' => "Now Serving", 'c_service' => "No service selected" ]
@@ -97,9 +91,7 @@ class QueueingWindow extends Component
                  $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
                  ->where('dept_id', $currentDepartmentId)
                  ->first();
-            }
-
-
+              
         }else {
             // Dispatch event for no client available
             $this->dispatch('no-client-to-serve');
@@ -126,39 +118,51 @@ class QueueingWindow extends Component
 
          // Check if a service is selected
         if (!$this->selectedService) {
-            // Trigger the SweetAlert2 notification for no service selected
             $this->dispatch('no-service-selected');
             return;
         } else{
 
-            $window = QmsWindow::where('w_name', $user_w_id->w_name)
-                ->where('dept_id', $currentDepartmentId)
-                ->first();
+        $window = QmsWindow::where('w_name', $user_w_id->w_name)
+            ->where('dept_id', $currentDepartmentId)
+            ->first();
 
-            if ($window) {
-                $window->update([
-
-                    'c_name' => $user_w_id->c_name,
-                    'c_number' => $user_w_id->c_number,
-                    'c_status' => "Done",
-                    'c_service' => $this->selectedService,
-                ]);
-            }
-
-            // Delete the client data after storing it in the Window model
-            // $client->delete();
-
-            // Optionally re-fetch the window after updating
-            $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
-                ->where('dept_id', $currentDepartmentId)
-                ->first();
-
-                $this->selectedService = null;
+        if ($window) {
+            // Create a new log in QmsClientLogs
+            QmsClientLogs::create([
+                'c_name' => $window->c_name,
+                'c_number' => $window->c_number,
+                'c_service' =>$this->selectedService,
+                'dept_id' => $window->dept_id,
+                'p_id' => $window->p_id,
+                'date' => now(),
+            ]);
         }
 
-      
-    }
+        $client = Client::where('department', $currentDepartment)->oldest()->first();
 
+        if ($client) {
+            QmsWindow::updateOrCreate([
+                'w_name' => $user_w_id->w_name, 
+                'dept_id' => $currentDepartmentId, 
+                'p_id' => $user_w_id->p_id, 
+                'w_status' => $user_w_id->w_status],
+                ['c_name' => $client->name, 
+                'c_number' => $client->number, 
+                'c_status' => "Now Serving", 
+                'c_service' => "No service selected" ]);
+    
+                $client->delete();
+    
+                 // Optionally re-fetch the window after updating
+                 $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
+                 ->where('dept_id', $currentDepartmentId)
+                 ->first();
+        
+        }
+
+            $this->selectedService = null;
+        }
+    }
 
     public function waitQueue()
     {
