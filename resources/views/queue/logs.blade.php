@@ -1,5 +1,5 @@
 <x-layout>
-    <div class="container">
+    {{-- <div class="container">
         <div class="page-inner">
             <div class="page-header">
                 <h3 class="fw-bold mb-3">Logs</h3>
@@ -55,6 +55,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
+    @livewire('logs-table')
 </x-layout>
