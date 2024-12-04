@@ -66,6 +66,7 @@ class LogsTable extends Component
                     'dms_userdepts.lastname'
                 )
                 ->where('qms_client_logs.dept_id', $this->currentUserDepartmentId)
+                // distinct but didnt unique
                 ->distinct()
                 ->orderBy('qms_client_logs.id', 'desc')
                 ->get();

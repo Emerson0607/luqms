@@ -8,12 +8,6 @@
             <p><span id="client-name">{{ $currentUserWindow->c_name }}</span></p>
 
             <div class="d-flex justify-content-between flex-wrap">
-                {{-- <div class="flex-grow-1 mx-1">
-                    <button wire:click="nextQueue" class="btn btn-primary btn-sm w-100" id="fetch-oldest-client">
-                        Next
-                    </button>
-                </div> --}}
-
                 <div class="flex-grow-1 mx-1">
                     <button id="fetch-oldest-client" class="btn btn-primary btn-sm w-100">
                         Next
@@ -39,7 +33,7 @@
                 <div class="form-group form-group-default">
                     <label for="w_service">Services</label>
                     <select id="w_service" class="form-control" name="w_service" wire:model="selectedService" required>
-                        <option value="" disabled selected>Select a service</option>
+                        <option value="" selected>Select a service</option>
 
                         @if ($services)
                             @foreach ($services as $service)

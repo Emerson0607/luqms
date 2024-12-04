@@ -4,7 +4,10 @@
             <h3 class="fw-bold mb-3">Logs</h3>
             <ul class="breadcrumbs mb-3">
                 <li class="nav-item">
-                    <button class="btn btn-link {{ $currentTab === 'personnel' ? 'active' : '' }}"
+
+
+                    <button style="text-decoration: none; color:rgb(42, 47, 91);"
+                        class="btn btn-link {{ $currentTab === 'personnel' ? 'active' : '' }}"
                         wire:click="switchTab('personnel')">
                         Personnel
                     </button>
@@ -13,7 +16,8 @@
                     <i class="icon-arrow-right"></i>
                 </li>
                 <li class="nav-item">
-                    <button class="btn btn-link {{ $currentTab === 'client' ? 'active' : '' }}"
+                    <button style="text-decoration: none; color:rgb(42, 47, 91)"
+                        class="btn btn-link {{ $currentTab === 'client' ? 'active' : '' }}"
                         wire:click="switchTab('client')">
                         Client
                     </button>
@@ -43,6 +47,7 @@
                                             <th>Service</th>
 
                                             <th>Processed By</th>
+                                            <th>Date</th>
                                         @endif
                                     </tr>
                                 </thead>
@@ -63,6 +68,7 @@
 
 
                                                 <td>{{ $log->firstname }} {{ $log->lastname }}</td>
+                                                <td>{{ $log->date }}</td>
                                             @endif
                                         </tr>
                                     @empty
