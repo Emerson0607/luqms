@@ -89,6 +89,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {{-- for notify button --}}
 <script>
+    // notify
     document.addEventListener('DOMContentLoaded', function() {
         const notifyButton = document.getElementById('notify-button');
         if (notifyButton) {
@@ -136,6 +137,8 @@
                 }
             });
         });
+
+
     });
 </script>
 
@@ -179,6 +182,15 @@
                 icon: 'warning',
                 title: 'No Service Selected',
                 text: 'Please select a service before proceeding.',
+                confirmButtonText: 'OK'
+            });
+        });
+
+        window.addEventListener('done-no-client-selected', event => {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No client Selected',
+                text: 'Please select a client before proceeding.',
                 confirmButtonText: 'OK'
             });
         });

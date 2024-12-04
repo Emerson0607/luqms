@@ -148,9 +148,17 @@ class QueueingWindow extends Component
             return;
         } else{
 
+        
+
         $window = QmsWindow::where('w_name', $user_w_id->w_name)
             ->where('dept_id', $currentDepartmentId)
             ->first();
+        
+            if (!$window || $window->studentNo === '---') {
+              
+                $this->dispatch('done-no-client-selected');
+                return;
+            }
 
         if ($window) {
             // Create a new log in QmsClientLogs
