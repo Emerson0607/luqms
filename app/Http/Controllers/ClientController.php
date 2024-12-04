@@ -1,14 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Client;
-use App\Models\Window;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Models\Department;
-use Illuminate\Validation\Rules\Password;
-use Illuminate\Support\Facades\Hash;
 
 class ClientController extends Controller
 {
@@ -54,11 +47,7 @@ class ClientController extends Controller
 
     public function logs()
     {
-       
-        $currentDepartment =  $this->currentDepartment;
-        $currentDepartmentId =  $this->currentDepartmentId;
-        $logs = \App\Models\Logs::where('dept_id', $currentDepartmentId)->get();
-        return view('queue.logs',compact('logs'));
+        return view('queue.logs');
     }
 
 }
