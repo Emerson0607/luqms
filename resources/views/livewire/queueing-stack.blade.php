@@ -1,15 +1,25 @@
-<div class="mt-5" wire:poll.1s="renderClient">
-    <p class="current_department">
-        {{ session('current_department_name', 'No department selected') }}</p>
-    <ol id="user-list">
+<div class="mt-5 container my-4" wire:poll.1s="renderClient">
+
+    <p class="current_department h5 text-primary">
+        {{ session('current_department_name', 'No department selected') }}
+    </p>
+
+    <ol id="user-list" class="list-group mt-3">
         @if (!empty($clients))
             @foreach ($clients as $client)
-                <li>name: {{ $client->name }}, number: {{ $client->number }}</li>
+                <li class="list-group-item">
+                    <strong>Name:</strong> {{ $client->gName }} {{ $client->sName }}
+                    <br>
+                    <strong>Student No.:</strong> {{ $client->studentNo }}
+                </li>
             @endforeach
         @else
-            <li>No personnel found for the selected department.</li>
+            <li class="list-group-item text-danger text-center">
+                No personnel found for the selected department.
+            </li>
         @endif
     </ol>
+
 
 </div>
 <script>

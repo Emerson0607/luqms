@@ -3,12 +3,13 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Client;
+use App\Models\QmsClients;
 
 class QueueingStack extends Component
 {
 
     public $currentUserDepartment;
+    public $currentUserDepartmentId;
     public $clients = [];
 
     public function mount()
@@ -19,7 +20,12 @@ class QueueingStack extends Component
     public function renderClient()
     {
         $this->currentUserDepartment = session('current_department_name');
-        $this->clients = Client::where('department', $this->currentUserDepartment)
+        $this->currentUserDepartmentId = session('current_department_id');
+        // $this->clients = Client::where('department', $this->currentUserDepartment)
+        // ->take(10)
+        // ->get();
+
+        $this->clients = QmsClients::where('dept_id', $this->currentUserDepartmentId)
         ->take(10)
         ->get();
         

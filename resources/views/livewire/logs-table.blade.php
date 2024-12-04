@@ -45,7 +45,6 @@
                                             <th>Client Name</th>
                                             <th>Client Number</th>
                                             <th>Service</th>
-
                                             <th>Processed By</th>
                                             <th>Date</th>
                                         @endif
@@ -60,15 +59,15 @@
                                                 <td>{{ \Carbon\Carbon::parse($log->time_in)->format('h:i A') }}</td>
                                                 <td>{{ $log->time_out ? \Carbon\Carbon::parse($log->time_out)->format('h:i A') : 'Still logged in' }}
                                                 </td>
-                                                <td>{{ $log->date }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($log->date)->format('Y-m-d') }}</td>
                                             @else
-                                                <td>{{ $log->c_name }}</td>
-                                                <td>{{ $log->c_number }}</td>
+                                                <td>{{ $log->gName }} {{ $log->sName }}</td>
+                                                <td>{{ $log->studentNo }}</td>
                                                 <td>{{ $log->c_service_name }}</td>
 
 
                                                 <td>{{ $log->firstname }} {{ $log->lastname }}</td>
-                                                <td>{{ $log->date }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($log->date)->format('Y-m-d') }}</td>
                                             @endif
                                         </tr>
                                     @empty

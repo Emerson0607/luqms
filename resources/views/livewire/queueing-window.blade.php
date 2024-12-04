@@ -1,11 +1,19 @@
-<div class="d-flex align-items-center card queue-ongoing-card pb-2">
+<div style="margin-bottom: 20rem" class="d-flex align-items-center card queue-ongoing-card pb-2">
     <div wire:poll.1s="renderQueue" class="d-flex flex-column justify-content-center align-items-center queue-window ">
 
         @if ($currentUserWindow)
             <h5 id="client-status">{{ $currentUserWindow->c_status }}</h5>
-            <h1><span id="client-number">{{ $currentUserWindow->c_number }}</span></h1>
+            <h1><span id="client-number">{{ $currentUserWindow->studentNo }}</span></h1>
             <h6 class="current_department">{{ session('current_department_name') }}</h6>
-            <p><span id="client-name">{{ $currentUserWindow->c_name }}</span></p>
+            <p>
+                <span id="client-name">
+                    @if ($currentUserWindow->gName === 'Guest')
+                        {{ $currentUserWindow->gName }}
+                    @else
+                        {{ $currentUserWindow->gName }} {{ $currentUserWindow->sName }}
+                    @endif
+                </span>
+            </p>
 
             <div class="d-flex justify-content-between flex-wrap">
                 <div class="flex-grow-1 mx-1">
@@ -56,9 +64,27 @@
         @endif
     </div>
 
+
+    <div>
+        <!-- Display success message -->
+        @if (session()->has('message'))
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
+        @endif
+
+        <!-- Student Number Input -->
+        <input type="text" wire:model="studentNo" wire:keydown.enter="pushClient" id="studentNo"
+            placeholder="Enter Student Number" class="form-control">
+
+    </div>
+
+
     <button wire:click="generateClient" type="submit" class="btn btn-primary">Generate Client</button>
 
 </div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {{-- for notify button --}}

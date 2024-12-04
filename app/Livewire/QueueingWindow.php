@@ -11,6 +11,9 @@ use App\Models\DmsService;
 use Illuminate\Support\Facades\Auth;
 use App\Models\QmsClientLogs;
 
+use App\Models\Students;  
+use App\Models\QmsClients; 
+
 class QueueingWindow extends Component
 {
 
@@ -20,6 +23,13 @@ class QueueingWindow extends Component
     public $currentUserDepartmentId;
     public $services;
     public $selectedService;
+
+
+    // for push client
+    public $studentNo;
+    public $gName;
+    public $sName;
+    public $dept_id;
     
     public function mount(){
         $this->renderQueue();
@@ -76,13 +86,29 @@ class QueueingWindow extends Component
             return;
         }
 
-        $client = Client::where('department', $currentDepartment)->oldest()->first();
+        // $client = Client::where('department', $currentDepartment)->oldest()->first();
+
+        $client = QmsClients::where('dept_id', $currentDepartmentId)->oldest()->first();
 
         if ($client) {
            
-                QmsWindow::updateOrCreate(
-                    ['w_name' => $user_w_id->w_name, 'dept_id' => $currentDepartmentId, 'p_id' => $user_w_id->p_id, 'w_status' => $user_w_id->w_status],
-                    ['c_name' => $client->name, 'c_number' => $client->number, 'c_status' => "Now Serving", 'c_service' => "No service selected" ]
+                // QmsWindow::updateOrCreate(
+                //     ['w_name' => $user_w_id->w_name, 'dept_id' => $currentDepartmentId, 'p_id' => $user_w_id->p_id, 'w_status' => $user_w_id->w_status],
+                //     ['c_name' => $client->name, 'c_number' => $client->number, 'c_status' => "Now Serving", 'c_service' => "No service selected" ]
+                // );
+
+                QmsWindow::updateOrCreate([
+                    'w_name' => $user_w_id->w_name, 
+                    'dept_id' => $currentDepartmentId, 
+                    'p_id' => $user_w_id->p_id, 
+                    'w_status' => $user_w_id->w_status ],
+                    
+                    [
+                    'gName' => $client->gName, 
+                    'sName' => $client->sName, 
+                    'studentNo' => $client->studentNo, 
+                    'c_status' => "Now Serving", 
+                    'c_service' => "No service selected" ]
                 );
     
                 $client->delete();
@@ -129,8 +155,9 @@ class QueueingWindow extends Component
         if ($window) {
             // Create a new log in QmsClientLogs
             QmsClientLogs::create([
-                'c_name' => $window->c_name,
-                'c_number' => $window->c_number,
+                'gName' => $window->gName,
+                'sName' => $window->sName,
+                'studentNo' => $window->studentNo,
                 'c_service' =>$this->selectedService,
                 'dept_id' => $window->dept_id,
                 'p_id' => $window->p_id,
@@ -138,16 +165,20 @@ class QueueingWindow extends Component
             ]);
         }
 
-        $client = Client::where('department', $currentDepartment)->oldest()->first();
+        // $client = Client::where('department', $currentDepartment)->oldest()->first();
 
+        $client = QmsClients::where('dept_id', $currentDepartmentId)->oldest()->first();
         if ($client) {
             QmsWindow::updateOrCreate([
                 'w_name' => $user_w_id->w_name, 
                 'dept_id' => $currentDepartmentId, 
                 'p_id' => $user_w_id->p_id, 
                 'w_status' => $user_w_id->w_status],
-                ['c_name' => $client->name, 
-                'c_number' => $client->number, 
+                
+                [
+                'gName' => $client->gName, 
+                'sName' => $client->sName, 
+                'studentNo' => $client->studentNo, 
                 'c_status' => "Now Serving", 
                 'c_service' => "No service selected" ]);
     
@@ -177,9 +208,17 @@ class QueueingWindow extends Component
             ->first();
 
         if ($user_w_id) {
-            QmsWindow::updateOrCreate(
-                ['w_name' => $user_w_id->w_name, 'dept_id' => $currentDepartmentId, 'p_id' => $user_w_id->p_id, 'w_status' => $user_w_id->w_status],
-                ['c_name' => "---", 'c_number' => "---", 'c_status' => "Waiting...", 'c_service' => "ID and Reg." ]
+            QmsWindow::updateOrCreate([
+                'w_name' => $user_w_id->w_name, 
+                'dept_id' => $currentDepartmentId, 
+                'p_id' => $user_w_id->p_id, 
+                'w_status' => $user_w_id->w_status
+            ],[
+                'gName' => "---", 
+                'sName' => "---", 
+                'studentNo' => "---", 
+                'c_status' => "Waiting...", 
+                'c_service' => "ID and Reg." ]
             );
 
             // Optionally re-fetch the window after updating
@@ -190,9 +229,49 @@ class QueueingWindow extends Component
         }
     }
 
+    // for push clients
+    public function pushClient()
+    {
+
+        $this->currentUserDepartment = session('current_department_name');
+        $this->currentUserDepartmentId = session('current_department_id');
+        $currentDepartment = $this->currentUserDepartment;
+        $currentDepartmentId = $this->currentUserDepartmentId;
+        
+        // Validate the input
+        // $this->validate();
+    
+        $student = Students::where('studentNo', $this->studentNo)->first();
+    
+        if ($student) {
+            QmsClients::create([
+                'studentNo' => $this->studentNo,
+                'gName' => $student->GName,
+                'sName' => $student->Sname,
+                'dept_id' => $currentDepartmentId,   
+            ]);
+    
+            session()->flash('message', 'Client successfully pushed!');
+
+        } else {
+    
+            QmsClients::create([
+                'studentNo' => $this->studentNo,
+                'gName' => 'Guest', 
+                'sName' => 'Guest',
+                'dept_id' => $currentDepartmentId, 
+            ]);
+    
+            session()->flash('message', 'Guest successfully pushed!');
+        }
+    
+        // Optionally reset the fields after submission
+        $this->reset('studentNo', 'gName', 'sName', 'dept_id');
+    }
+    
     public function generateClient()
     {
-        Client::factory(10)->create();
+        QmsClients::factory(30)->create();
     }
 
     public function render()

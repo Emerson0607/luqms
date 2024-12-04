@@ -16,10 +16,10 @@
                 @endguest
 
                 <div class="row">
-                    <div class="col-8 col-md-8">
+                    <div class="col-md-8">
                         @livewire('queueing-window')
                     </div>
-                    <div class="col-4 col-md-8">
+                    <div class="col-md-4">
                         @livewire('queueing-stack')
                     </div>
                 </div>

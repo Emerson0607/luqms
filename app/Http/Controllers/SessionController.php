@@ -47,7 +47,7 @@ class SessionController extends Controller{
 
             // Check for an existing active log for this user and department
             $existingLog = Logs::where('p_id', $user->p_id)
-                ->where('department', $department->name)  // Check for the department-specific log
+                ->where('dept_id', $department->id)  // Check for the department-specific log
                 ->whereNull('time_out')
                 ->first();
 
@@ -57,7 +57,7 @@ class SessionController extends Controller{
                     'p_id' => $user->p_id,
                     'p_fname' => $user->p_fname,
                     'p_lname' => $user->p_lname,
-                    'department' => $department->name,  // Store the department name
+                    'dept_id' => $department->id,  // Store the department name
                     'time_in' => now(),
                     'time_out' => null,
                     'date' => now()->toDateString(),

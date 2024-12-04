@@ -16,26 +16,6 @@
                         <p style="font-size: 18px; color: gray;">No window available</p>
                     </div>
                 @else
-                    {{-- @foreach ($allWindowQueue as $window)
-                        <div class="col-md-4 mb-3">
-                            <div class="d-flex align-items-center card queue-ongoing-card pb-2">
-                                <p class="text-start w-100">
-                                    <span class="window-name"
-                                        style="font-size: 12px;">{{ $window['window_name'] ?? '---' }}</span>
-                                </p>
-                                <div
-                                    class="d-flex flex-column justify-content-center align-items-center queue-window text-center">
-                                    <h5 style="font-size: 24px;">{{ $window['status'] ?? 'Waiting...' }}</h5>
-                                    <h1 style="font-size: 48px;">
-                                        <span class="window-number">{{ $window['number'] ?? '---' }}</span>
-                                    </h1>
-                                    <h1 style="font-size: 24px;">
-                                        <span class="window-number">{{ $window['name'] ?? '---' }}</span>
-                                    </h1>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach --}}
                     @forelse ($allWindowQueue as $window)
                         <div class="col-md-4 mb-3">
                             <div class="d-flex align-items-center card queue-ongoing-card pb-2">
@@ -47,10 +27,13 @@
                                     class="d-flex flex-column justify-content-center align-items-center queue-window text-center">
                                     <h5 style="font-size: 24px;">{{ $window['c_status'] ?? 'Waiting...' }}</h5>
                                     <h1 style="font-size: 48px;">
-                                        <span class="window-number">{{ $window['c_number'] ?? '---' }}</span>
+                                        <span class="window-number">{{ $window['studentNo'] ?? '---' }}</span>
                                     </h1>
                                     <h1 style="font-size: 24px;">
-                                        <span class="window-number">{{ $window['c_name'] ?? '---' }}</span>
+                                        <span class="window-number">
+                                            {{ $window['gName'] === 'Guest' ? $window['gName'] : $window['gName'] . ' ' . ($window['sName'] ?? '---') }}
+
+                                        </span>
                                     </h1>
                                 </div>
                             </div>

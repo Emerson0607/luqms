@@ -56,7 +56,8 @@ class ClientController extends Controller
     {
        
         $currentDepartment =  $this->currentDepartment;
-        $logs = \App\Models\Logs::where('department', $currentDepartment)->get();
+        $currentDepartmentId =  $this->currentDepartmentId;
+        $logs = \App\Models\Logs::where('dept_id', $currentDepartmentId)->get();
         return view('queue.logs',compact('logs'));
     }
 
