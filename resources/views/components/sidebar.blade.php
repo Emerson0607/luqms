@@ -49,7 +49,7 @@
 
                   <li class="nav-item {{ request()->is('window') ? 'active' : '' }}">
                       <a href="/window" target="_blank">
-                          <i class="fas fa-layer-group"></i>
+                          <i class="fas fa-th-list"></i>
                           <p>Window</p>
                       </a>
                   </li>
@@ -64,13 +64,13 @@
                       @if ($isDeptHead)
                           <li class="nav-item {{ request()->is('personnel') ? 'active' : '' }}">
                               <a href="/personnel">
-                                  <i class="fas fa-layer-group"></i>
+                                  <i class="fas fa-users"></i>
                                   <p>Personnel</p>
                               </a>
                           </li>
                           <li class="nav-item {{ request()->is('logs') ? 'active' : '' }}">
                               <a href="/logs">
-                                  <i class="fas fa-layer-group"></i>
+                                  <i class="fas fa-file"></i>
                                   <p>Logs</p>
                               </a>
                           </li>
