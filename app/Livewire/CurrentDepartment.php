@@ -5,6 +5,9 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\QmsWindow;
 use App\Models\WindowList;
+use App\Models\QmsClients;
+use Illuminate\Support\Facades\Auth;
+
 
 class CurrentDepartment extends Component
 {
@@ -12,6 +15,7 @@ class CurrentDepartment extends Component
     public $currentUserDepartmentId;
     public $currentDepartmentImage;
     public $allWindowQueue = [];
+    public $clients = [];
 
     public function mount()
     {
@@ -23,6 +27,9 @@ class CurrentDepartment extends Component
     {
         $this->currentUserDepartment = session('current_department_name');
         $this->currentDepartmentImage = $this->getDepartmentImage($this->currentUserDepartment);
+
+        $this->fetchAllWindows();
+    
     }
 
     private function getDepartmentImage($departmentName)
@@ -63,9 +70,18 @@ class CurrentDepartment extends Component
         $currentDepartmentId = session('current_department_id');
         $currentDepartment = session('current_department_name');
 
+        // Retrieve all windows for the department
         $this->allWindowQueue = QmsWindow::where('dept_id', $currentDepartmentId)
-            ->where('w_status', 1)
-            ->get();
+        ->where('w_status', 1)
+        ->get();
+
+        // For each window, fetch clients associated with that window
+        foreach ($this->allWindowQueue as $window) {
+            $window->clients = QmsClients::where('dept_id', $currentDepartmentId)
+                ->where('w_name', $window->w_name)
+                ->get();
+        }
+
     }
 
     public function render()

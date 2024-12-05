@@ -92,7 +92,7 @@ class PersonnelController extends Controller
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('qms_windows', 'w_name')->ignore($pId),
+                Rule::unique('qms_windows', 'w_name')->ignore($pId)->where('dept_id', $request->input('editDeptId')),
             ],
             'editDeptId' => ['required'],
             'editPersonnel' => 'required|string|max:255',
@@ -100,20 +100,17 @@ class PersonnelController extends Controller
             'editService' => ['array'],
             'editService.*' => ['exists:dms_service,service_id'],
         ], [
-            // Custom error message for w_name uniqueness
             'editWName.unique' => 'The window name already exists. Please choose a different name.',
         ]);
     
-     
         $window = QmsWindow::findOrFail($pId); 
     
         $qmsServiceWindow = QmsService::where('w_name', $window->w_name)
-                              ->where('dept_id', $window->dept_id);
+            ->where('dept_id', $window->dept_id);
 
         if ($qmsServiceWindow->exists()) {
             $qmsServiceWindow->delete();
         }
-
 
         // Save new services
         if ($request->editService) {

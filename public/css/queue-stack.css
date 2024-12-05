@@ -1,17 +1,33 @@
-.queue-stack-card {
-    width: 365px;
-    max-height: 550px;
-    height: 550px;
+.allWindowList {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.allWindowList.two-columns {
+    grid-template-columns: repeat(2, 1fr);
+
+}
+
+.allWindowList .list-group-item {
+    font-size: 14px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.allWindowList .list-group-item span {
+    font-size: 7px;
+    display: block;
+    text-align: left;
 }
 
 .queue-ongoing-card {
     width: 100%;
-    height: 400px;
+    height: 550px;
     padding: 24px;
-}
-
-.queue-ongoing-card .queue-window {
-    margin-bottom: 48px;
 }
 
 .queue-ongoing-card .queue-window h5,
@@ -40,7 +56,13 @@
     background-color: rgb(237, 212, 166);
 }
 
-
+/* Switch to two columns if more than five items */
+@media (min-height: 150px) and (min-width: 600px) {
+    .allWindowList .list-group {
+        grid-template-columns: repeat(2, 1fr);
+        /* Two columns */
+    }
+}
 
 @media (max-width: 480px) {
     .queue-stack-card {

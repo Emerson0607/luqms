@@ -4,18 +4,17 @@
         {{ session('current_department_name', 'No department selected') }}
     </p>
 
-    <ol id="user-list" class="list-group mt-3">
-        @if (!empty($clients))
+    <ol id="user-list" class="list-group mt-3 allWindowList">
+        @if ($clients->isNotEmpty())
             @foreach ($clients as $client)
-                <li class="list-group-item">
-                    <strong>Name:</strong> {{ $client->gName }} {{ $client->sName }}
-                    <br>
-                    <strong>Student No.:</strong> {{ $client->studentNo }}
+                <li class="list-group-item {{ $loop->first ? 'active' : '' }}">
+                    <h5 style="font-size: 14px">{{ $client->studentNo }} - </h5>
+                    {{ $client->gName }} {{ $client->sName }}
                 </li>
             @endforeach
         @else
             <li class="list-group-item text-danger text-center">
-                No personnel found for the selected department.
+                No clients in queue.
             </li>
         @endif
     </ol>

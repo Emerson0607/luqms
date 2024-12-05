@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\QmsClients;
+use App\Models\QmsWindow;
+use Illuminate\Support\Facades\Auth;
 
 class QueueingStack extends Component
 {
@@ -21,18 +23,21 @@ class QueueingStack extends Component
     {
         $this->currentUserDepartment = session('current_department_name');
         $this->currentUserDepartmentId = session('current_department_id');
-        // $this->clients = Client::where('department', $this->currentUserDepartment)
-        // ->take(10)
-        // ->get();
-
-        $this->clients = QmsClients::where('dept_id', $this->currentUserDepartmentId)
-        ->take(10)
-        ->get();
         
-        // Dispatch log event to log client data in the browser console
+        $user = Auth::user();
+
+        $userWindow = QmsWindow::where('p_id', $user->p_id)
+            ->where('dept_id', $this->currentUserDepartmentId)
+            ->first();
+ 
+        $this->clients = QmsClients::where('dept_id', $this->currentUserDepartmentId)
+            ->where('w_name', $userWindow->w_name )
+            ->take(10)
+            ->get();
+        
         $this->dispatch('log', [
-            'obj' => $this->clients,   // Log the clients data
-            'level' => 'info'          // You can use 'info', 'warn', 'debug', etc.
+            'obj' => $this->clients,   
+            'level' => 'info'      
         ]);
     }
 

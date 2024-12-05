@@ -39,15 +39,17 @@ class LogsTable extends Component
             return QmsClientLogs::query()
                 ->join('dms_service', 'qms_client_logs.c_service', '=', 'dms_service.service_id')
                 ->join('dms_userdepts', 'qms_client_logs.p_id', '=', 'dms_userdepts.p_id') 
-                ->select(
-                    'qms_client_logs.*', 
-                    'dms_service.service_name as c_service_name',
-                    'dms_userdepts.firstname',
-                    'dms_userdepts.lastname'
-                )
+                
+                // ->select(
+                //     'qms_client_logs.*', 
+                //     'dms_service.service_name as c_service_name',
+                //     'dms_userdepts.firstname',
+                //     'dms_userdepts.lastname'
+                // )
+                
+                ->selectRaw('DISTINCT qms_client_logs.id, qms_client_logs.*, dms_service.service_name as c_service_name, dms_userdepts.firstname, dms_userdepts.lastname')
                 ->where('qms_client_logs.dept_id', $this->currentUserDepartmentId)
-                // distinct but didnt unique
-                ->distinct()
+            
                 ->orderBy('qms_client_logs.id', 'desc')
                 ->get();
         }

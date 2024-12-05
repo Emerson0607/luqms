@@ -18,18 +18,16 @@ class QueueingWindow extends Component
 {
 
     public $currentUserDepartment;
-    public $currentUserWindow;
-
     public $currentUserDepartmentId;
-    public $services;
+    public $currentUserWindow;
     public $selectedService;
-
+    public $services;
 
     // for push client
     public $studentNo;
+    public $dept_id;
     public $gName;
     public $sName;
-    public $dept_id;
     
     public function mount(){
         $this->renderQueue();
@@ -148,8 +146,6 @@ class QueueingWindow extends Component
             return;
         } else{
 
-        
-
         $window = QmsWindow::where('w_name', $user_w_id->w_name)
             ->where('dept_id', $currentDepartmentId)
             ->first();
@@ -173,7 +169,7 @@ class QueueingWindow extends Component
             ]);
         }
 
-        // $client = Client::where('department', $currentDepartment)->oldest()->first();
+
 
         $client = QmsClients::where('dept_id', $currentDepartmentId)->oldest()->first();
         if ($client) {
@@ -198,6 +194,30 @@ class QueueingWindow extends Component
                  ->first();
         
         }
+
+
+         // if no client in window 
+         $clientCount = QmsClients::where('dept_id', $currentDepartmentId)->count();
+         if ($clientCount <= 0) {
+             QmsWindow::updateOrCreate([
+                 'w_name' => $user_w_id->w_name, 
+                 'dept_id' => $currentDepartmentId, 
+                 'p_id' => $user_w_id->p_id, 
+                 'w_status' => $user_w_id->w_status],
+                 
+                 [
+                 'gName' => "---", 
+                 'sName' => "---", 
+                 'studentNo' =>"---", 
+                 'c_status' => "Waiting...", 
+                 'c_service' => "No service selected" ]);
+     
+                  // Optionally re-fetch the window after updating
+                  $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
+                  ->where('dept_id', $currentDepartmentId)
+                  ->first();
+         
+         }
 
             $this->selectedService = null;
         }
@@ -279,7 +299,7 @@ class QueueingWindow extends Component
     
     public function generateClient()
     {
-        QmsClients::factory(30)->create();
+        QmsClients::factory(10)->create();
     }
 
     public function render()
