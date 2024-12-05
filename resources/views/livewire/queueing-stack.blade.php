@@ -1,4 +1,4 @@
-<div class="mt-5 container my-4" wire:poll.1s="renderClient">
+<div class="container" wire:poll.1s="renderClient">
 
     <p class="current_department h5 text-primary">
         {{ session('current_department_name', 'No department selected') }}
@@ -18,7 +18,6 @@
             </li>
         @endif
     </ol>
-
 
 </div>
 <script>

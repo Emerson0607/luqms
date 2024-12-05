@@ -10,9 +10,9 @@
                 setTimeout(function() {
                     const errorMessage = document.getElementById('error-message');
                     if (errorMessage) {
-                        errorMessage.style.display = 'none'; // Hide the error message
+                        errorMessage.style.display = 'none';
                     }
-                }, 3000); // 3000 milliseconds = 3 seconds
+                }, 3000);
             </script>
         @endif
 
@@ -51,20 +51,6 @@
                                         <div class="col-md-6 pe-0">
                                             <div class="form-group form-group-default">
                                                 <label for="w_id">Window</label>
-                                                {{-- <select id="w_id" class="form-control" name="w_id" required>
-                                                    <option value="" disabled selected>Select a Window</option>
-                                                    @if ($inactiveWindows)
-                                                        @foreach ($inactiveWindows as $inactiveWindow)
-                                                            <option value="{{ $inactiveWindow->w_id }}">
-                                                                {{ $inactiveWindow->w_name }}
-                                                            </option>
-                                                            <input style="display: none;" type="text" name="w_name"
-                                                                id="w_name" value="{{ $inactiveWindow->w_name }}">
-                                                        @endforeach
-                                                    @else
-                                                        <p>No window available for your department.</p>
-                                                    @endif
-                                                </select> --}}
 
                                                 <input style="border:0;" type="text" name="w_name" id="w_name"
                                                     oninput="formatInput(this)">

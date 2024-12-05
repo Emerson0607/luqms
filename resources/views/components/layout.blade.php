@@ -9,9 +9,6 @@
     <link rel="icon" href="bootstrap-template/assets/img/emerson.ico" type="image/x-icon" />
     <x-header-bootstrap-import />
     @livewireStyles
-
-
-
 </head>
 
 <body class="overflow-hidden " style="height: 100%;">
@@ -26,7 +23,6 @@
                     <div class="logo-header" data-background-color="dark">
                         <a href="index.html" class="logo">
                             LU-QMS
-
                         </a>
 
                         <div class="nav-toggle">
@@ -52,21 +48,16 @@
 
                                 {{-- for user department --}}
                                 @php
-                                    // Retrieve the department IDs from the session (assumed to be an array of department IDs)
                                     $userDepartments = session('user_department', []);
-
-                                    // Fetch the department details from the database based on user departments
                                     $departments = \App\Models\DmsDepartment::whereIn('id', $userDepartments)
                                         ->orderBy('name', 'asc')
                                         ->get();
 
-                                    // Get the current department from the session or set to the first department if empty
                                     $currentDepartmentId = session(
                                         'current_department',
                                         $departments->isNotEmpty() ? $departments->first()->id : null,
                                     );
 
-                                    // Get the first department ID for default selection, if available
                                     $defaultDepartmentId = $departments->isNotEmpty()
                                         ? $departments->first()->id
                                         : null;
@@ -74,8 +65,6 @@
                                 @endphp
 
                                 @if (!empty($departments) && $departments->isNotEmpty())
-
-
                                     @if (count($departments) === 1)
                                         <!-- Single department handling -->
                                         <div class="row mb-3">
@@ -87,32 +76,24 @@
                                         </div>
                                     @else
                                         <!-- If multiple departments, display dropdown -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <select name="department" id="department" class="form-select"
-                                                    onchange="updateDepartment(this)">
-                                                    @foreach ($departments as $department)
-                                                        <option value="{{ $department->id }}"
-                                                            {{ $department->id == session('current_department_id', $defaultDepartmentId) ? 'selected' : '' }}>
-                                                            {{ $department->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+                                        <div class="row dept-dropdown">
+                                            <select name="department" id="department" class="form-select"
+                                                onchange="updateDepartment(this)">
+                                                @foreach ($departments as $department)
+                                                    <option value="{{ $department->id }}"
+                                                        {{ $department->id == session('current_department_id', $defaultDepartmentId) ? 'selected' : '' }}>
+                                                        {{ $department->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     @endif
                                 @endif
-
                             </li>
-
-
-
                             <li class="nav-item topbar-user dropdown hidden-caret">
                                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
                                     aria-expanded="false">
-                                    <div class="avatar-sm">
-                                        {{-- <img src="bootstrap-template/assets/img/emerson.jpg" alt="..."
-                                            class="avatar-img rounded-circle" /> --}}
+                                    <div>
                                         @livewire('current-department-image')
                                     </div>
                                     <span class="profile-username">
@@ -130,10 +111,6 @@
                                         <li>
                                             <div class="user-box">
                                                 <div class="avatar-lg">
-                                                    {{-- <img src="bootstrap-template/assets/img/emerson.jpg"
-                                                        alt="image profile" class="avatar-img rounded" /> --}}
-
-
                                                     @livewire('current-department-image')
                                                 </div>
                                                 <div class="u-text">
