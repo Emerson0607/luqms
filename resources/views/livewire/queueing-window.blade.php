@@ -1,10 +1,10 @@
-<div style="margin-bottom: 20rem" class="d-flex align-items-center card queue-ongoing-card pb-2">
+<div class="d-flex align-items-center card queue-ongoing-card pb-2">
     <div wire:poll.1s="renderQueue" class="d-flex flex-column justify-content-center align-items-center queue-window ">
 
         @if ($currentUserWindow)
             <h5 id="client-status">{{ $currentUserWindow->c_status }}</h5>
             <h1><span id="client-number">{{ $currentUserWindow->studentNo }}</span></h1>
-            <h6 class="current_department">{{ session('current_department_name') }}</h6>
+            {{-- <h6 class="current_department">{{ session('current_department_name') }}</h6> --}}
             <p>
                 <span id="client-name">
                     @if ($currentUserWindow->gName === 'Guest')
@@ -15,47 +15,46 @@
                 </span>
             </p>
 
-            <div class="d-flex justify-content-between flex-wrap">
-                <div class="flex-grow-1 mx-1">
-                    <button id="fetch-oldest-client" class="btn btn-primary btn-sm w-100">
-                        Next
-                    </button>
-                </div>
+            <div class="core-function-card">
 
-                <div class="flex-grow-1 mx-1">
-                    <button class="btn btn-primary btn-sm w-100" id="notify-button">
-                        Notify
-                    </button>
-                </div>
-                <div class="flex-grow-1 mx-1">
-                    <button wire:click="waitQueue" class="btn btn-primary btn-sm w-100" id="wait-button">
-                        Wait
-                    </button>
-                </div>
-                <div class="flex-grow-1 mx-1">
-                    <button type="button" class="btn btn-primary btn-sm w-100" id="done-button"
-                        onclick="confirmDoneQueue()">
-                        Done
-                    </button>
-                </div>
-                <div class="form-group form-group-default">
-                    <label for="w_service">Services</label>
-                    <select id="w_service" class="form-control" name="w_service" wire:model="selectedService" required>
-                        <option value="" selected>Select a service</option>
+                <button id="fetch-oldest-client" class="btn btn-primary btn-sm w-100">
+                    Next
+                </button>
 
-                        @if ($services)
-                            @foreach ($services as $service)
-                                <option value="{{ $service['service_id'] }}">
-                                    {{ $service['service_name'] }}
-                                </option>
-                            @endforeach
-                        @else
-                            <p>No service available for your department.</p>
-                        @endif
+                <button class="btn btn-primary btn-sm w-100" id="notify-button">
+                    Notify
+                </button>
 
-                    </select>
+                <button wire:click="waitQueue" class="btn btn-primary btn-sm w-100" id="wait-button">
+                    Wait
+                </button>
 
-                </div>
+                <button type="button" class="btn btn-primary btn-sm w-100" id="done-button"
+                    onclick="confirmDoneQueue()">
+                    Done
+                </button>
+            </div>
+
+            <div class="form-group form-group-default select-services-card">
+                <label for="w_service">Services</label>
+                <select id="w_service" class="form-control" name="w_service" wire:model="selectedService" required>
+                    <option value="" selected>Select a service</option>
+
+                    @if ($services)
+                        @foreach ($services as $service)
+                            {{-- <option value="{{ $service['service_id'] }}">
+                                {{ $service['service_name'] }}
+                            </option> --}}
+                            <option value="{{ $service['service_id'] }}" title="{{ $service['service_name'] }}">
+                                {{ $service['service_name'] }}
+                            </option>
+                        @endforeach
+                    @else
+                        <p>No service available for your department.</p>
+                    @endif
+
+                </select>
+
             </div>
         @else
             <h5 id="client-status">Create Window</h5>
@@ -64,23 +63,24 @@
         @endif
     </div>
 
+    <!-- Display success message -->
+    @if (session()->has('message'))
+        <div class="alert alert-success">
+            {{ session('message') }}
+        </div>
+    @endif
 
-    <div>
-        <!-- Display success message -->
-        @if (session()->has('message'))
-            <div class="alert alert-success">
-                {{ session('message') }}
-            </div>
-        @endif
-
-        <!-- Student Number Input -->
-        <input type="text" wire:model="studentNo" wire:keydown.enter="pushClient" id="studentNo"
-            placeholder="Enter Student Number" class="form-control">
-
+    <div class="generate-client-card">
+        <div>
+            <!-- Student Number Input -->
+            <input type="text" wire:model="studentNo" wire:keydown.enter="pushClient" id="studentNo"
+                placeholder="Enter Student No." class="form-control">
+        </div>
+        <div class="or">or</div>
+        <div>
+            <button wire:click="generateClient" type="submit" class="btn btn-primary">Generate Client</button>
+        </div>
     </div>
-
-
-    <button wire:click="generateClient" type="submit" class="btn btn-primary">Generate Client</button>
 
 </div>
 

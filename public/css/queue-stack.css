@@ -1,59 +1,113 @@
+/* -----Root Variable */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+/* Root Variable */
+:root {
+    --color-admin: #303396;
+    --color-primary: #7380ec;
+    --color-danger: #ff7782;
+    --color-success: #41f1b6;
+    --color-warning: #ffbb55;
+    --color-white: #fff;
+    --color-info-dark: #7d8da1;
+    --color-info-light: #dce1eb;
+    --color-dark: #363949;
+    --color-light: rgba(132, 139, 200, 0.18);
+    --color-primary-variant: #111e88;
+    --color-dark-variant: #677483;
+    --color-background: #f6f6f9;
+
+    --card-border-radius: 2rem;
+    --border-radius-1: 0.4rem;
+    --border-radius-2: 0.8rem;
+    --border-radius-3: 1.2rem;
+    --color-lu: #2f9e36;
+    --card-padding: 1.8rem;
+    --padding-1: 1.2rem;
+    --box-shadow: 0 2rem 3rem var(--color-light);
+}
+
+
+
+/* Root Scrollbar Customization */
+::-webkit-scrollbar {
+    width: 10px;
+    /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(255, 255, 255);
+    /* Scrollbar color */
+    border-radius: var(--border-radius-2);
+    /* Rounded edges */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(255, 255, 255);
+    /* Hover effect */
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(255, 255, 255);
+    /* Background color of the scrollbar track */
+    border-radius: var(--border-radius-2);
+    /* Rounded edges for the track */
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    /* Optional: subtle shadow for the track */
+}
+
+
+
 .allWindowList {
     display: grid;
     width: 100%;
     grid-template-columns: 1fr;
     gap: 10px;
+
 }
 
 .allWindowList.two-columns {
+    border: 1px solid white;
     grid-template-columns: repeat(2, 1fr);
 
 }
 
 .allWindowList .list-group-item {
-    font-size: 14px;
     padding: 10px;
-    border: 1px solid #ddd;
     border-radius: 5px;
-    box-sizing: border-box;
+    text-align: center;
+    border: 1px solid rgb(212, 212, 212);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.allWindowList .list-group-item .status {
+    font-size: 12px;
+    font-weight: bold;
+    color: #f3c437;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.allWindowList .list-group-item .client-details .studentNo {
+    font-size: 24px;
+}
+
+.allWindowList .list-group-item .client-details .studentName {
+    font-size: 10px;
+}
+
+.allWindowList .active {
+    background-color: rgb(32, 155, 32) !important;
+    font-weight: 500;
 }
 
 .allWindowList .list-group-item span {
-    font-size: 7px;
+    font-size: 8px;
     display: block;
-    text-align: left;
-}
-
-.queue-ongoing-card {
-    width: 100%;
-    height: 580px;
-    padding: 24px;
-}
-
-.queue-ongoing-card .queue-window h5,
-.queue-ongoing-card .queue-window h1,
-.queue-ongoing-card .queue-window h6 {
-    font-weight: 900;
-}
-
-.queue-ongoing-card .queue-window h5 {
-    font-size: 24px;
-    color: rgb(152, 244, 14);
-}
-
-.queue-ongoing-card .queue-window h1 {
-    font-size: 82px;
-    color: rgb(63, 63, 63);
-}
-
-.queue-ongoing-card .queue-window h6 {
-    font-size: 24px;
-    color: rgb(63, 63, 63);
-}
-
-
-.queue-waiting {
-    background-color: rgb(237, 212, 166);
+    text-align: center;
 }
 
 /* for all window page */
@@ -71,60 +125,160 @@
     color: rgb(52, 52, 52);
 }
 
+.allwindow-card {
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    font-family: poppins, sans-serif;
+}
+
+.allwindow-card>div {
+    width: 100%;
+    height: 600px;
+    padding: 24px;
+    box-shadow: var(--box-shadow);
+    transition: all 400ms ease;
+    border: solid 1px rgb(255, 255, 255);
+}
+
+.allwindow-card>div:hover {
+    box-shadow: none;
+    transform: scale(1.02);
+}
+
+/* homepage */
+.core-function-card {
+    display: grid;
+    width: 70%;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+    font-family: poppins, sans-serif;
+}
+
+.select-services-card {
+    margin-top: 1rem;
+    width: 70%;
+}
+
+.select-services-card select {
+    width: 100%;
+    /* Ensures the dropdown matches the parent width */
+    max-width: 100%;
+    /* Prevents the dropdown from exceeding the parent width */
+    overflow-wrap: break-word;
+    /* Allows wrapping if text overflows */
+    white-space: nowrap;
+    /* Prevents wrapping of long option text */
+    text-overflow: ellipsis;
+    /* Adds ellipsis if text overflows */
+    overflow: hidden;
+    /* Ensures no overflow outside the parent */
+}
+
+.generate-client-card {
+    margin: 0 auto;
+    display: grid;
+    width: 65%;
+    /* grid-template-columns: repeat(3, 1fr); */
+    grid-template-columns: auto auto auto;
+    gap: 3rem;
+    margin-top: 1rem;
+    font-family: poppins, sans-serif;
+}
+
+
+.generate-client-card input {
+    font-size: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* .generate-client-card>div {} */
+.or {
+    padding-top: 8px;
+    color: #828282;
+    font-weight: 400;
+}
+
+
+/* Define keyframes for the wave effect */
+@keyframes wave {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+
+
 .dept-dropdown {
     width: 128px;
     margin-right: 16px;
-
 }
 
-
-/* Switch to two columns if more than five items */
-@media (min-height: 150px) and (min-width: 600px) {
-    .allWindowList .list-group {
-        grid-template-columns: repeat(2, 1fr);
-        /* Two columns */
-    }
+.dept-dropdown select option {
+    color: rgb(64, 64, 64) !important;
 }
 
-@media (max-width: 480px) {
-    .queue-stack-card {
-        width: 100%;
-        height: 300px;
-    }
+.qms-stack {
+    padding: 16px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+}
 
-    .queue-ongoing-card {
-        width: 100%;
-        height: 200px;
-        padding: 12px;
-    }
+/* Apply animation to the "Waiting" text */
+.status.wavy {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+    text-align: center;
+    animation: wave 1s ease-in-out infinite;
+}
 
-    .queue-ongoing-card .queue-window {
-        margin-bottom: 5px;
-    }
+.queue-ongoing-card {
+    height: 95%;
+}
 
-    .queue-ongoing-card .queue-window h5,
-    .queue-ongoing-card .queue-window h1,
-    .queue-ongoing-card .queue-window h6 {
-        font-weight: 900;
-    }
+.queue-ongoing-card .queue-window {
+    padding: 2rem;
+}
 
-    .queue-ongoing-card .queue-window h5 {
-        font-size: 6px;
-        color: rgb(152, 244, 14);
-    }
+.queue-ongoing-card .queue-window h5,
+.queue-ongoing-card .queue-window h1,
+.queue-ongoing-card .queue-window h6 {
+    font-weight: 900;
+}
 
-    .queue-ongoing-card .queue-window h1 {
-        font-size: 24px;
-        color: rgb(63, 63, 63);
-    }
+.queue-ongoing-card .queue-window h5 {
+    font-size: 24px;
+    color: rgb(32, 155, 32);
+}
 
-    .queue-ongoing-card .queue-window h6 {
-        font-size: 6px;
-        color: rgb(63, 63, 63);
-    }
+.queue-ongoing-card .queue-window h1 {
+    font-size: 82px;
+    color: rgb(63, 63, 63);
+}
 
-    .queue-waiting {
-        background-color: rgb(237, 212, 166);
-    }
+.queue-ongoing-card .queue-window h6 {
+    font-size: 24px;
+    color: rgb(63, 63, 63);
+}
 
+.queue-ongoing-card .queue-window .client-name {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.queue-waiting {
+    background-color: rgb(237, 212, 166);
 }

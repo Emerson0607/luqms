@@ -79,7 +79,7 @@ class CurrentDepartment extends Component
         foreach ($this->allWindowQueue as $window) {
             $window->clients = QmsClients::where('dept_id', $currentDepartmentId)
                 ->where('w_name', $window->w_name)
-                ->take(10)
+                ->take(6)
                 ->get();
         }
 

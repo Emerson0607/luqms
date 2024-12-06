@@ -151,7 +151,7 @@
 
             </div>
 
-            <div class="container overflow-auto auto-refresh" style="height: 100%;">
+            <div class="container overflow-auto auto-refresh" style="height: 100%; ">
                 {{ $slot }}
             </div>
 

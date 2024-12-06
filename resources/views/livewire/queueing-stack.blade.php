@@ -1,6 +1,6 @@
-<div class="container" wire:poll.1s="renderClient">
+<div class="container qms-stack" wire:poll.1s="renderClient">
 
-    <p class="current_department h5 text-primary">
+    <p class="current_department text-primary">
         {{ session('current_department_name', 'No department selected') }}
     </p>
 

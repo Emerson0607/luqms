@@ -39,14 +39,6 @@
                       <h4 class="text-section">Components</h4>
                   </li>
 
-
-                  {{-- <li class="nav-item {{ request()->is('window') ? 'active' : '' }}">
-                      <a href="/window">
-                          <i class="fas fa-layer-group"></i>
-                          <p>Window</p>
-                      </a>
-                  </li> --}}
-
                   <li class="nav-item {{ request()->is('window') ? 'active' : '' }}">
                       <a href="/window" target="_blank">
                           <i class="fas fa-th-list"></i>

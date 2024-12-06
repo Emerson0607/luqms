@@ -7,58 +7,68 @@
                 src="{{ asset($currentDepartmentImage) }}"></div>
     </nav>
 
-    <div class="container overflow-auto" style="height: 100%; margin-top:2rem;">
-        <div id="window-container" class="row all-window-queue1">
-            <div class="row">
-                @if (isset($allWindowQueue) && $allWindowQueue->isNotEmpty())
-                    @foreach ($allWindowQueue as $window)
-                        <div class="col-md-4">
-                            <div class="d-flex align-items-center card queue-ongoing-card pb-2">
-                                <p class="text-start w-400">
-                                    <span class="window-name" style="font-size: 32px;">
-                                        {{ $window->w_name ?? '---' }}
-                                    </span>
-                                </p>
-                                <div class="queue-window text-center" style="padding-bottom: 0; margin-bottom: 24px;">
-                                    <h5 style="font-size: 24px;">
-                                        {{ $window->c_status ?? 'Waiting...' }}
-                                    </h5>
-                                    <h1 style="font-size: 48px;">
-                                        <span class="window-number">{{ $window->studentNo ?? '---' }}</span>
-                                    </h1>
-                                    <h1 style="font-size: 24px;">
-                                        <span class="window-number">
-                                            {{ $window->gName === 'Guest' ? $window->gName : $window->gName . ' ' . ($window->sName ?? '---') }}
-                                        </span>
-                                    </h1>
-                                </div>
 
-                                <ol
-                                    class="list-group allWindowList {{ $window->clients->count() > 5 ? 'two-columns' : '' }} mt-1">
-                                    @if ($window->clients->isNotEmpty())
-                                        @foreach ($window->clients as $client)
-                                            <li class="list-group-item {{ $loop->first ? 'active' : '' }}">
-                                                <span>{{ $client->studentNo }}</span>
-                                                {{ $client->gName }} {{ $client->sName }}
-                                                <br>
-                                            </li>
-                                        @endforeach
-                                    @else
-                                        <li class="list-group-item text-danger text-center">
-                                            No clients in queue.
-                                        </li>
-                                    @endif
-                                </ol>
+    <div class="allwindow-card" style="background-color: rgb(243, 243, 248);">
+        @if (isset($allWindowQueue) && $allWindowQueue->isNotEmpty())
+            @foreach ($allWindowQueue as $window)
+                <div class="d-flex align-items-center card queue-ongoing-card pb-2">
+                    <p class="text-start w-400">
+                        <span class="window-name" style="font-size: 32px;">
+                            {{ $window->w_name ?? '---' }}
+                        </span>
+                    </p>
+                    <div class="queue-window text-center" style="padding-bottom: 0; margin-bottom: 24px;">
+                        <h5 style="font-size: 24px;">
+                            {{ $window->c_status ?? 'Waiting...' }}
+                        </h5>
+                        <h1 style="font-size: 48px;">
+                            <span class="window-number">{{ $window->studentNo ?? '---' }}</span>
+                        </h1>
+                        <h1 class="client-name">
 
-                            </div>
-                        </div>
-                    @endforeach
-                @else
-                    <div class="col-12 text-center">
-                        <p style="font-size: 18px; color: gray;">No window available</p>
+                            {{ $window->gName === 'Guest' ? $window->gName : $window->gName . ' ' . ($window->sName ?? '---') }}
+
+                        </h1>
                     </div>
-                @endif
+
+                    <ol class="list-group allWindowList {{ $window->clients->count() > 3 ? 'two-columns' : '' }} mt-1">
+                        @if ($window->clients->isNotEmpty())
+                            @foreach ($window->clients as $client)
+                                {{-- <li class="list-group-item {{ $loop->first ? 'active' : '' }}">
+                                                {{ $client->studentNo }}
+                                                <span>
+                                                    {{ $client->gName }}
+                                                    {{ $client->sName }}
+                                                </span>
+                                            </li> --}}
+
+                                <li class="list-group-item {{ $loop->first ? 'active' : '' }}">
+
+                                    <div class="client-details">
+                                        @if ($loop->first)
+                                            <div class="status wavy">Waiting</div>
+                                        @endif
+                                        <div class="studentNo"> {{ $client->studentNo }}</div>
+                                        <div class="studentName">
+                                            {{ $client->gName }} {{ $client->sName }}
+                                        </div>
+                                    </div>
+                                </li>
+                            @endforeach
+                        @else
+                            <li class="list-group-item text-danger text-center">
+                                No clients in queue.
+                            </li>
+                        @endif
+                    </ol>
+
+                </div>
+            @endforeach
+        @else
+            <div class="col-12 text-center">
+                <p style="font-size: 18px; color: gray;">No window available</p>
             </div>
-        </div>
+        @endif
     </div>
+
 </div>

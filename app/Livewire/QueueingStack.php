@@ -32,7 +32,7 @@ class QueueingStack extends Component
  
         $this->clients = QmsClients::where('dept_id', $this->currentUserDepartmentId)
             ->where('w_name', $userWindow->w_name )
-            ->take(10)
+            ->take(8)
             ->get();
         
         $this->dispatch('log', [
