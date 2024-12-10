@@ -95,7 +95,6 @@ class SessionController extends Controller{
         ->where('time_out', null)
         ->update(['time_out' => now()]);
        
-
         // Destroy all sessions for the user
         $userId = Auth::user()->getAuthIdentifier();
         \Illuminate\Support\Facades\DB::table('sessions')

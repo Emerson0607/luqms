@@ -218,6 +218,48 @@
                         });
                 }
             </script>
+
+            <script>
+                // const maxInactivityTime = 120 * 60 * 1000; 
+                let inactivityTimeout;
+                const maxInactivityTime = 120 * 60 * 1000;
+                const logoutUrl = '{{ route('logout') }}'; // URL for logging out
+
+                // Function to reset inactivity timer
+                function resetInactivityTimer() {
+                    clearTimeout(inactivityTimeout);
+
+                    inactivityTimeout = setTimeout(function() {
+                        // Show a message before logging out (optional)
+                        alert('You have been logged out due to inactivity.');
+
+                        // Create a form to send the POST request to logout
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = logoutUrl;
+
+                        // Add CSRF token to the form
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfToken);
+
+                        // Append the form to the body and submit it
+                        document.body.appendChild(form);
+                        form.submit(); // This will trigger the POST request to logout
+                    }, maxInactivityTime);
+                }
+
+                // Set up event listeners for user activity
+                window.onload = function() {
+                    resetInactivityTimer(); // Start the inactivity timer when the page loads
+                    document.body.addEventListener('mousemove', resetInactivityTimer); // Mouse movement
+                    document.body.addEventListener('keydown', resetInactivityTimer); // Keyboard press
+                    document.body.addEventListener('scroll', resetInactivityTimer); // Scrolling
+                };
+            </script>
+
             @livewireScripts
 </body>
 

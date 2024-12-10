@@ -18,7 +18,7 @@
                         </span>
                     </p>
                     <div class="queue-window text-center" style="padding-bottom: 0; margin-bottom: 24px;">
-                        <h5 style="font-size: 24px;">
+                        <h5>
                             {{ $window->c_status ?? 'Waiting...' }}
                         </h5>
                         <h1 style="font-size: 48px;">
@@ -26,7 +26,14 @@
                         </h1>
                         <h1 class="client-name">
 
-                            {{ $window->gName === 'Guest' ? $window->gName : $window->gName . ' ' . ($window->sName ?? '---') }}
+                            {{-- {{ $window->gName === 'Guest' ? $window->gName : $window->gName . ' ' . ($window->sName ?? '---') }} --}}
+
+                            @if ($window->gName === '---')
+                                ---
+                            @else
+                                {{ $window->gName === 'Guest' ? $window->gName : $window->gName . ' ' . ($window->sName ?? '---') }}
+                            @endif
+
 
                         </h1>
                     </div>
@@ -34,14 +41,6 @@
                     <ol class="list-group allWindowList {{ $window->clients->count() > 3 ? 'two-columns' : '' }} mt-1">
                         @if ($window->clients->isNotEmpty())
                             @foreach ($window->clients as $client)
-                                {{-- <li class="list-group-item {{ $loop->first ? 'active' : '' }}">
-                                                {{ $client->studentNo }}
-                                                <span>
-                                                    {{ $client->gName }}
-                                                    {{ $client->sName }}
-                                                </span>
-                                            </li> --}}
-
                                 <li class="list-group-item {{ $loop->first ? 'active' : '' }}">
 
                                     <div class="client-details">

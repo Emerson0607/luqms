@@ -1,8 +1,8 @@
-  <!-- Sidebar -->
-  <div class="sidebar" data-background-color="dark">
+  <!-- Sidebar  data-background-color="dark"-->
+  <div class="sidebar">
       <div class="sidebar-logo">
           <!-- Logo Header -->
-          <div class="logo-header" data-background-color="dark">
+          <div class="logo-header">
               <a href="/" class="logo text-white">
                   LU-QMS
               </a>
@@ -68,33 +68,6 @@
                           </li>
                       @endif
                   @endauth
-
-
-                  {{-- This is for dropdown --}}
-                  {{-- <li class="nav-item">
-                      <a data-bs-toggle="collapse" href="#base">
-                          <i class="fas fa-layer-group"></i>
-                          <p>Other</p>
-                          <span class="caret"></span>
-                      </a>
-                      <div class="collapse" id="base">
-                          <ul class="nav nav-collapse">
-                              <li>
-                                  <a href="/logs">
-                                      <span class="sub-item">Personnel</span>
-                                  </a>
-                              </li>
-                              <li>
-                                  <a href="/logs">
-                                      <span class="sub-item">Client</span>
-                                  </a>
-                              </li>
-
-                          </ul>
-                      </div>
-                  </li> --}}
-
-
               </ul>
           </div>
       </div>

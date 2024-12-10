@@ -43,14 +43,13 @@
                 document.documentElement.requestFullscreen().catch(err => {
                     alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
                 });
-                fullscreenIcon.innerHTML = compressIcon; // Switch to compress icon
+                fullscreenIcon.innerHTML = compressIcon;
             } else {
                 document.exitFullscreen();
-                fullscreenIcon.innerHTML = expandIcon; // Switch back to expand icon
+                fullscreenIcon.innerHTML = expandIcon;
             }
         });
     </script>
-
 </body>
 
 </html>

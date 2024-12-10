@@ -37,5 +37,5 @@ Route::controller(RegisteredUserController::class)->group(function () {
 Route::controller(SessionController::class)->group(function () {
     Route::get('/login', 'create')->name('login');
     Route::post('/login', 'store');
-    Route::post('/logout', 'destroy');
+    Route::post('/logout', 'destroy')->name('logout');
 });
