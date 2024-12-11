@@ -84,9 +84,9 @@ class QueueingWindow extends Component
             return;
         }
 
-        // $client = Client::where('department', $currentDepartment)->oldest()->first();
-
-        $client = QmsClients::where('dept_id', $currentDepartmentId)->oldest()->first();
+        $client = QmsClients::where('dept_id', $currentDepartmentId)->oldest()
+            ->where('w_name', $user_w_id->w_name)
+            ->first();
 
         if ($client) {
            
@@ -129,6 +129,7 @@ class QueueingWindow extends Component
         $currentDepartment = $this->currentUserDepartment;
         $currentDepartmentId = $this->currentUserDepartmentId;
 
+
         // Check if a window is assigned to the user
         $user_w_id = QmsWindow::where('p_id', Auth::user()->p_id)
             ->where('dept_id', $currentDepartmentId)
@@ -149,13 +150,17 @@ class QueueingWindow extends Component
         $window = QmsWindow::where('w_name', $user_w_id->w_name)
             ->where('dept_id', $currentDepartmentId)
             ->first();
-        
-            if (!$window || $window->studentNo === '---') {
-              
-                $this->dispatch('done-no-client-selected');
-                return;
-            }
 
+        if ($window->c_status === 'On Break') {
+            $this->dispatch('done-no-client-selected');
+            return;
+        }
+        
+        if (!$window || $window->studentNo === '---') {
+            $this->dispatch('done-no-client-selected');
+            return;
+        }
+        
         if ($window) {
             // Create a new log in QmsClientLogs
             QmsClientLogs::create([
@@ -168,8 +173,6 @@ class QueueingWindow extends Component
                 'date' => now(),
             ]);
         }
-
-
 
         $client = QmsClients::where('dept_id', $currentDepartmentId)->oldest()->first();
         if ($client) {
@@ -195,7 +198,6 @@ class QueueingWindow extends Component
         
         }
 
-
          // if no client in window 
          $clientCount = QmsClients::where('dept_id', $currentDepartmentId)->count();
          if ($clientCount <= 0) {
@@ -209,7 +211,7 @@ class QueueingWindow extends Component
                  'gName' => "---", 
                  'sName' => "---", 
                  'studentNo' =>"---", 
-                 'c_status' => "Waiting...", 
+                 'c_status' => "On Break", 
                  'c_service' => "No service selected" ]);
      
                   // Optionally re-fetch the window after updating
@@ -218,7 +220,6 @@ class QueueingWindow extends Component
                   ->first();
          
          }
-
             $this->selectedService = null;
         }
     }
@@ -240,12 +241,48 @@ class QueueingWindow extends Component
                 'w_name' => $user_w_id->w_name, 
                 'dept_id' => $currentDepartmentId, 
                 'p_id' => $user_w_id->p_id, 
-                'w_status' => $user_w_id->w_status
+                'w_status' => $user_w_id->w_status,
+                'gName' => $user_w_id->gName, 
+                'sName' => $user_w_id->sName, 
+                'studentNo' => $user_w_id->studentNo, 
             ],[
-                'gName' => "---", 
-                'sName' => "---", 
-                'studentNo' => "---", 
-                'c_status' => "Waiting...", 
+               
+                'c_status' => "On Break", 
+                'c_service' => "ID and Reg." ]
+            );
+
+            // Optionally re-fetch the window after updating
+            $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
+                ->where('dept_id', $currentDepartmentId)
+                ->first();
+ 
+        }
+    }
+
+    public function continueQueue()
+    {
+        $this->currentUserDepartment = session('current_department_name');
+        $this->currentUserDepartmentId = session('current_department_id');
+        $currentDepartment = $this->currentUserDepartment;
+        $currentDepartmentId = $this->currentUserDepartmentId;
+        
+        // Check if a window is assigned to the user
+        $user_w_id = QmsWindow::where('p_id', Auth::user()->p_id)
+            ->where('dept_id', $currentDepartmentId)
+            ->first();
+
+        if ($user_w_id) {
+            QmsWindow::updateOrCreate([
+                'w_name' => $user_w_id->w_name, 
+                'dept_id' => $currentDepartmentId, 
+                'p_id' => $user_w_id->p_id, 
+                'w_status' => $user_w_id->w_status,
+                'gName' => $user_w_id->gName, 
+                'sName' => $user_w_id->sName, 
+                'studentNo' => $user_w_id->studentNo, 
+            ],[
+               
+                'c_status' => "Now serving", 
                 'c_service' => "ID and Reg." ]
             );
 
@@ -265,32 +302,40 @@ class QueueingWindow extends Component
         $this->currentUserDepartmentId = session('current_department_id');
         $currentDepartment = $this->currentUserDepartment;
         $currentDepartmentId = $this->currentUserDepartmentId;
-        
-        // Validate the input
-        // $this->validate();
     
         $student = Students::where('studentNo', $this->studentNo)->first();
-    
+
+        $randomWindow = QmsWindow::where('p_id', Auth::user()->p_id)
+        ->where('dept_id', $currentDepartmentId)
+        ->first();
+
+
+        if (!$randomWindow) {
+            session()->flash('error', 'No available window found.');
+            return;
+        }
+
         if ($student) {
             QmsClients::create([
                 'studentNo' => $this->studentNo,
                 'gName' => $student->GName,
                 'sName' => $student->Sname,
                 'dept_id' => $currentDepartmentId,   
+                'w_name' => $randomWindow->w_name
             ]);
     
             session()->flash('message', 'Client successfully pushed!');
 
         } else {
-    
             QmsClients::create([
                 'studentNo' => $this->studentNo,
                 'gName' => 'Guest', 
                 'sName' => 'Guest',
-                'dept_id' => $currentDepartmentId, 
+                'w_name' => $randomWindow->w_name,
+                'dept_id' => $currentDepartmentId
             ]);
     
-            session()->flash('message', 'Guest successfully pushed!');
+            session()->flash('message', 'Client successfully pushed!');
         }
     
         // Optionally reset the fields after submission
@@ -300,6 +345,7 @@ class QueueingWindow extends Component
     public function generateClient()
     {
         QmsClients::factory(10)->create();
+        session()->flash('message', 'Guest successfully pushed!');
     }
 
     public function render()

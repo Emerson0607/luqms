@@ -1,36 +1,58 @@
 <div class="d-flex align-items-center card queue-ongoing-card pb-2">
-    <div wire:poll.1s="renderQueue" class="d-flex flex-column justify-content-center align-items-center queue-window ">
+    <div wire:poll.2s="renderQueue" class="d-flex flex-column justify-content-center align-items-center queue-window ">
 
         @if ($currentUserWindow)
-            <h5 id="client-status">{{ $currentUserWindow->c_status }}</h5>
-            <h1><span id="client-number">{{ $currentUserWindow->studentNo }}</span></h1>
-            {{-- <h6 class="current_department">{{ session('current_department_name') }}</h6> --}}
-            <p>
-                <span id="client-name">
-                    @if ($currentUserWindow->gName === 'Guest')
-                        {{ $currentUserWindow->gName }}
-                    @else
-                        {{ $currentUserWindow->gName }} {{ $currentUserWindow->sName }}
-                    @endif
-                </span>
-            </p>
+
+
+            @if ($currentUserWindow->c_status == 'On Break')
+                <h5 style="color: orange" id="client-status">{{ $currentUserWindow->c_status }}</h5>
+                <h1><span id="client-number">---</span></h1>
+
+                <p>
+                    <span id="client-name">---</span>
+                </p>
+            @else
+                <h5 id="client-status">{{ $currentUserWindow->c_status }}</h5>
+                <h1><span id="client-number">{{ $currentUserWindow->studentNo }}</span></h1>
+                {{-- <h6 class="current_department">{{ session('current_department_name') }}</h6> --}}
+                <p>
+                    <span id="client-name">
+                        @if ($currentUserWindow->gName === 'Guest')
+                            {{ $currentUserWindow->gName }}
+                        @else
+                            {{ $currentUserWindow->gName }} {{ $currentUserWindow->sName }}
+                        @endif
+                    </span>
+                </p>
+
+            @endif
+
 
             <div class="core-function-card">
 
-                <button id="fetch-oldest-client" class="btn btn-primary btn-sm w-100">
+                <button style="background-color: rgb(255, 34, 34) !important; border:0px;" id="fetch-oldest-client"
+                    class="btn btn-primary btn-sm w-100">
                     Next
                 </button>
-
                 <button class="btn btn-primary btn-sm w-100" id="notify-button">
                     Notify
                 </button>
 
-                <button wire:click="waitQueue" class="btn btn-primary btn-sm w-100" id="wait-button">
-                    Wait
-                </button>
+                @if ($currentUserWindow->c_status == 'On Break')
+                    <button style="background-color: orange !important; border:0px;" wire:click="continueQueue"
+                        class="btn btn-primary btn-sm w-100" id="wait-button">
+                        Continue
+                    </button>
+                @else
+                    <button
+                        style="background-color: rgb(114, 114, 114) !important; border:0px; color:rgb(243, 243, 243);"
+                        wire:click="waitQueue" class="btn btn-primary btn-sm w-100" id="wait-button">
+                        Break
+                    </button>
+                @endif
 
-                <button type="button" class="btn btn-primary btn-sm w-100" id="done-button"
-                    onclick="confirmDoneQueue()">
+                <button style="background-color: green !important; border:0px;" type="button"
+                    class="btn btn-primary btn-sm w-100" id="done-button" onclick="confirmDoneQueue()">
                     Done
                 </button>
             </div>
@@ -56,31 +78,34 @@
                 </select>
 
             </div>
+
+            <!-- Display success message -->
+            @if (session()->has('message'))
+                <div class="alert alert-success">
+                    {{ session('message') }}
+                </div>
+            @endif
+
+            <div class="generate-client-card">
+                <div>
+                    <!-- Student Number Input -->
+                    <input type="text" wire:model="studentNo" wire:keydown.enter="pushClient" id="studentNo"
+                        placeholder="Enter Student No." class="form-control">
+                </div>
+                <div class="or">or</div>
+                <div>
+                    <button wire:click="generateClient" type="submit" class="btn btn-primary">Generate Client</button>
+                </div>
+            </div>
         @else
             <h5 id="client-status">Create Window</h5>
             <h1 style="font-size: 64px; margin-top:2rem;"><span id="client-number">No Active Window</span></h1>
             <h6 class="current_department">assigned to current personnel </h6>
         @endif
+
     </div>
 
-    <!-- Display success message -->
-    @if (session()->has('message'))
-        <div class="alert alert-success">
-            {{ session('message') }}
-        </div>
-    @endif
 
-    <div class="generate-client-card">
-        <div>
-            <!-- Student Number Input -->
-            <input type="text" wire:model="studentNo" wire:keydown.enter="pushClient" id="studentNo"
-                placeholder="Enter Student No." class="form-control">
-        </div>
-        <div class="or">or</div>
-        <div>
-            <button wire:click="generateClient" type="submit" class="btn btn-primary">Generate Client</button>
-        </div>
-    </div>
 
 </div>
 
@@ -142,6 +167,7 @@
     });
 </script>
 
+
 <script>
     function confirmDoneQueue() {
         Swal.fire({
@@ -196,5 +222,23 @@
         });
 
 
+    });
+</script>
+
+{{-- for wait/ continue  --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const waitButton = document.getElementById('wait-button');
+        const clientNumber = document.getElementById('client-number');
+        const clientName = document.getElementById('client-name');
+
+        // When the "Wait" button is clicked
+        waitButton.addEventListener('click', function() {
+            // Set the client number and name to "---"
+            clientNumber.innerText = '---';
+            clientName.innerText = '---';
+
+
+        });
     });
 </script>

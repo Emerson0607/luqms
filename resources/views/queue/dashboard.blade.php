@@ -5,7 +5,7 @@
         <div class="d-flex justify-content-center pl-5">
             <div class="row">
                 <div class="row mb-4">
-                    <h2 class="op-7 mb-2">Laguna University Queuing Management System</h2>
+                    <h2 class="op-7 mb-2">Laguna University Queuing System</h2>
                 </div>
 
                 @guest

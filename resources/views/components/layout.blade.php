@@ -11,11 +11,10 @@
     @livewireStyles
 </head>
 
-<body class="overflow-hidden " style="height: 100%;">
+<body class="overflow-hidden" style="height: 100%; background-color: rgb(243, 243, 248) !important;">
 
     <div class="wrapper">
         <x-sidebar />
-
         <div class="main-panel">
             <div class="main-header">
                 <div class="main-header-logo">
@@ -24,7 +23,6 @@
                         <a href="index.html" class="logo">
                             LU-QMS
                         </a>
-
                         <div class="nav-toggle">
                             <button class="btn btn-toggle toggle-sidebar">
                                 <i class="gg-menu-right"></i>

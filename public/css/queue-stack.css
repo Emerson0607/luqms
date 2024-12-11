@@ -111,18 +111,39 @@
 }
 
 /* for all window page */
-.allWindow-nav {
+/* .allWindow-nav {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr;
-    /* background-color: rgb(68, 113, 68); */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     justify-items: center;
     align-items: center;
+} */
+
+.allWindow-nav {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    /* First column for logo, second for title, third for button */
+    align-items: center;
+    /* Vertically center items */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 70px;
+    padding-left: 3rem;
+    gap: 1rem;
+
+}
+
+.allWindow-nav .lu-logo {
+    justify-self: start;
 }
 
 .allWindow-nav .dept-title {
+    text-align: left;
     color: rgb(52, 52, 52);
+}
+
+#fullscreenBtn {
+    justify-self: end;
 }
 
 .allwindow-card {
@@ -164,24 +185,17 @@
 
 .select-services-card select {
     width: 100%;
-    /* Ensures the dropdown matches the parent width */
     max-width: 100%;
-    /* Prevents the dropdown from exceeding the parent width */
     overflow-wrap: break-word;
-    /* Allows wrapping if text overflows */
     white-space: nowrap;
-    /* Prevents wrapping of long option text */
     text-overflow: ellipsis;
-    /* Adds ellipsis if text overflows */
     overflow: hidden;
-    /* Ensures no overflow outside the parent */
 }
 
 .generate-client-card {
     margin: 0 auto;
     display: grid;
     width: 65%;
-    /* grid-template-columns: repeat(3, 1fr); */
     grid-template-columns: auto auto auto;
     gap: 3rem;
     margin-top: 1rem;
@@ -195,15 +209,12 @@
     padding-right: 0.5rem;
 }
 
-/* .generate-client-card>div {} */
 .or {
     padding-top: 8px;
     color: #828282;
     font-weight: 400;
 }
 
-
-/* Define keyframes for the wave effect */
 @keyframes wave {
 
     0%,
@@ -215,8 +226,6 @@
         transform: translateY(-5px);
     }
 }
-
-
 
 .dept-dropdown {
     width: 128px;
@@ -234,7 +243,6 @@
     border-radius: 16px;
 }
 
-/* Apply animation to the "Waiting" text */
 .status.wavy {
     display: inline-block;
     font-size: 12px;
@@ -274,9 +282,10 @@
     color: rgb(63, 63, 63);
 }
 
-.queue-ongoing-card .queue-window .client-name {
-    font-size: 16px;
-    font-weight: 700;
+.queue-ongoing-card .queue-window #client-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: rgb(59, 59, 59);
 }
 
 .queue-waiting {
