@@ -41,9 +41,15 @@
                             {{-- <h1 class="client-name">---
                             </h1> --}}
                         @else
-                            <h5>
-                                {{ $window->c_status ?? 'On Break' }}
-                            </h5>
+                            @if ($window->c_status === null)
+                                <h5 style="color: rgb(213, 219, 38)">
+                                    Waiting...
+                                </h5>
+                            @else
+                                <h5>
+                                    {{ $window->c_status }}
+                                </h5>
+                            @endif
                             <h1 style="font-size: 48px;">
                                 <span class="window-number">{{ $window->studentNo ?? '---' }}</span>
                             </h1>
