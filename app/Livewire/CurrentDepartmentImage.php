@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\QmsWindow;
-use App\Models\WindowList;
+use App\Models\{
+    QmsWindow, WindowList
+};
+
 
 class CurrentDepartmentImage extends Component
 {
@@ -42,7 +44,7 @@ class CurrentDepartmentImage extends Component
             'Medical & Dental Clinic' => 'img/logo/mdc.png',
             'Office of the Vice President for Academic Affairs' => 'img/logo/vpaa.png',
             'Quality Management Office' => 'img/logo/qmo.png',
-            'Registrar\'s Office' => 'img/logo/reg.png',
+            'Registrar\'s Office' => 'img/logo/lu.png',
             'Research & Development Center' => 'img/logo/rdc.png',
             'Student Affairs & Services Office' => 'img/logo/lu.png',
             'Supply Office' => 'img/logo/lu.png',

@@ -1,11 +1,10 @@
 <x-layout>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/adapter/7.0.0/adapter.min.js"></script>
-
     <div class="page-inner auto-refresh-dashboard" style="padding-left:50px;">
         <div class="d-flex justify-content-center pl-5">
             <div class="row">
-                <div class="row mb-4">
-                    <h2 class="op-7 mb-2">Laguna University Queuing System</h2>
+                <div class="row">
+                    <h2 class="op-7">Laguna University Queuing System</h2>
                 </div>
 
                 @guest
@@ -15,18 +14,9 @@
                     </div>
                 @endguest
 
-                <div class="row">
-                    <div class="col-md-8">
-                        @livewire('queueing-window')
-                    </div>
-                    <div class="col-md-4">
-                        @livewire('queueing-stack')
-                    </div>
-                </div>
+                @livewire('queueing-window')
+
             </div>
         </div>
-
     </div>
-
-
 </x-layout>

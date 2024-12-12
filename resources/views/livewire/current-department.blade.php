@@ -42,7 +42,7 @@
                             </h1> --}}
                         @else
                             @if ($window->c_status === null)
-                                <h5 style="color: rgb(213, 219, 38)">
+                                <h5 style="color: rgb(236, 242, 49)">
                                     Waiting...
                                 </h5>
                             @else

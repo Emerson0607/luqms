@@ -3,11 +3,9 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\DmsService;
-use App\Models\QmsWindow;
-use App\Models\Personnel;
-use App\Models\DmsUserDepts;
-use App\Models\DmsUsers;
+use App\Models\{
+    DmsService, QmsWindow, Personnel, DmsUserDepts, DmsUsers
+};
 
 
 class QmsService extends Component

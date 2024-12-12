@@ -3,11 +3,11 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\QmsWindow;
-use App\Models\WindowList;
-use App\Models\QmsClients;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\{
+    QmsWindow, WindowList, QmsClients
+};
 
 class CurrentDepartment extends Component
 {
@@ -21,6 +21,8 @@ class CurrentDepartment extends Component
     {
         $this->updateDepartment();
         $this->fetchAllWindows();
+
+      
     }
 
     public function updateDepartment()
@@ -84,6 +86,7 @@ class CurrentDepartment extends Component
         }
 
     }
+
 
     public function render()
     {

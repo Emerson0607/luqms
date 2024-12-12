@@ -2,10 +2,15 @@
 
 namespace App\Livewire;
 
+use App\Models\Window;
+use App\Models\Client;
 use Livewire\Component;
-use App\Models\{
-    Window, Client, Students, QmsWindow, QmsService, DmsService, QmsClients, QmsClientLogs
-};
+use App\Models\Students;
+use App\Models\QmsWindow;
+use App\Models\QmsService;
+use App\Models\DmsService; 
+use App\Models\QmsClients; 
+use App\Models\QmsClientLogs;
 use Illuminate\Support\Facades\Auth;
 
 class QueueingWindow extends Component

@@ -1,9 +1,7 @@
-<div class="d-flex align-items-center card queue-ongoing-card pb-2">
+<div class="queue-ongoing-card">
     <div wire:poll.2s="renderQueue" class="d-flex flex-column justify-content-center align-items-center queue-window ">
 
         @if ($currentUserWindow)
-
-
             @if ($currentUserWindow->c_status == 'On Break')
                 <h5 style="color: orange" id="client-status">{{ $currentUserWindow->c_status }}</h5>
                 <h1><span id="client-number">---</span></h1>
@@ -14,6 +12,8 @@
             @else
                 <h5 id="client-status">{{ $currentUserWindow->c_status }}</h5>
                 <h1><span id="client-number">{{ $currentUserWindow->studentNo }}</span></h1>
+
+                {{-- <i class="fab fa-openid"></i> --}}
                 {{-- <h6 class="current_department">{{ session('current_department_name') }}</h6> --}}
                 <p>
                     <span id="client-name">
@@ -24,12 +24,9 @@
                         @endif
                     </span>
                 </p>
-
             @endif
 
-
             <div class="core-function-card">
-
                 <button style="background-color: rgb(255, 34, 34) !important; border:0px;" id="fetch-oldest-client"
                     class="btn btn-primary btn-sm w-100">
                     Next
@@ -61,7 +58,6 @@
                 <label for="w_service">Services</label>
                 <select id="w_service" class="form-control" name="w_service" wire:model="selectedService" required>
                     <option value="" selected>Select a service</option>
-
                     @if ($services)
                         @foreach ($services as $service)
                             {{-- <option value="{{ $service['service_id'] }}">
@@ -74,7 +70,6 @@
                     @else
                         <p>No service available for your department.</p>
                     @endif
-
                 </select>
 
             </div>
@@ -105,13 +100,69 @@
 
     </div>
 
+    <div class="container qms-stack" wire:poll.2s="renderClient">
+        <p class="current_department text-primary">
+            {{ session('current_department_name', 'No department selected') }}
+        </p>
 
-
+        <ol id="user-list" class="list-group mt-3 allWindowList">
+            @if ($clients->isNotEmpty())
+                @foreach ($clients as $client)
+                    <li class="list-group-item {{ $loop->first ? 'active' : '' }}">
+                        <h5 style="font-size: 14px">{{ $client->studentNo }} - </h5>
+                        {{ $client->gName }} {{ $client->sName }}
+                    </li>
+                @endforeach
+            @else
+                <li class="list-group-item text-danger text-center">
+                    No clients in queue.
+                </li>
+            @endif
+        </ol>
+    </div>
 </div>
 
-
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{{-- polling status --}}
+<script>
+    document.addEventListener('livewire:init', () => {
+        let pollInterval;
+
+        const startPolling = () => {
+            if (!pollInterval) {
+                pollInterval = setInterval(() => {
+                    Livewire.emit('renderClient');
+                }, 2000);
+            }
+        };
+
+        const stopPolling = () => {
+            clearInterval(pollInterval);
+            pollInterval = null;
+        };
+
+        Livewire.on('updatePollStatus', (event) => {
+            if (event.shouldPoll) {
+                startPolling();
+            } else {
+                stopPolling();
+            }
+        });
+
+        // Start polling initially
+        startPolling();
+
+        Livewire.on('log', (event) => {
+            try {
+                console[event.level](event.obj);
+            } catch {
+                console.log(event.obj);
+            }
+        });
+    });
+</script>
+
 {{-- for notify button --}}
 <script>
     // notify
@@ -167,7 +218,7 @@
     });
 </script>
 
-
+{{-- sweet alert --}}
 <script>
     function confirmDoneQueue() {
         Swal.fire({

@@ -28,8 +28,6 @@
     --box-shadow: 0 2rem 3rem var(--color-light);
 }
 
-
-
 /* Root Scrollbar Customization */
 ::-webkit-scrollbar {
     width: 10px;
@@ -255,10 +253,17 @@
 
 .queue-ongoing-card {
     height: 95%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
 }
 
 .queue-ongoing-card .queue-window {
-    padding: 2rem;
+    padding: 16px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+
 }
 
 .queue-ongoing-card .queue-window h5,
