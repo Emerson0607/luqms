@@ -1,30 +1,18 @@
 <?php
 
 namespace App\Livewire;
-
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 use App\Models\{
     Window, Client, Students, QmsWindow, QmsService, DmsService, QmsClients, QmsClientLogs
 };
-use Illuminate\Support\Facades\Auth;
+
 
 class QueueingWindow extends Component
 {
-    public $currentDepartment;
-    public $currentDepartmentId;
-    public $currentUserWindow;
-    public $selectedService;
-    public $services;
-
-    // for push client
-    public $studentNo;
-    public $dept_id;
-    public $gName;
-    public $sName;
-
-    public $clients = [];
+    public $currentDepartment, $currentDepartmentId, $currentUserWindow, $selectedService, $services;
+    public $studentNo, $dept_id, $gName, $sName, $clients = [];
     
-
     public function __construct()
     {
         $this->setCurrentDepartment();
@@ -88,11 +76,6 @@ class QueueingWindow extends Component
             ->first();
 
         if ($client) {
-           
-                // QmsWindow::updateOrCreate(
-                //     ['w_name' => $user_w_id->w_name, 'dept_id' => $currentDepartmentId, 'p_id' => $user_w_id->p_id, 'w_status' => $user_w_id->w_status],
-                //     ['c_name' => $client->name, 'c_number' => $client->number, 'c_status' => "Now Serving", 'c_service' => "No service selected" ]
-                // );
 
                 QmsWindow::updateOrCreate([
                     'w_name' => $user_w_id->w_name, 
@@ -109,8 +92,6 @@ class QueueingWindow extends Component
                 );
     
                 $client->delete();
-    
-                 // Optionally re-fetch the window after updating
                  $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
                  ->where('dept_id', $this->currentDepartmentId)
                  ->first();

@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Logs;
-use App\Models\QmsClientLogs;
+use App\Models\{
+    Logs, QmsClientLogs
+};
+
 
 class LogsTable extends Component
 {
@@ -39,21 +41,11 @@ class LogsTable extends Component
             return QmsClientLogs::query()
                 ->join('dms_service', 'qms_client_logs.c_service', '=', 'dms_service.service_id')
                 ->join('dms_userdepts', 'qms_client_logs.p_id', '=', 'dms_userdepts.p_id') 
-                
-                // ->select(
-                //     'qms_client_logs.*', 
-                //     'dms_service.service_name as c_service_name',
-                //     'dms_userdepts.firstname',
-                //     'dms_userdepts.lastname'
-                // )
-                
                 ->selectRaw('DISTINCT qms_client_logs.id, qms_client_logs.*, dms_service.service_name as c_service_name, dms_userdepts.firstname, dms_userdepts.lastname')
                 ->where('qms_client_logs.dept_id', $this->currentUserDepartmentId)
-            
                 ->orderBy('qms_client_logs.id', 'desc')
                 ->get();
         }
-        
     }
 
     public function render()

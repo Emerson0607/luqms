@@ -3,15 +3,14 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\QmsClients;
-use App\Models\QmsWindow;
 use Illuminate\Support\Facades\Auth;
+use App\Models\{
+    QmsClients, QmsWindow
+};
 
 class QueueingStack extends Component
 {
-    public $currentUserDepartment;
-    public $currentUserDepartmentId;
-    public $clients = [];
+    public $currentUserDepartment, $currentUserDepartmentId, $clients = [];
 
     public function mount()
     {
@@ -43,7 +42,6 @@ class QueueingStack extends Component
     //         'level' => 'info'      
     //     ]);
     // }
-
 
     public function renderClient()
     {

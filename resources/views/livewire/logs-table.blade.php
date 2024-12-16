@@ -4,8 +4,6 @@
             <h3 class="fw-bold mb-3">Logs</h3>
             <ul class="breadcrumbs mb-3">
                 <li class="nav-item">
-
-
                     <button style="text-decoration: none; color:rgb(42, 47, 91);"
                         class="btn btn-link {{ $currentTab === 'personnel' ? 'active' : '' }}"
                         wire:click="switchTab('personnel')">
@@ -18,7 +16,7 @@
                 <li class="nav-item">
                     <button style="text-decoration: none; color:rgb(42, 47, 91)"
                         class="btn btn-link {{ $currentTab === 'client' ? 'active' : '' }}"
-                        wire:click="switchTab('client')">
+                        wire:click=" switchTab('client')">
                         Client
                     </button>
                 </li>

@@ -16,10 +16,7 @@
             </script>
         @endif
 
-
         <div class="card">
-
-
             <div class="card-header">
                 <div class="d-flex align-items-center">
                     <h4 class="card-title">Manage Window</h4>
@@ -168,7 +165,7 @@
                                         </div>
 
                                         {{-- for w_status --}}
-                                        <div class="col-md-6 pe-0">
+                                        <div class="col-md-5 pe-0">
                                             <div class="form-group form-group-default">
                                                 <label for="editStatus">Status</label>
                                                 <select name="editStatus" id="editStatus" class="form-control">
@@ -177,7 +174,25 @@
                                                 </select>
                                             </div>
                                         </div>
-
+                                        <div class="col-md-6 pe-0">
+                                            <div class="form-group form-group-default">
+                                                <label for="editShared">Shared Window</label>
+                                                <select name="editShared" id="editShared" class="form-control">
+                                                    <option value="None">
+                                                        None
+                                                    </option>
+                                                    @if ($sharedWindows->isNotEmpty())
+                                                        @foreach ($sharedWindows as $window)
+                                                            <option value="{{ $window->w_name }}">
+                                                                {{ $window->w_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @else
+                                                        <option value="" disabled>No available options</option>
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
 
                                         {{-- services --}}
                                         <div class="col-md-12 col-12 mb-3">
@@ -243,7 +258,7 @@
                     </div>
                 </div>
 
-                <!-- Personnel Table -->
+                <!-- Manage Window Table -->
                 <div class="table-responsive">
                     <table id="add-row" class="display table table-striped table-hover">
                         <thead>
@@ -252,6 +267,7 @@
                                 <th>Window</th>
                                 <th>Personnel</th>
                                 <th>Status</th>
+                                <th>Shared</th>
 
                                 <th style="width: 10%">Action</th>
                             </tr>
@@ -279,6 +295,183 @@
                                             @else
                                                 Inactive
                                             @endif
+                                        </td>
+
+                                        <td>
+                                            {{ $i->shared_name }}
+                                        </td>
+
+                                        <td>
+                                            <div class="form-button-action">
+                                                <!-- Edit Button -->
+                                                <button type="button" data-bs-toggle="modal"
+                                                    data-bs-target="#editQueueModal"
+                                                    class="btn btn-link btn-primary btn-lg"
+                                                    onclick="editQueueWindow({{ $i->id }}, '{{ $i->w_name }}', {{ $i->dept_id }})">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+
+                                                <!-- Delete Button -->
+                                                <button type="button" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteQueueModal" class="btn btn-link btn-danger"
+                                                    onclick="deleteQueueWindow({{ $i->id }})">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <p>No window available for your department.</p>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        {{-- for shared setting --}}
+        <div class="card mt-5">
+            <div class="card-header">
+                <div class="d-flex align-items-center">
+                    <h4 class="card-title">Shared Window</h4>
+                    <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal"
+                        data-bs-target="#manageWindow">
+                        <i class="fa fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <!-- Add Modal -->
+                <form method="POST" action="/personnel">
+                    @csrf
+                    <div class="modal fade" id="manageWindow" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog " role="document">
+                            <div class="modal-content ">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title">
+                                        <span class="fw-mediumbold"> Shared</span> <span
+                                            class="fw-light">Window</span>
+                                    </h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" style="margin-right:10px;">
+                                    <p class="small">Create new shared window.</p>
+                                    <div class="row">
+                                        <div class="col-md-6 pe-0">
+                                            <div class="form-group form-group-default">
+                                                <label for="w_id">Shared Window Name</label>
+
+                                                <input style="border:0;" type="text" name="w_name"
+                                                    id="w_name" oninput="formatInput(this)">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- for dept_id --}}
+                                    <input type="text" style="display: none;" name="dept_id" id="dept_id"
+                                        value="{{ session('current_department_id') }}">
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <button type="submit" class="btn btn-primary">Add</button>
+                                    <button type="button" class="btn btn-danger"
+                                        data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Edit Personnel Window Modal -->
+                <div class="modal fade" id="editQueueModal" tabindex="-1" aria-labelledby="editModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit Window</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <form id="editQueueForm" method="POST" action="">
+                                @csrf
+                                @method('PUT')
+                                <div class="modal-body">
+                                    <div class="row">
+                                        {{-- for window name --}}
+                                        <div class="col-md-4 pe-0">
+                                            <div class="form-group form-group-default">
+                                                <label for="editWName">Window</label>
+                                                <input style="border:0;" type="text" name="editWName"
+                                                    id="editWName" oninput="formatInput(this)">
+                                            </div>
+                                        </div>
+
+                                        {{-- for dept_id --}}
+                                        <input type="text" style="display: none;" name="editDeptId"
+                                            id="editDeptId" value="{{ session('current_department_id') }}">
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                    <button type="button" class="btn btn-danger"
+                                        data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Modal -->
+                <div class="modal fade" id="deleteQueueModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel">Delete Window</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete this window?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form id="deleteQueueForm" method="POST" action="">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manage Window Table -->
+                <div class="table-responsive">
+                    <table id="add-row" class="display table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Shared Window Name</th>
+                                <th style="width: 10%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if ($windowLists)
+                                @foreach ($windowLists as $index => $i)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $i->w_name }}</td>
+                                        <td>
+                                            {{ $i->shared_name }}
                                         </td>
 
                                         <td>
@@ -358,17 +551,19 @@
             const {
                 w_name: selectedWName = '',
                 p_id: selectedPersonnelId = '',
+                shared_name: selectedSharedName = '',
                 w_status: selectedStatus = '' // Assuming this contains the selected service IDs
             } = selectedWindow;
 
-            // Update dropdowns
-            // setDropdownValue(document.getElementById('editWName'), selectedWName);
             setDropdownValue(document.getElementById('editPersonnel'), selectedPersonnelId);
             setDropdownValue(
                 document.getElementById('editStatus'),
                 selectedStatus,
                 selectedStatus == '1' ? 'Active' : 'Inactive'
             );
+
+            setDropdownValue(document.getElementById('editShared'), selectedSharedName);
+
             document.getElementById('editWName').value = selectedWName;
 
             const url = `/get-associated-services/${wName}/${deptId}`;

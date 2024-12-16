@@ -97,6 +97,7 @@ class PersonnelController extends Controller
             'editDeptId' => ['required'],
             'editPersonnel' => 'required|string|max:255',
             'editStatus' => 'required|string|max:255',
+            'editShared' => 'required|string|max:255',
             'editService' => ['array'],
             'editService.*' => ['exists:dms_service,service_id'],
         ], [
@@ -127,6 +128,7 @@ class PersonnelController extends Controller
         $window->w_name = $request->editWName;
         $window->p_id = $request->editPersonnel;
         $window->w_status = $request->editStatus;
+        $window->shared_name = $request->editShared;
         $window->save();
 
         return redirect()->back()->with('success', 'Window updated successfully.');

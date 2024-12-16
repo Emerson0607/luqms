@@ -1,6 +1,8 @@
 <div wire:poll.1s="updateDepartment" class="main-header">
     <nav class="allWindow-nav" style="height: 70px">
-        <div class="lu-logo"><img style="width:50px; height:50px; border-radius:50%" src="img/logo/LU.png"></div>
+        {{-- <div class="lu-logo"><img style="width:50px; height:50px; border-radius:50%" src="img/logo/LU.png"></div> --}}
+        <div class="dept-logo"> <img style="width:50px; height:50px; border-radius:50%"
+                src="{{ asset($currentDepartmentImage) }}"></div>
 
         <div class="dept-title"> {{ $currentUserDepartment }}</div>
 
@@ -13,8 +15,7 @@
             </svg>
         </button>
     </nav>
-    {{-- <div class="dept-logo"> <img style="width:50px; height:50px; border-radius:50%"
-                src="{{ asset($currentDepartmentImage) }}"></div> --}}
+
 
     <div class="allwindow-card" style="background-color: rgb(243, 243, 248);">
         @if (isset($allWindowQueue) && $allWindowQueue->isNotEmpty())
