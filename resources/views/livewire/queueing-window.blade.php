@@ -81,17 +81,33 @@
                 </div>
             @endif
 
-            <div class="generate-client-card">
-                <div>
-                    <!-- Student Number Input -->
-                    <input type="text" wire:model="studentNo" wire:keydown.enter="pushClient" id="studentNo"
-                        placeholder="Enter Student No." class="form-control">
+            @if ($currentUserWindow->shared_name == 'None')
+                <div class="generate-client-card">
+                    <div>
+                        <!-- Student Number Input -->
+                        <input type="text" wire:model="studentNo" wire:keydown.enter="pushClient" id="studentNo"
+                            placeholder="Enter Student No." class="form-control">
+                    </div>
+                    <div class="or">or</div>
+                    <div>
+                        <button wire:click="generateClient" type="submit" class="btn btn-primary">Generate
+                            Client</button>
+                    </div>
                 </div>
-                <div class="or">or</div>
-                <div>
-                    <button wire:click="generateClient" type="submit" class="btn btn-primary">Generate Client</button>
+            @else
+                <div class="generate-client-card">
+                    <div>
+                        <!-- Student Number Input -->
+                        <input type="text" wire:model="studentNo" wire:keydown.enter="pushClient_s" id="studentNo_s"
+                            placeholder="Enter Student No." class="form-control">
+                    </div>
+                    <div class="or">or</div>
+                    <div>
+                        <button wire:click="generateClient_s" type="submit" class="btn btn-primary">Generate
+                            Client</button>
+                    </div>
                 </div>
-            </div>
+            @endif
         @else
             <h5 id="client-status">Create Window</h5>
             <h1 style="font-size: 64px; margin-top:2rem;"><span id="client-number">No Active Window</span></h1>

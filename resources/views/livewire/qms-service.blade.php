@@ -1,21 +1,52 @@
 <div class="row">
     <div class="col-md-12 m-5" style="width:95%">
         @if ($errors->has('editWName'))
-            <p id="error-message" class="alert alert-danger">
-                {{ $errors->first('editWName') }}
-            </p>
-
             <script type="text/javascript">
-                // Set timeout to hide the error message after 3 seconds
-                setTimeout(function() {
-                    const errorMessage = document.getElementById('error-message');
-                    if (errorMessage) {
-                        errorMessage.style.display = 'none';
-                    }
-                }, 3000);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: '{{ $errors->first('editWName') }}',
+                    timer: 3000, // Auto-close after 3 seconds
+                    showConfirmButton: false
+                });
             </script>
         @endif
 
+        @if ($errors->has('editPersonnel'))
+            <script type="text/javascript">
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: '{{ $errors->first('editPersonnel') }}',
+                    timer: 3000, // Auto-close after 3 seconds
+                    showConfirmButton: false
+                });
+            </script>
+        @endif
+
+        @if ($errors->has('editSWName'))
+            <script type="text/javascript">
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: '{{ $errors->first('editSWName') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            </script>
+        @endif
+
+        @if (session('sweetalert'))
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '{{ session('sweetalert') }}',
+                });
+            </script>
+        @endif
+
+        {{-- for manage window --}}
         <div class="card">
             <div class="card-header">
                 <div class="d-flex align-items-center">
@@ -27,7 +58,6 @@
                 </div>
             </div>
             <div class="card-body">
-
                 <!-- Add Modal -->
                 <form method="POST" action="/personnel">
                     @csrf
@@ -274,7 +304,7 @@
                         </thead>
                         <tbody>
 
-                            @if ($windowLists)
+                            @if ($windowLists->isNotEmpty())
                                 @foreach ($windowLists as $index => $i)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
@@ -322,14 +352,17 @@
                                     </tr>
                                 @endforeach
                             @else
-                                <p>No window available for your department.</p>
+                                <tr>
+                                    <td colspan="6" class="text-center">No window available
+                                    </td>
+                                </tr>
                             @endif
+
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
 
         {{-- for shared setting --}}
         <div class="card mt-5">
@@ -337,17 +370,18 @@
                 <div class="d-flex align-items-center">
                     <h4 class="card-title">Shared Window</h4>
                     <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal"
-                        data-bs-target="#manageWindow">
+                        data-bs-target="#manageSharedWindow">
                         <i class="fa fa-plus"></i> Add
                     </button>
                 </div>
             </div>
             <div class="card-body">
 
-                <!-- Add Modal -->
-                <form method="POST" action="/personnel">
+                <!-- Add shared Modal -->
+                <form method="POST" action="/sharedWindow">
                     @csrf
-                    <div class="modal fade" id="manageWindow" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal fade" id="manageSharedWindow" tabindex="-1" role="dialog"
+                        aria-hidden="true">
                         <div class="modal-dialog " role="document">
                             <div class="modal-content ">
                                 <div class="modal-header border-0">
@@ -365,8 +399,7 @@
                                     <div class="row">
                                         <div class="col-md-6 pe-0">
                                             <div class="form-group form-group-default">
-                                                <label for="w_id">Shared Window Name</label>
-
+                                                <label for="w_name">Shared Window Name</label>
                                                 <input style="border:0;" type="text" name="w_name"
                                                     id="w_name" oninput="formatInput(this)">
                                             </div>
@@ -387,17 +420,17 @@
                     </div>
                 </form>
 
-                <!-- Edit Personnel Window Modal -->
-                <div class="modal fade" id="editQueueModal" tabindex="-1" aria-labelledby="editModalLabel"
+                <!-- Edit shared Modal -->
+                <div class="modal fade" id="editSharedModal" tabindex="-1" aria-labelledby="editSharedLabel"
                     aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="editModalLabel">Edit Window</h5>
+                                <h5 class="modal-title" id="editSharedLabel">Edit Window</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
-                            <form id="editQueueForm" method="POST" action="">
+                            <form id="editSharedForm" method="POST" action="">
                                 @csrf
                                 @method('PUT')
                                 <div class="modal-body">
@@ -405,15 +438,15 @@
                                         {{-- for window name --}}
                                         <div class="col-md-4 pe-0">
                                             <div class="form-group form-group-default">
-                                                <label for="editWName">Window</label>
-                                                <input style="border:0;" type="text" name="editWName"
-                                                    id="editWName" oninput="formatInput(this)">
+                                                <label for="editSWName">Shared Window Name</label>
+                                                <input style="border:0;" type="text" name="editSWName"
+                                                    id="editSWName" oninput="formatInput(this)">
                                             </div>
                                         </div>
 
                                         {{-- for dept_id --}}
-                                        <input type="text" style="display: none;" name="editDeptId"
-                                            id="editDeptId" value="{{ session('current_department_id') }}">
+                                        <input type="text" style="display: none;" name="editSDeptId"
+                                            id="editSDeptId" value="{{ session('current_department_id') }}">
                                     </div>
 
                                 </div>
@@ -427,21 +460,21 @@
                     </div>
                 </div>
 
-                <!-- Delete Modal -->
-                <div class="modal fade" id="deleteQueueModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                <!-- Delete shared modal -->
+                <div class="modal fade" id="deleteSharedModal" tabindex="-1" aria-labelledby="deleteSharedLabel"
                     aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="deleteModalLabel">Delete Window</h5>
+                                <h5 class="modal-title" id="deleteSharedLabel">Delete Window</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <p>Are you sure you want to delete this window?</p>
+                                <p>Are you sure you want to delete this shared window?</p>
                             </div>
                             <div class="modal-footer">
-                                <form id="deleteQueueForm" method="POST" action="">
+                                <form id="deleteSharedForm" method="POST" action="">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger">Delete</button>
@@ -453,7 +486,7 @@
                     </div>
                 </div>
 
-                <!-- Manage Window Table -->
+                <!-- Manage Shared Window Table -->
                 <div class="table-responsive">
                     <table id="add-row" class="display table table-striped table-hover">
                         <thead>
@@ -464,30 +497,26 @@
                             </tr>
                         </thead>
                         <tbody>
-
-                            @if ($windowLists)
-                                @foreach ($windowLists as $index => $i)
+                            @if ($sharedWindows->isNotEmpty())
+                                @foreach ($sharedWindows as $index => $sharedWindow)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td>{{ $i->w_name }}</td>
-                                        <td>
-                                            {{ $i->shared_name }}
-                                        </td>
-
+                                        <td>{{ $sharedWindow->w_name }}</td>
                                         <td>
                                             <div class="form-button-action">
                                                 <!-- Edit Button -->
                                                 <button type="button" data-bs-toggle="modal"
-                                                    data-bs-target="#editQueueModal"
+                                                    data-bs-target="#editSharedModal"
                                                     class="btn btn-link btn-primary btn-lg"
-                                                    onclick="editQueueWindow({{ $i->id }}, '{{ $i->w_name }}', {{ $i->dept_id }})">
+                                                    onclick="editSharedWindow({{ $sharedWindow->id }}, '{{ $sharedWindow->w_name }}', {{ $sharedWindow->dept_id }})">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
 
                                                 <!-- Delete Button -->
                                                 <button type="button" data-bs-toggle="modal"
-                                                    data-bs-target="#deleteQueueModal" class="btn btn-link btn-danger"
-                                                    onclick="deleteQueueWindow({{ $i->id }})">
+                                                    data-bs-target="#deleteSharedModal"
+                                                    class="btn btn-link btn-danger"
+                                                    onclick="deleteSharedWindow({{ $sharedWindow->id }})">
                                                     <i class="fa fa-times"></i>
                                                 </button>
                                             </div>
@@ -495,9 +524,12 @@
                                     </tr>
                                 @endforeach
                             @else
-                                <p>No window available for your department.</p>
+                                <tr>
+                                    <td colspan="3" class="text-center">No shared window available</td>
+                                </tr>
                             @endif
                         </tbody>
+
                     </table>
                 </div>
             </div>
@@ -600,5 +632,33 @@
     // Delete window
     function deleteQueueWindow(pId) {
         document.getElementById('deleteQueueForm').action = `/personnel/${pId}`;
+    }
+
+    // shared window
+
+    // Delete window
+    function deleteSharedWindow(pId) {
+        document.getElementById('deleteSharedForm').action = `/sharedWindow/${pId}`;
+    }
+
+    //Edit shared window
+    // Edit window
+    function editSharedWindow(pId, wName, deptId) {
+
+        const selectedWindow = @json($sharedWindows).find(sharedWindow => sharedWindow.id == pId);
+
+        if (selectedWindow) {
+            // Extract values from the selected window
+            const {
+                w_name: selectedWName = '',
+                p_id: selectedPersonnelId = '',
+
+            } = selectedWindow;
+
+            document.getElementById('editSWName').value = selectedWName;
+            document.getElementById('editSharedForm').action = `/sharedWindow/${pId}`;
+        } else {
+            console.error('Selected user not found.');
+        }
     }
 </script>

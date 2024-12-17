@@ -4,7 +4,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use App\Models\{
-    Window, Client, Students, QmsWindow, QmsService, DmsService, QmsClients, QmsClientLogs
+    Window, Client, Students, QmsWindow, QmsService, DmsService, QmsClients, QmsClientLogs, QmsSharedClient
 };
 
 
@@ -299,6 +299,7 @@ class QueueingWindow extends Component
         // Optionally reset the fields after submission
         $this->reset('studentNo', 'gName', 'sName', 'dept_id');
     }
+
     
     public function generateClient()
     {
@@ -307,59 +308,102 @@ class QueueingWindow extends Component
     }
 
     // for queue stack
-    
-    //   public function renderClient()
-    // {
-    //     $this->currentUserDepartment = session('current_department_name');
-    //     $this->currentUserDepartmentId = session('current_department_id');
-        
-    //     $user = Auth::user();
-
-    //     $userWindow = QmsWindow::where('p_id', $user->p_id)
-    //         ->where('dept_id', $this->currentUserDepartmentId)
-    //         ->first();
- 
-    //     if ($userWindow) {
-    //         $this->clients = QmsClients::where('dept_id', $this->currentUserDepartmentId)
-    //             ->where('w_name', $userWindow->w_name)
-    //             ->take(8)
-    //             ->get();
-    //     } else {
-    //         $this->clients = collect();
-    //     }
-            
-    //     $this->dispatch('log', [
-    //         'obj' => $this->clients,   
-    //         'level' => 'info'      
-    //     ]);
-    // }
-
     public function renderClient()
     {
         $user = Auth::user();
         $userWindow = QmsWindow::where('p_id', $user->p_id)
             ->where('dept_id', $this->currentDepartmentId)
             ->first();
-    
+         
+        // dd($userWindow->shared_name, gettype($userWindow->shared_name));
+        //  dd($userWindow->dept_id, gettype($userWindow->dept_id));
         if ($userWindow) {
-            $this->clients = QmsClients::where('dept_id', $this->currentDepartmentId)
+
+            if ($userWindow->shared_name === 'None') {
+                $this->clients = QmsClients::where('dept_id', $this->currentDepartmentId)
                 ->where('w_name', $userWindow->w_name)
                 ->take(8)
                 ->get();
     
-            $totalClients = QmsClients::where('dept_id', $this->currentDepartmentId)
-                ->where('w_name', $userWindow->w_name)
-                ->count();
+                $totalClients = QmsClients::where('dept_id', $this->currentDepartmentId)
+                    ->where('w_name', $userWindow->w_name)
+                    ->count();
+                
+                $this->dispatch('updatePollStatus', [
+                    'shouldPoll' => $totalClients > 0 && $this->clients->count() < 8,
+                ]);
+            }else{
+                $this->clients = QmsSharedClient::where('dept_id', $this->currentDepartmentId)
+                ->where('w_name', $userWindow->shared_name)
+                ->take(8)
+                ->get();
+    
+                $totalClients = QmsSharedClient::where('dept_id', $this->currentDepartmentId)
+                    ->where('w_name', $userWindow->shared_name)
+                    ->count();
+                
+                $this->dispatch('updatePollStatus', [
+                    'shouldPoll' => $totalClients > 0 && $this->clients->count() < 8,
+                ]);
+            }
+
             
-            $this->dispatch('updatePollStatus', [
-                'shouldPoll' => $totalClients > 0 && $this->clients->count() < 8,
-            ]);
         } else {
             $this->clients = collect();
             $this->dispatch('updatePollStatus', [
                 'shouldPoll' => false,
             ]);
         }
+    }
+
+    // for shared factory
+
+    // for push clients
+    public function pushClient_s()
+    {
+        $student = Students::where('studentNo', $this->studentNo)->first();
+   
+        $randomWindow = QmsWindow::where('p_id', Auth::user()->p_id)
+           ->where('dept_id', $this->currentDepartmentId)
+           ->first();
+   
+   
+        if (!$randomWindow) {
+            session()->flash('error', 'No available window found.');
+            return;
+        }
+   
+        if ($student) {
+            QmsSharedClient::create([
+                'studentNo' => $this->studentNo,
+                'gName' => $student->GName,
+                'sName' => $student->Sname,
+                'dept_id' => $this->currentDepartmentId,   
+                'w_name' => $randomWindow->shared_name
+            ]);
+       
+            session()->flash('message', 'Client successfully pushed!');
+   
+        } else {
+            QmsSharedClient::create([
+                'studentNo' => $this->studentNo,
+                'gName' => 'Guest', 
+                'sName' => 'Guest',
+                'w_name' => $randomWindow->shared_name,
+                'dept_id' => $this->currentDepartmentId
+            ]);
+       
+            session()->flash('message', 'Client successfully pushed!');
+        }
+       
+           // Optionally reset the fields after submission
+        $this->reset('studentNo', 'gName', 'sName', 'dept_id');
+    }
+       
+    public function generateClient_s()
+    {
+        QmsSharedClient::factory(10)->create();
+        session()->flash('message', 'Guest successfully pushed!');
     }
 
     public function render()

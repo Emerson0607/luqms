@@ -22,10 +22,10 @@ Route::middleware('auth')->controller(PersonnelController::class)->group(functio
     Route::put('/personnel/{pId}', 'update');
     Route::get('/get-associated-services/{wName}/{deptId}', 'getAssociatedServices');
 
-    // for table
-    Route::post('/personnel/table', 'table_store')->name('table_store');
-    Route::delete('/personnel/table/{pId}','table_destroy')->name('personnel.table_destroy');
-    Route::put('/personnel/table/{pId}', 'table_update')->name('table_update');
+    // shared window
+    Route::post('/sharedWindow', 'shared_store')->name('shared_store');
+    Route::delete('/sharedWindow/{pId}','shared_destroy')->name('shared_destroy');
+    Route::put('/sharedWindow/{pId}', 'shared_update');
 
 });
 

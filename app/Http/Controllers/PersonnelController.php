@@ -1,17 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Models\Department;
-use App\Models\QmsWindow;
-use App\Models\QmsService;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+
+use App\Models\{
+    Client, User, Department, QmsWindow, QmsService, QmsSharedWindow, QmsSharedClient
+};
 
 class PersonnelController extends Controller
 {
@@ -40,12 +39,9 @@ class PersonnelController extends Controller
 
     public function personnel()
     {
-
-        // Check if the authenticated user is a department head
         if (!$this->isDepartmentHead()) {
             return redirect()->route('home')->with('error', 'You do not have access to this resource.');
         }
-
         return view('user.personnel');
     }
     
@@ -59,14 +55,24 @@ class PersonnelController extends Controller
             'services.*' => ['exists:dms_service,service_id'],  // Validate that each service ID exists in the qms_services table
         ]);
 
-        // Check if w_id already exists in the Window table
+        // Check if window already exist
         $wIdExists = QmsWindow::where('w_name', $validatedAttributes['w_name'])
-        ->where('dept_id', $validatedAttributes['dept_id'])
-        ->exists();
+            ->where('dept_id', $validatedAttributes['dept_id'])
+            ->exists();
 
         if ($wIdExists) {
-            return redirect()->back()->with('error', 'The provided window already exists.')->withInput();
+            return redirect()->back()->with('sweetalert', 'The provided window already exists.')->withInput();
         }
+
+        // check if user already exist
+        $wPIdExists = QmsWindow::where('p_id', $validatedAttributes['p_id'])
+            ->where('dept_id', $validatedAttributes['dept_id'])
+            ->exists();
+
+        if ($wPIdExists) {
+            return redirect()->back()->with('sweetalert', 'A window can only be assigned to one personnel.')->withInput();
+        }
+
 
         // Create a new record in the Window table
         QmsWindow::create($validatedAttributes);
@@ -95,13 +101,19 @@ class PersonnelController extends Controller
                 Rule::unique('qms_windows', 'w_name')->ignore($pId)->where('dept_id', $request->input('editDeptId')),
             ],
             'editDeptId' => ['required'],
-            'editPersonnel' => 'required|string|max:255',
+            'editPersonnel' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('qms_windows', 'p_id')->ignore($pId)->where('dept_id', $request->input('editDeptId')),
+            ],
             'editStatus' => 'required|string|max:255',
             'editShared' => 'required|string|max:255',
             'editService' => ['array'],
             'editService.*' => ['exists:dms_service,service_id'],
         ], [
             'editWName.unique' => 'The window name already exists. Please choose a different name.',
+            'editPersonnel.unique' => 'A window can only be assigned to one personnel.',
         ]);
     
         $window = QmsWindow::findOrFail($pId); 
@@ -165,5 +177,83 @@ class PersonnelController extends Controller
         } else {
             return redirect()->back()->with('error', 'Window not found.');
         }
+    }
+
+    // shared window table
+    public function shared_store(){
+        $validatedAttributes = request()->validate([
+            'w_name' => ['required'],
+            'dept_id' => ['required'],
+        ]);
+    
+        // Check if w_id already exists in the Window table
+        $wIdExists = QmsSharedWindow::where('w_name', $validatedAttributes['w_name'])
+            ->where('dept_id', $validatedAttributes['dept_id'])
+            ->exists();
+    
+        if ($wIdExists) {
+            return redirect()->back()->with('sweetalert', 'The provided window already exists.')->withInput();
+        }
+    
+        // Create a new record in the Window table
+        QmsSharedWindow::create($validatedAttributes);
+        return redirect()->route('personnel');
+    }
+
+    // Shared detroy
+    public function shared_destroy($pId){
+        $window = QmsSharedWindow::where('id', $pId)->first();
+
+        if ($window) {
+            // Store the window name for reuse
+            $windowName = $window->w_name;
+            $deptId = $window->dept_id;
+            $window->delete();
+
+            // Update all QmsWindow records where shared_name matches
+            QmsWindow::where('shared_name', $windowName)
+                ->where('dept_id', $deptId)
+                ->update(['shared_name' => 'None']);
+
+            // Delete all QmsSharedClient records where shared_name matches
+            QmsSharedClient::where('w_name', $windowName)
+                ->where('dept_id', $deptId)
+                ->delete();
+            
+            return redirect()->back()->with('success', 'Window deleted successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Window not found.');
+        }
+    }
+
+    // Shared update
+    public function shared_update(Request $request, $pId)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'editSWName' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('qms_shared_window', 'w_name')->ignore($pId)->where('dept_id', $request->input('editSDeptId')),
+            ],
+            'editSDeptId' => ['required'],
+          
+        ], [
+            'editSWName.unique' => 'The shared window name already exists. Please choose a different name.',
+        ]);
+    
+        $window = QmsSharedWindow::findOrFail($pId); 
+
+        // Update all QmsWindow records where shared_name matches
+        QmsWindow::where('shared_name', $window->w_name)
+            ->where('dept_id', $window->dept_id)
+            ->update(['shared_name' => $request->editSWName]);
+    
+        // Update the model's attributes
+        $window->w_name = $request->editSWName;
+        $window->save();
+
+        return redirect()->back()->with('success', 'Window updated successfully.');
     }
 }

@@ -29,7 +29,7 @@ class QmsService extends Component
         $this->inactiveWindows = QmsWindow::where('dept_id', $this->currentUserDepartmentId)
             ->where('w_status', 0)
             ->get(); 
-        $this->sharedWindows = QmsSharedWindow::all();
+        $this->sharedWindows = QmsSharedWindow::where('dept_id', $this->currentUserDepartmentId)->get();
     }
 
     public function render()
