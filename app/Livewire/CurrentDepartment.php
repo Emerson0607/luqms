@@ -74,11 +74,19 @@ class CurrentDepartment extends Component
 
         // Retrieve all windows for the department
         $this->allWindowQueue = QmsWindow::where('dept_id', $currentDepartmentId)
-        ->where('w_status', 1)
-        ->get();
+            ->where('w_status', 1)
+            ->get();
 
         // For each window, fetch clients associated with that window
         foreach ($this->allWindowQueue as $window) {
+
+            if (condition) {
+                # code...
+            } else {
+                # code...
+            }
+            
+
             $window->clients = QmsClients::where('dept_id', $currentDepartmentId)
                 ->where('w_name', $window->w_name)
                 ->take(6)
