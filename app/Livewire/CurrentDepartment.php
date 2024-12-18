@@ -6,7 +6,7 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\{
-    QmsWindow, WindowList, QmsClients
+    QmsWindow, WindowList, QmsClients, QmsSharedClient
 };
 
 class CurrentDepartment extends Component
@@ -80,21 +80,19 @@ class CurrentDepartment extends Component
         // For each window, fetch clients associated with that window
         foreach ($this->allWindowQueue as $window) {
 
-            if (condition) {
-                # code...
-            } else {
-                # code...
-            }
-            
-
-            $window->clients = QmsClients::where('dept_id', $currentDepartmentId)
+            if ($window->shared_name === 'None') {
+                $window->clients = QmsClients::where('dept_id', $currentDepartmentId)
                 ->where('w_name', $window->w_name)
                 ->take(6)
                 ->get();
+            } else {
+                $window->clients = QmsSharedClient::where('dept_id', $currentDepartmentId)
+                ->where('w_name', $window->shared_name)
+                ->take(6)
+                ->get();
+            }
         }
-
     }
-
 
     public function render()
     {
