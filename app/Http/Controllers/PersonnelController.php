@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 use App\Models\{
-    Client, User, Department, QmsWindow, QmsService, QmsSharedWindow, QmsSharedClient
+    QmsWindow, QmsService, QmsSharedWindow, QmsSharedClient, QmsClients
 };
 
 class PersonnelController extends Controller
@@ -136,13 +136,18 @@ class PersonnelController extends Controller
             }
         }
     
+         // Update all QmsWindow records where shared_name matches
+        QmsClients::where('w_name', $window->w_name)
+            ->where('dept_id', $window->dept_id)
+            ->update(['w_name' => $request->editWName]);
+
         // Update the model's attributes
         $window->w_name = $request->editWName;
         $window->p_id = $request->editPersonnel;
         $window->w_status = $request->editStatus;
         $window->shared_name = $request->editShared;
         $window->save();
-
+        
         return redirect()->back()->with('success', 'Window updated successfully.');
     }
 
@@ -249,7 +254,12 @@ class PersonnelController extends Controller
         QmsWindow::where('shared_name', $window->w_name)
             ->where('dept_id', $window->dept_id)
             ->update(['shared_name' => $request->editSWName]);
-    
+        
+        // Update all QmsWindow records where shared_name matches
+        QmsSharedClient::where('w_name', $window->w_name)
+            ->where('dept_id', $window->dept_id)
+            ->update(['w_name' => $request->editSWName]);
+            
         // Update the model's attributes
         $window->w_name = $request->editSWName;
         $window->save();

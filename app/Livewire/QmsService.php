@@ -9,9 +9,7 @@ use App\Models\{
 
 class QmsService extends Component
 {
-
-    public $currentUserDepartmentId, $services, $windowLists, $personnels, $inactiveWindows;
-    public $sharedWindows;
+    public $currentUserDepartmentId, $services, $windowLists, $personnels, $inactiveWindows, $sharedWindows;
     
     public function mount()
     {

@@ -1,5 +1,8 @@
 <div class="row">
     <div class="col-md-12 m-5" style="width:95%">
+
+        {{-- sweet alert for error handling --}}
+
         @if ($errors->has('editWName'))
             <script type="text/javascript">
                 Swal.fire({
@@ -376,7 +379,6 @@
                 </div>
             </div>
             <div class="card-body">
-
                 <!-- Add shared Modal -->
                 <form method="POST" action="/sharedWindow">
                     @csrf
