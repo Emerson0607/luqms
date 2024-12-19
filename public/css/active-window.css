@@ -1,0 +1,109 @@
+/* -----Root Variable */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+/* Root Variable */
+:root {
+    --color-admin: #303396;
+    --color-primary: #7380ec;
+    --color-danger: #ff7782;
+    --color-success: #41f1b6;
+    --color-warning: #ffbb55;
+    --color-white: #fff;
+    --color-info-dark: #7d8da1;
+    --color-info-light: #dce1eb;
+    --color-dark: #363949;
+    --color-light: rgba(132, 139, 200, 0.18);
+    --color-primary-variant: #111e88;
+    --color-dark-variant: #677483;
+    --color-background: #f6f6f9;
+
+    --card-border-radius: 2rem;
+    --border-radius-1: 0.4rem;
+    --border-radius-2: 0.8rem;
+    --border-radius-3: 1.2rem;
+    --color-lu: #087830;
+    --card-padding: 1.8rem;
+    --padding-1: 1.2rem;
+    --box-shadow: 0 2rem 3rem var(--color-light);
+}
+
+.active-window-card {
+    display: grid;
+    grid-template-columns: 30% 1fr;
+    font-family: poppins, sans-serif;
+}
+
+.active-window-card>div {
+    margin: 0px;
+}
+
+.queue-card {
+    background-color: rgb(243, 243, 248);
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 1rem;
+    font-family: poppins, sans-serif;
+}
+
+.queue-card>div {}
+
+.serving-card {
+    display: grid;
+    /*  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    font-family: poppins, sans-serif;
+}
+
+.serving-card>div {
+    margin: .5rem;
+    border: solid rgb(68, 68, 68) 1px;
+    height: 7rem;
+}
+
+.serving-card .serving {
+    display: grid;
+    /*  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
+    grid-template-columns: 6rem 1fr;
+    gap: .1rem;
+    font-family: poppins, sans-serif;
+
+}
+
+.serving-card .serving>div {}
+
+.window-client {
+    display: grid;
+    grid-template-rows: 24px 1fr;
+    font-family: poppins, sans-serif;
+}
+
+.window-client>div {
+    border: solid rgb(192, 36, 140) 1px;
+}
+
+.window-queue {
+    display: grid;
+    grid-template-columns: 1fr 82px;
+    font-family: poppins, sans-serif;
+}
+
+.window-queue>div {
+    border: solid rgb(44, 15, 172) 2px;
+}
+
+.client-stack>div {
+    border: solid rgb(185, 56, 157) 1px;
+}
+
+.client-three {
+    margin: 0px;
+    padding: 0px;
+}
+
+/* waiting stack card */
+.waiting-stack-card {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}

@@ -108,27 +108,14 @@
     text-align: center;
 }
 
-/* for all window page */
-/* .allWindow-nav {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    justify-items: center;
-    align-items: center;
-} */
-
 .allWindow-nav {
     display: grid;
     grid-template-columns: auto 1fr auto;
-    /* First column for logo, second for title, third for button */
     align-items: center;
-    /* Vertically center items */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     height: 70px;
     padding-left: 3rem;
     gap: 1rem;
-
 }
 
 .allWindow-nav .lu-logo {
@@ -137,7 +124,7 @@
 
 .allWindow-nav .dept-title {
     text-align: left;
-    color: rgb(52, 52, 52);
+    color: white;
 }
 
 #fullscreenBtn {

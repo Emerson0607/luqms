@@ -1,5 +1,5 @@
-<div wire:poll.1s="updateDepartment" class="main-header">
-    <nav class="allWindow-nav" style="height: 70px">
+<div style="background-color: rgb(243, 243, 248);" wire:poll.1s="updateDepartment" class="main-header">
+    <nav class="allWindow-nav" style="height: 70px; background-color:green">
         {{-- <div class="lu-logo"><img style="width:50px; height:50px; border-radius:50%" src="img/logo/LU.png"></div> --}}
         <div class="dept-logo"> <img style="width:50px; height:50px; border-radius:50%"
                 src="{{ asset($currentDepartmentImage) }}"></div>
@@ -11,13 +11,124 @@
             <svg id="fullscreenIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20"
                 height="20">
                 <path
-                    d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z" />
+                    d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"
+                    fill="white" />
             </svg>
         </button>
     </nav>
 
+    <div class="active-window-card" style="background-color: white; width:100%; height:400px;">
+        <div class="charter-card">
+            <h1>CHARTER</h1>
+        </div>
+        <div class="queue-card">
+            <div class="serving-card">
+                <div class="serving">
+                    <div class="window-name">
+                        WINDOW 1
+                    </div>
+                    <div class="window-client">
+                        <div class="window-status">
+                            Now Serving
+                        </div>
+                        <div class="window-queue">
+                            <div class="client-number">
+                                201-0579
+                            </div>
+                            <div class="client-stack">
+                                <div>Next</div>
+                                <div class="client-three">
+                                    <p>201-0578</p>
+                                    <p>201-0577</p>
+                                    <p>201-0576</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <div class="allwindow-card" style="background-color: rgb(243, 243, 248);">
+
+
+            </div> {{-- end of serving-card --}}
+
+            <div class="waiting-card">
+                <div class="waiting-title">
+                    Waiting List
+                </div>
+                <div class="waiting-stack-card">
+                    <div>
+                        <div class="waiting-window-name">
+                            Window 1
+                        </div>
+                        <div class="waiting-window-client">
+                            <ul>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="waiting-window-name">
+                            Window 1
+                        </div>
+                        <div class="waiting-window-client">
+                            <ul>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {{-- shared waiting list --}}
+                    <div>
+                        <div class="waiting-window-name">
+                            SHARED WINDOW
+                        </div>
+                        <div class="waiting-window-client">
+                            <ul>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="allwindow-card" style="background-color: rgb(243, 243, 248); margin-top: 40rem;">
         @if (isset($allWindowQueue) && $allWindowQueue->isNotEmpty())
             @foreach ($allWindowQueue as $window)
                 <div class="d-flex align-items-center card queue-ongoing-card pb-2">
@@ -29,9 +140,6 @@
 
 
                     <div class="queue-window text-center" style="padding-bottom: 0; margin-bottom: 24px;">
-
-
-
                         @if ($window->c_status == 'On Break')
                             <h5 style="color: orange">
                                 {{ $window->c_status ?? 'On Break' }}
@@ -103,11 +211,11 @@
     const fullscreenIcon = document.getElementById('fullscreenIcon');
 
     const expandIcon = `
-        <path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"/>
+        <path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z" fill="white" />
     `;
 
     const compressIcon = `
-        <path d="M160 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96zM32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM352 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 320c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0z"/>
+        <path d="M160 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96zM32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM352 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 320c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0z" fill="white" />
     `;
 
     fullscreenBtn.addEventListener('click', () => {

@@ -9,7 +9,7 @@
     <link rel="icon" href="bootstrap-template/assets/img/emerson.ico" type="image/x-icon" />
     <link rel="stylesheet" href="bootstrap-template/assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/queue-stack.css" />
-    <link rel="stylesheet" href="css/all-window-queue.css" />
+    <link rel="stylesheet" href="css/active-window.css" />
 </head>
 
 <body>
