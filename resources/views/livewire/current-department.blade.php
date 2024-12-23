@@ -17,7 +17,7 @@
         </button>
     </nav>
 
-    <div class="active-window-card" style="background-color: white; width:100%; height:400px;">
+    <div class="active-window-card" style=" width:100%; height:400px;">
         <div class="charter-card">
             <h1>CHARTER</h1>
         </div>
@@ -90,6 +90,23 @@
                         </div>
                     </div>
 
+                    <div>
+                        <div class="waiting-window-name">
+                            Window 1
+                        </div>
+                        <div class="waiting-window-client">
+                            <ul>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                                <li>201-0579</li>
+                            </ul>
+                        </div>
+                    </div>
+
                     {{-- shared waiting list --}}
                     <div>
                         <div class="waiting-window-name">
@@ -111,21 +128,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     <div class="allwindow-card" style="background-color: rgb(243, 243, 248); margin-top: 40rem;">
