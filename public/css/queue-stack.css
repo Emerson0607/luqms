@@ -283,3 +283,13 @@
 .queue-waiting {
     background-color: rgb(237, 212, 166);
 }
+
+/* for shared window setting */
+.shared-window-card {}
+
+.setting {
+    margin: 3rem 0px 1rem 1rem;
+    color: rgb(61, 61, 61);
+    font-weight: 600;
+    font-size: 20px;
+}

@@ -367,8 +367,9 @@
             </div>
         </div>
 
+        <h6 class="setting">Settings</h6>
         {{-- for shared setting --}}
-        <div class="card mt-5">
+        <div class="card shared-window-card">
             <div class="card-header">
                 <div class="d-flex align-items-center">
                     <h4 class="card-title">Shared Window</h4>

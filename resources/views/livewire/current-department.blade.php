@@ -17,37 +17,91 @@
         </button>
     </nav>
 
-    <div class="active-window-card" style=" width:100%; height:400px;">
+    <div class="active-window-card">
         <div class="charter-card">
-            <h1>CHARTER</h1>
+            <video class="corporate-video" width="320" height="240" controls loop>
+                <source src="{{ asset('charter/lu-cv.mp4') }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+
+            @livewire('slide-show')
+
         </div>
         <div class="queue-card">
             <div class="serving-card">
-                <div class="serving">
-                    <div class="window-name">
-                        WINDOW 1
-                    </div>
-                    <div class="window-client">
-                        <div class="window-status">
-                            Now Serving
-                        </div>
-                        <div class="window-queue">
-                            <div class="client-number">
-                                201-0579
+
+
+                @if (isset($allWindowQueue) && $allWindowQueue->isNotEmpty())
+                    @foreach ($allWindowQueue as $window)
+                        <div class="serving">
+                            <div class="window-name">
+                                {{ $window->w_name ?? '---' }}
                             </div>
-                            <div class="client-stack">
-                                <div>Next</div>
-                                <div class="client-three">
-                                    <p>201-0578</p>
-                                    <p>201-0577</p>
-                                    <p>201-0576</p>
+                            <div class="window-queue">
+                                <div class="client-number">
+                                    @if ($window->c_status == 'On Break')
+                                        <h3 style="color: orange">
+                                            {{ $window->c_status ?? 'On Break' }}
+                                        </h3>
+                                        <h1>
+                                            {{ $window->studentNo ?? '---' }}
+                                        </h1>
+                                    @else
+                                        @if ($window->c_status === null)
+                                            <h3 style="color: rgb(236, 242, 49)">
+                                                Waiting...
+                                            </h3>
+                                        @else
+                                            <h3>
+                                                {{ $window->c_status }}
+                                            </h3>
+                                        @endif
+                                        <h1>
+                                            {{ $window->studentNo ?? '---' }}
+                                        </h1>
+                                    @endif
+                                </div>
+                                <div class="client-stack">
+                                    <div class="next">Next</div>
+                                    <div class="client-three">
+                                        @if ($window->clients->isNotEmpty())
+                                            @foreach ($window->clients as $client)
+                                                <p>{{ $client->studentNo }}</p>
+                                            @endforeach
+                                        @else
+                                            <p> No clients in queue.</p>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    @endforeach
+                @else
+                    <div class="col-12 text-center">
+                        <p style="font-size: 18px; color: gray;">No window available</p>
                     </div>
-                </div>
+                @endif
 
 
+                {{-- <div class="serving">
+                    <div class="window-name">
+                        WINDOW 1
+                    </div>
+                    <div class="window-queue">
+                        <div class="client-number">
+                            <h3>Now Serving</h3>
+                            <h1> 201-0579</h1>
+                        </div>
+                        <div class="client-stack">
+                            <div class="next">Next</div>
+                            <div class="client-three">
+                                <p>201-0578</p>
+                                <p>201-0577</p>
+                                <p>201-0576</p>
+                            </div>
+                        </div>
+                    </div>
+                </div> --}}
 
             </div> {{-- end of serving-card --}}
 
@@ -66,9 +120,6 @@
                                 <li>201-0579</li>
                                 <li>201-0579</li>
                                 <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
                             </ul>
                         </div>
                     </div>
@@ -83,9 +134,6 @@
                                 <li>201-0579</li>
                                 <li>201-0579</li>
                                 <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
                             </ul>
                         </div>
                     </div>
@@ -96,9 +144,6 @@
                         </div>
                         <div class="waiting-window-client">
                             <ul>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
                                 <li>201-0579</li>
                                 <li>201-0579</li>
                                 <li>201-0579</li>
@@ -118,9 +163,6 @@
                                 <li>201-0579</li>
                                 <li>201-0579</li>
                                 <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
                             </ul>
                         </div>
                     </div>
@@ -128,7 +170,7 @@
             </div>
         </div>
     </div>
-
+    <footer class="charter-footer">Laguna University | MIS Department</footer>
 
     <div class="allwindow-card" style="background-color: rgb(243, 243, 248); margin-top: 40rem;">
         @if (isset($allWindowQueue) && $allWindowQueue->isNotEmpty())

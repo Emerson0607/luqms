@@ -83,12 +83,12 @@ class CurrentDepartment extends Component
             if ($window->shared_name === 'None') {
                 $window->clients = QmsClients::where('dept_id', $currentDepartmentId)
                 ->where('w_name', $window->w_name)
-                ->take(6)
+                ->take(3)
                 ->get();
             } else {
                 $window->clients = QmsSharedClient::where('dept_id', $currentDepartmentId)
                 ->where('w_name', $window->shared_name)
-                ->take(6)
+                ->take(3)
                 ->get();
             }
         }
