@@ -15,14 +15,14 @@ class CurrentDepartment extends Component
     public $currentUserDepartmentId;
     public $currentDepartmentImage;
     public $allWindowQueue = [];
+    public $allWaitingList = [];
     public $clients = [];
 
     public function mount()
     {
         $this->updateDepartment();
         $this->fetchAllWindows();
-
-      
+        $this->fetchWaitingList();
     }
 
     public function updateDepartment()
@@ -31,6 +31,7 @@ class CurrentDepartment extends Component
         $this->currentDepartmentImage = $this->getDepartmentImage($this->currentUserDepartment);
 
         $this->fetchAllWindows();
+        $this->fetchWaitingList();
     
     }
 
@@ -75,6 +76,7 @@ class CurrentDepartment extends Component
         // Retrieve all windows for the department
         $this->allWindowQueue = QmsWindow::where('dept_id', $currentDepartmentId)
             ->where('w_status', 1)
+            ->orderBy('w_name')
             ->get();
 
         // For each window, fetch clients associated with that window
@@ -93,6 +95,39 @@ class CurrentDepartment extends Component
             }
         }
     }
+
+
+    public function fetchWaitingList()
+    {
+        $currentDepartmentId = session('current_department_id');
+        $currentDepartment = session('current_department_name');
+
+        // Retrieve all windows for the department
+        $this->allWaitingList = QmsWindow::where('dept_id', $currentDepartmentId)
+            ->where('w_status', 1)
+            ->orderBy('w_name')
+            ->get();
+
+        // For each window, fetch clients associated with that window
+        foreach ($this->allWaitingList as $window) {
+
+            if ($window->shared_name === 'None') {
+                $window->clients = QmsClients::where('dept_id', $currentDepartmentId)
+                    ->where('w_name', $window->w_name)
+                    ->skip(3) // Skip the first 3 items
+                    ->take(4) // Take the next 4 items
+                    ->get();
+            } else {
+                $window->clients = QmsSharedClient::where('dept_id', $currentDepartmentId)
+                    ->where('w_name', $window->shared_name)
+                    ->skip(3) // Skip the first 3 items
+                    ->take(4) // Take the next 4 items
+                    ->get();
+            }
+        }
+    }
+
+
 
     public function render()
     {

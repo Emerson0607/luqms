@@ -274,11 +274,3 @@
         opacity: 1;
     }
 }
-
-.charter-footer {
-    position: absolute;
-    bottom: -10rem;
-    left: 5rem;
-    font-weight: 500;
-    color: #777777;
-}

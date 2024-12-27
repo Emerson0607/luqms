@@ -5,7 +5,9 @@
                 <img src="{{ asset($imagePath) }}" style="width:100%">
             </div>
         @endforeach
+
     </div>
+
 </div>
 <script>
     let slideIndex = 0;

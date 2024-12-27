@@ -29,8 +29,6 @@
         </div>
         <div class="queue-card">
             <div class="serving-card">
-
-
                 @if (isset($allWindowQueue) && $allWindowQueue->isNotEmpty())
                     @foreach ($allWindowQueue as $window)
                         <div class="serving">
@@ -81,173 +79,60 @@
                         <p style="font-size: 18px; color: gray;">No window available</p>
                     </div>
                 @endif
-
-
-                {{-- <div class="serving">
-                    <div class="window-name">
-                        WINDOW 1
-                    </div>
-                    <div class="window-queue">
-                        <div class="client-number">
-                            <h3>Now Serving</h3>
-                            <h1> 201-0579</h1>
-                        </div>
-                        <div class="client-stack">
-                            <div class="next">Next</div>
-                            <div class="client-three">
-                                <p>201-0578</p>
-                                <p>201-0577</p>
-                                <p>201-0576</p>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
-
             </div> {{-- end of serving-card --}}
-
             <div class="waiting-card">
                 <div class="waiting-title">
                     Waiting List
                 </div>
                 <div class="waiting-stack-card">
-                    <div>
-                        <div class="waiting-window-name">
-                            Window 1
+                    @if (isset($allWaitingList) && $allWaitingList->isNotEmpty())
+                        @php
+                            $groupedWindows = $allWaitingList->groupBy(function ($item) {
+                                return $item->shared_name === 'None' ? $item->w_name : $item->shared_name;
+                            });
+                        @endphp
+                        @foreach ($groupedWindows as $groupName => $windows)
+                            <div>
+                                <div class="waiting-window-name">
+                                    {{ $groupName }}
+                                </div>
+                                <div class="waiting-window-client">
+                                    <ul>
+                                        @php
+                                            $uniqueClients = collect();
+                                            foreach ($windows as $window) {
+                                                if (isset($window->clients) && $window->clients->isNotEmpty()) {
+                                                    foreach ($window->clients as $client) {
+                                                        if (
+                                                            !$uniqueClients->contains('studentNo', $client->studentNo)
+                                                        ) {
+                                                            $uniqueClients->push($client);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+                                        @if ($uniqueClients->isNotEmpty())
+                                            @foreach ($uniqueClients as $client)
+                                                <li>{{ $client->studentNo }}</li>
+                                            @endforeach
+                                        @else
+                                            <li>No clients in queue.</li>
+                                        @endif
+                                    </ul>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="col-12 text-center">
+                            <p style="font-size: 18px; color: gray;">No window available</p>
                         </div>
-                        <div class="waiting-window-client">
-                            <ul>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="waiting-window-name">
-                            Window 1
-                        </div>
-                        <div class="waiting-window-client">
-                            <ul>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="waiting-window-name">
-                            Window 1
-                        </div>
-                        <div class="waiting-window-client">
-                            <ul>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    {{-- shared waiting list --}}
-                    <div>
-                        <div class="waiting-window-name">
-                            SHARED WINDOW
-                        </div>
-                        <div class="waiting-window-client">
-                            <ul>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                                <li>201-0579</li>
-                            </ul>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
+
         </div>
     </div>
-    <footer class="charter-footer">Laguna University | MIS Department</footer>
-
-    <div class="allwindow-card" style="background-color: rgb(243, 243, 248); margin-top: 40rem;">
-        @if (isset($allWindowQueue) && $allWindowQueue->isNotEmpty())
-            @foreach ($allWindowQueue as $window)
-                <div class="d-flex align-items-center card queue-ongoing-card pb-2">
-                    <p class="text-start w-400">
-                        <span class="window-name" style="font-size: 32px;">
-                            {{ $window->w_name ?? '---' }}
-                        </span>
-                    </p>
-
-
-                    <div class="queue-window text-center" style="padding-bottom: 0; margin-bottom: 24px;">
-                        @if ($window->c_status == 'On Break')
-                            <h5 style="color: orange">
-                                {{ $window->c_status ?? 'On Break' }}
-                            </h5>
-                            <h1 style="font-size: 48px;">
-                                <span class="window-number">{{ $window->studentNo ?? '---' }}</span>
-                            </h1>
-                            {{-- <h1 class="client-name">---
-                            </h1> --}}
-                        @else
-                            @if ($window->c_status === null)
-                                <h5 style="color: rgb(236, 242, 49)">
-                                    Waiting...
-                                </h5>
-                            @else
-                                <h5>
-                                    {{ $window->c_status }}
-                                </h5>
-                            @endif
-                            <h1 style="font-size: 48px;">
-                                <span class="window-number">{{ $window->studentNo ?? '---' }}</span>
-                            </h1>
-                            {{-- <h1 class="client-name">
-                                @if ($window->gName === '---')
-                                    ---
-                                @else
-                                    {{ $window->gName === 'Guest' ? $window->gName : $window->gName . ' ' . ($window->sName ?? '---') }}
-                                @endif
-                            </h1> --}}
-                        @endif
-                    </div>
-
-                    <ol class="list-group allWindowList {{ $window->clients->count() > 3 ? 'two-columns' : '' }} mt-1">
-                        @if ($window->clients->isNotEmpty())
-                            @foreach ($window->clients as $client)
-                                <li class="list-group-item {{ $loop->first ? 'active' : '' }}">
-
-                                    <div class="client-details">
-                                        @if ($loop->first)
-                                            <div class="status wavy">Waiting...</div>
-                                        @endif
-                                        <div class="studentNo"> {{ $client->studentNo }}</div>
-                                        {{-- <div class="studentName">
-                                            {{ $client->gName }} {{ $client->sName }}
-                                        </div> --}}
-                                    </div>
-                                </li>
-                            @endforeach
-                        @else
-                            <li class="list-group-item text-danger text-center">
-                                No clients in queue.
-                            </li>
-                        @endif
-                    </ol>
-
-                </div>
-            @endforeach
-        @else
-            <div class="col-12 text-center">
-                <p style="font-size: 18px; color: gray;">No window available</p>
-            </div>
-        @endif
-    </div>
-
 </div>
 
 <script>
