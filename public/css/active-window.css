@@ -196,6 +196,8 @@
     align-items: center;
     color: white;
     font-weight: 600;
+    white-space: normal;
+    padding: 2rem 1rem;
 }
 
 .waiting-window-client ul {

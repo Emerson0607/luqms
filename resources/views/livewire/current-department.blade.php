@@ -80,7 +80,8 @@
                     </div>
                 @endif
             </div> {{-- end of serving-card --}}
-            <div class="waiting-card">
+
+            {{-- <div class="waiting-card">
                 <div class="waiting-title">
                     Waiting List
                 </div>
@@ -95,6 +96,70 @@
                             <div>
                                 <div class="waiting-window-name">
                                     {{ $groupName }}
+                                </div>
+                                <div class="waiting-window-client">
+                                    <ul>
+                                        @php
+                                            $uniqueClients = collect();
+                                            foreach ($windows as $window) {
+                                                if (isset($window->clients) && $window->clients->isNotEmpty()) {
+                                                    foreach ($window->clients as $client) {
+                                                        if (
+                                                            !$uniqueClients->contains('studentNo', $client->studentNo)
+                                                        ) {
+                                                            $uniqueClients->push($client);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+                                        @if ($uniqueClients->isNotEmpty())
+                                            @foreach ($uniqueClients as $client)
+                                                <li>{{ $client->studentNo }}</li>
+                                            @endforeach
+                                        @else
+                                            <li>No clients in queue.</li>
+                                        @endif
+                                    </ul>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="col-12 text-center">
+                            <p style="font-size: 18px; color: gray;">No window available</p>
+                        </div>
+                    @endif
+                </div>
+            </div> --}}
+
+            <div class="waiting-card">
+                <div class="waiting-title">
+                    Waiting List
+                </div>
+                <div class="waiting-stack-card">
+                    @if (isset($allWaitingList) && $allWaitingList->isNotEmpty())
+                        @php
+                            $groupedWindows = $allWaitingList->groupBy(function ($item) {
+                                return $item->shared_name === 'None' ? $item->w_name : $item->shared_name;
+                            });
+                        @endphp
+                        @foreach ($groupedWindows as $groupName => $windows)
+                            <div>
+                                <div class="waiting-window-name">
+                                    @if ($groupName !== 'None')
+                                        @php
+                                            $windowNames = $windows->pluck('w_name')->toArray();
+                                            $windowNamesCount = count($windowNames);
+                                            if ($windowNamesCount > 1) {
+                                                $lastWindowName = array_pop($windowNames);
+                                                $windowNamesString =
+                                                    implode(', ', $windowNames) . ' and ' . $lastWindowName;
+                                            } else {
+                                                $windowNamesString = $windowNames[0];
+                                            }
+                                        @endphp
+                                        {{ $windowNamesString }}
+                                    @endif
                                 </div>
                                 <div class="waiting-window-client">
                                     <ul>
