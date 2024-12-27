@@ -47,7 +47,9 @@
                         Break
                     </button>
                 @endif
-
+                <button class="btn btn-primary btn-sm w-100">
+                    Pending
+                </button>
                 <button style="background-color: green !important; border:0px;" type="button"
                     class="btn btn-primary btn-sm w-100" id="done-button" onclick="confirmDoneQueue()">
                     Done

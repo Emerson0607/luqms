@@ -50,11 +50,11 @@
                                                 Waiting...
                                             </h3>
                                         @else
-                                            <h3>
+                                            <h3 style="color: rgb(66, 66, 66);">
                                                 {{ $window->c_status }}
                                             </h3>
                                         @endif
-                                        <h1>
+                                        <h1 style="color: rgb(66, 66, 66);">
                                             {{ $window->studentNo ?? '---' }}
                                         </h1>
                                     @endif
