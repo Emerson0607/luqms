@@ -2,7 +2,7 @@
     <div wire:poll.2s="renderQueue" class="d-flex flex-column justify-content-center align-items-center queue-window ">
 
         @if ($currentUserWindow)
-            @if ($currentUserWindow->c_status == 'On Break')
+            @if ($currentUserWindow->c_status == 'Waiting...')
                 <h5 style="color: orange" id="client-status">{{ $currentUserWindow->c_status }}</h5>
                 <h1><span id="client-number">---</span></h1>
 
@@ -35,7 +35,7 @@
                     Notify
                 </button>
 
-                @if ($currentUserWindow->c_status == 'On Break')
+                @if ($currentUserWindow->c_status == 'Waiting...')
                     <button style="background-color: orange !important; border:0px;" wire:click="continueQueue"
                         class="btn btn-primary btn-sm w-100" id="wait-button">
                         Continue
@@ -44,12 +44,15 @@
                     <button
                         style="background-color: rgb(114, 114, 114) !important; border:0px; color:rgb(243, 243, 243);"
                         wire:click="waitQueue" class="btn btn-primary btn-sm w-100" id="wait-button">
-                        Break
+                        Wait
                     </button>
                 @endif
-                <button class="btn btn-primary btn-sm w-100">
-                    Pending
+
+                <button style="background-color: rgb(178, 0, 149) !important; border:0px;" id="fetch-oldest-pending-client"
+                class="btn btn-primary btn-sm w-100">
+                Pending
                 </button>
+
                 <button style="background-color: green !important; border:0px;" type="button"
                     class="btn btn-primary btn-sm w-100" id="done-button" onclick="confirmDoneQueue()">
                     Done
@@ -211,7 +214,7 @@
         }
     });
 
-
+    // for next button
     document.addEventListener('DOMContentLoaded', function() {
         // Attach event listener to the "Next" button
         document.getElementById('fetch-oldest-client').addEventListener('click', function() {
@@ -231,8 +234,28 @@
                 }
             });
         });
+    });
 
-
+    // for pending button
+    document.addEventListener('DOMContentLoaded', function() {
+        // Attach event listener to the "Next" button
+        document.getElementById('fetch-oldest-pending-client').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to pending this client?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, proceed!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If confirmed, trigger Livewire method nextQueue
+                    @this.call('pendingQueue');
+                }
+            });
+        });
     });
 </script>
 

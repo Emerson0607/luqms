@@ -4,7 +4,9 @@ namespace App\Livewire;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use App\Models\{
-    Window, Client, Students, QmsWindow, QmsService, DmsService, QmsClients, QmsClientLogs, QmsSharedClient
+    Window, Client, Students, QmsWindow, QmsService,
+    DmsService, QmsClients, QmsClientLogs, QmsSharedClient,
+    QmsPendingClient
 };
 
 
@@ -12,7 +14,7 @@ class QueueingWindow extends Component
 {
     public $currentDepartment, $currentDepartmentId, $currentUserWindow, $selectedService, $services;
     public $studentNo, $dept_id, $gName, $sName, $clients = [];
-    
+
     public function __construct()
     {
         $this->setCurrentDepartment();
@@ -26,12 +28,12 @@ class QueueingWindow extends Component
 
     public function mount(){
         $this->renderQueue();
-        $this->selectedService = null; 
+        $this->selectedService = null;
         $this->renderClient();
     }
 
     public function renderQueue(){
-      
+
         $user_w_id = QmsWindow::where('p_id', Auth::user()->p_id)
             ->where('dept_id', $this->currentDepartmentId)
             ->where('w_status', 1)
@@ -41,7 +43,7 @@ class QueueingWindow extends Component
             ->where('dept_id', $this->currentDepartmentId)
             ->first()
             : null;
-       
+
         if ($user_w_id) {
             $this->services = QmsService::where('w_name', $user_w_id->w_name)
                 ->where('dept_id', $this->currentDepartmentId)
@@ -54,8 +56,8 @@ class QueueingWindow extends Component
                     ];
                 });
         }
-        
-      
+
+
     }
 
     public function nextQueue()
@@ -80,29 +82,29 @@ class QueueingWindow extends Component
             if ($client) {
 
                     QmsWindow::updateOrCreate([
-                        'w_name' => $user_w_id->w_name, 
-                        'dept_id' => $this->currentDepartmentId, 
-                        'p_id' => $user_w_id->p_id, 
+                        'w_name' => $user_w_id->w_name,
+                        'dept_id' => $this->currentDepartmentId,
+                        'p_id' => $user_w_id->p_id,
                         'w_status' => $user_w_id->w_status ],
-                        
+
                         [
-                        'gName' => $client->gName, 
-                        'sName' => $client->sName, 
-                        'studentNo' => $client->studentNo, 
-                        'c_status' => "Now Serving", 
+                        'gName' => $client->gName,
+                        'sName' => $client->sName,
+                        'studentNo' => $client->studentNo,
+                        'c_status' => "Now Serving",
                         'c_service' => "No service selected" ]
                     );
-        
+
                     $client->delete();
                     $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
                     ->where('dept_id', $this->currentDepartmentId)
                     ->first();
-            
+
             }else {
                 // Dispatch event for no client available
                 $this->dispatch('no-client-to-serve');
             }
-        
+
         } else {
             $client = QmsSharedClient::where('dept_id', $this->currentDepartmentId)->oldest()
                 ->where('w_name', $user_w_id->shared_name)
@@ -110,31 +112,31 @@ class QueueingWindow extends Component
 
             if ($client) {
                     QmsWindow::updateOrCreate([
-                        'w_name' => $user_w_id->w_name, 
-                        'dept_id' => $this->currentDepartmentId, 
-                        'p_id' => $user_w_id->p_id, 
-                        'shared_name' => $user_w_id->shared_name, 
+                        'w_name' => $user_w_id->w_name,
+                        'dept_id' => $this->currentDepartmentId,
+                        'p_id' => $user_w_id->p_id,
+                        'shared_name' => $user_w_id->shared_name,
                         'w_status' => $user_w_id->w_status ],
-                        
+
                         [
-                        'gName' => $client->gName, 
-                        'sName' => $client->sName, 
-                        'studentNo' => $client->studentNo, 
-                        'c_status' => "Now Serving", 
+                        'gName' => $client->gName,
+                        'sName' => $client->sName,
+                        'studentNo' => $client->studentNo,
+                        'c_status' => "Now Serving",
                         'c_service' => "No service selected" ]
                     );
-        
+
                     $client->delete();
                     $this->currentUserWindow = QmsWindow::where('shared_name', $user_w_id->shared_name)
                         ->where('dept_id', $this->currentDepartmentId)
                         ->first();
-                
+
             }else {
                 // Dispatch event for no client available
                 $this->dispatch('no-client-to-serve');
             }
         }
-        
+
     }
 
     public function doneQueue()
@@ -160,16 +162,16 @@ class QueueingWindow extends Component
                 ->where('dept_id', $this->currentDepartmentId)
                 ->first();
 
-            if ($window->c_status === 'On Break') {
+            if ($window->c_status === 'Waiting...') {
                 $this->dispatch('done-no-client-selected');
                 return;
             }
-            
+
             if (!$window || $window->studentNo === '---') {
                 $this->dispatch('done-no-client-selected');
                 return;
             }
-            
+
             if ($window) {
                 // Create a new log in QmsClientLogs
                 QmsClientLogs::create([
@@ -183,7 +185,7 @@ class QueueingWindow extends Component
                 ]);
             }
 
-            // if shared window 
+            // if shared window
             if ($window->shared_name === 'None') {
                 $client = QmsClients::where('dept_id', $this->currentDepartmentId)
                     ->where('w_name',$window->w_name )
@@ -192,55 +194,55 @@ class QueueingWindow extends Component
 
                 if ($client) {
                     QmsWindow::updateOrCreate([
-                        'w_name' => $user_w_id->w_name, 
-                        'dept_id' => $this->currentDepartmentId, 
-                        'p_id' => $user_w_id->p_id, 
+                        'w_name' => $user_w_id->w_name,
+                        'dept_id' => $this->currentDepartmentId,
+                        'p_id' => $user_w_id->p_id,
                         'w_status' => $user_w_id->w_status],
-                        
+
                         [
-                        'gName' => $client->gName, 
-                        'sName' => $client->sName, 
-                        'studentNo' => $client->studentNo, 
-                        'c_status' => "Now Serving", 
+                        'gName' => $client->gName,
+                        'sName' => $client->sName,
+                        'studentNo' => $client->studentNo,
+                        'c_status' => "Now Serving",
                         'c_service' => "No service selected" ]);
-            
+
                         $client->delete();
-            
+
                         // Optionally re-fetch the window after updating
                         $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
                         ->where('dept_id', $this->currentDepartmentId)
                         ->first();
-                
+
                 }
-    
-                // if no client in window 
+
+                // if no client in window
                 $clientCount = QmsClients::where('dept_id', $this->currentDepartmentId)
                     ->where('w_name', $window->w_name )
                     ->count();
 
                 if ($clientCount <= 0) {
                     QmsWindow::updateOrCreate([
-                        'w_name' => $user_w_id->w_name, 
-                        'dept_id' => $this->currentDepartmentId, 
-                        'p_id' => $user_w_id->p_id, 
-                        'shared_name' => $user_w_id->shared_name, 
+                        'w_name' => $user_w_id->w_name,
+                        'dept_id' => $this->currentDepartmentId,
+                        'p_id' => $user_w_id->p_id,
+                        'shared_name' => $user_w_id->shared_name,
                         'w_status' => $user_w_id->w_status],
-                        
+
                         [
-                        'gName' => "---", 
-                        'sName' => "---", 
-                        'studentNo' =>"---", 
-                        'c_status' => "On Break", 
+                        'gName' => "---",
+                        'sName' => "---",
+                        'studentNo' =>"---",
+                        'c_status' => "Waiting...",
                         'c_service' => "No service selected" ]);
-            
+
                         // Optionally re-fetch the window after updating
                         $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
                         ->where('dept_id', $this->currentDepartmentId)
                         ->first();
-                
-                } 
 
-            } 
+                }
+
+            }
             else {
                 $client = QmsSharedClient::where('dept_id', $this->currentDepartmentId)
                     ->where('w_name', $window->shared_name)
@@ -249,48 +251,48 @@ class QueueingWindow extends Component
 
                 if ($client) {
                     QmsWindow::updateOrCreate([
-                        'w_name' => $user_w_id->w_name, 
-                        'dept_id' => $this->currentDepartmentId, 
-                        'p_id' => $user_w_id->p_id, 
+                        'w_name' => $user_w_id->w_name,
+                        'dept_id' => $this->currentDepartmentId,
+                        'p_id' => $user_w_id->p_id,
                         'shared_name' => $user_w_id->shared_name,
                         'w_status' => $user_w_id->w_status],
-                        
+
                         [
-                        'gName' => $client->gName, 
-                        'sName' => $client->sName, 
-                        'studentNo' => $client->studentNo, 
-                        'c_status' => "Now Serving", 
+                        'gName' => $client->gName,
+                        'sName' => $client->sName,
+                        'studentNo' => $client->studentNo,
+                        'c_status' => "Now Serving",
                         'c_service' => "No service selected" ]);
-            
+
                         $client->delete();
-            
+
                         // Optionally re-fetch the window after updating
                         $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
                             ->where('dept_id', $this->currentDepartmentId)
                             ->first();
-                
+
                 }
 
-                // if no client in window 
+                // if no client in window
                 $clientCount = QmsSharedClient::where('dept_id', $this->currentDepartmentId)
                     ->where('w_name', $window->shared_name)
                     ->count();
 
                 if ($clientCount <= 0) {
                     QmsWindow::updateOrCreate([
-                        'w_name' => $user_w_id->w_name, 
-                        'dept_id' => $this->currentDepartmentId, 
-                        'p_id' => $user_w_id->p_id, 
+                        'w_name' => $user_w_id->w_name,
+                        'dept_id' => $this->currentDepartmentId,
+                        'p_id' => $user_w_id->p_id,
                         'shared_name' => $user_w_id->shared_name,
                         'w_status' => $user_w_id->w_status],
-                        
+
                         [
-                        'gName' => "---", 
-                        'sName' => "---", 
-                        'studentNo' =>"---", 
-                        'c_status' => "On Break", 
+                        'gName' => "---",
+                        'sName' => "---",
+                        'studentNo' =>"---",
+                        'c_status' => "Waiting...",
                         'c_service' => "No service selected" ]);
-            
+
                         // Optionally re-fetch the window after updating
                         $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
                             ->where('dept_id', $this->currentDepartmentId)
@@ -310,17 +312,17 @@ class QueueingWindow extends Component
 
         if ($user_w_id) {
             QmsWindow::updateOrCreate([
-                'w_name' => $user_w_id->w_name, 
-                'dept_id' => $this->currentDepartmentId, 
-                'p_id' => $user_w_id->p_id, 
+                'w_name' => $user_w_id->w_name,
+                'dept_id' => $this->currentDepartmentId,
+                'p_id' => $user_w_id->p_id,
                 'w_status' => $user_w_id->w_status,
-                'gName' => $user_w_id->gName, 
-                'sName' => $user_w_id->sName, 
-                'studentNo' => $user_w_id->studentNo, 
+                'gName' => $user_w_id->gName,
+                'sName' => $user_w_id->sName,
+                'studentNo' => $user_w_id->studentNo,
                 'shared_name' => $user_w_id->shared_name,
             ],[
-               
-                'c_status' => "On Break", 
+
+                'c_status' => "Waiting...",
                 'c_service' => "ID and Reg." ]
             );
 
@@ -328,7 +330,7 @@ class QueueingWindow extends Component
             $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
                 ->where('dept_id', $this->currentDepartmentId)
                 ->first();
- 
+
         }
     }
 
@@ -341,17 +343,17 @@ class QueueingWindow extends Component
 
         if ($user_w_id) {
             QmsWindow::updateOrCreate([
-                'w_name' => $user_w_id->w_name, 
-                'dept_id' => $this->currentDepartmentId, 
-                'p_id' => $user_w_id->p_id, 
+                'w_name' => $user_w_id->w_name,
+                'dept_id' => $this->currentDepartmentId,
+                'p_id' => $user_w_id->p_id,
                 'w_status' => $user_w_id->w_status,
-                'gName' => $user_w_id->gName, 
-                'sName' => $user_w_id->sName, 
-                'studentNo' => $user_w_id->studentNo, 
+                'gName' => $user_w_id->gName,
+                'sName' => $user_w_id->sName,
+                'studentNo' => $user_w_id->studentNo,
                 'shared_name' => $user_w_id->shared_name,
             ],[
-               
-                'c_status' => "Now serving", 
+
+                'c_status' => "Now serving",
                 'c_service' => "ID and Reg." ]
             );
 
@@ -359,8 +361,87 @@ class QueueingWindow extends Component
             $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
                 ->where('dept_id', $this->currentDepartmentId)
                 ->first();
- 
+
         }
+    }
+
+    // to do as of 01-03-2025
+    public function pendingQueue()
+    {
+        // Check if a window is assigned to the user
+        $user_w_id = QmsWindow::where('p_id', Auth::user()->p_id)
+            ->where('dept_id', $this->currentDepartmentId)
+            ->first();
+
+        if (!$user_w_id) {
+            // Trigger the SweetAlert2 notification
+            $this->dispatchBrowserEvent('no-personnel-assigned');
+            return;
+        }
+
+        // if shared window is none
+        if ($user_w_id->shared_name === 'None') {
+            $client = QmsClients::where('dept_id', $this->currentDepartmentId)->oldest()
+            ->where('w_name', $user_w_id->w_name)
+            ->first();
+
+            if ($client) {
+                    QmsWindow::updateOrCreate([
+                        'w_name' => $user_w_id->w_name,
+                        'dept_id' => $this->currentDepartmentId,
+                        'p_id' => $user_w_id->p_id,
+                        'w_status' => $user_w_id->w_status ],
+
+                        [
+                        'gName' => $client->gName,
+                        'sName' => $client->sName,
+                        'studentNo' => $client->studentNo,
+                        'c_status' => "Now Serving",
+                        'c_service' => "No service selected" ]
+                    );
+
+                    $client->delete();
+                    $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
+                    ->where('dept_id', $this->currentDepartmentId)
+                    ->first();
+
+            }else {
+                // Dispatch event for no client available
+                $this->dispatch('no-client-to-serve');
+            }
+
+        } else {
+            $client = QmsSharedClient::where('dept_id', $this->currentDepartmentId)->oldest()
+                ->where('w_name', $user_w_id->shared_name)
+                ->first();
+
+            if ($client) {
+                    QmsWindow::updateOrCreate([
+                        'w_name' => $user_w_id->w_name,
+                        'dept_id' => $this->currentDepartmentId,
+                        'p_id' => $user_w_id->p_id,
+                        'shared_name' => $user_w_id->shared_name,
+                        'w_status' => $user_w_id->w_status ],
+
+                        [
+                        'gName' => $client->gName,
+                        'sName' => $client->sName,
+                        'studentNo' => $client->studentNo,
+                        'c_status' => "Now Serving",
+                        'c_service' => "No service selected" ]
+                    );
+
+                    $client->delete();
+                    $this->currentUserWindow = QmsWindow::where('shared_name', $user_w_id->shared_name)
+                        ->where('dept_id', $this->currentDepartmentId)
+                        ->first();
+
+            }else {
+                // Dispatch event for no client available
+                $this->dispatch('no-client-to-serve');
+            }
+        }
+
     }
 
     // for !shared window factory
@@ -383,24 +464,24 @@ class QueueingWindow extends Component
                 'studentNo' => $this->studentNo,
                 'gName' => $student->GName,
                 'sName' => $student->Sname,
-                'dept_id' => $this->currentDepartmentId,   
+                'dept_id' => $this->currentDepartmentId,
                 'w_name' => $randomWindow->w_name
             ]);
-    
+
             session()->flash('message', 'Client successfully pushed!');
 
         } else {
             QmsClients::create([
                 'studentNo' => $this->studentNo,
-                'gName' => 'Guest', 
+                'gName' => 'Guest',
                 'sName' => 'Guest',
                 'w_name' => $randomWindow->w_name,
                 'dept_id' => $this->currentDepartmentId
             ]);
-    
+
             session()->flash('message', 'Client successfully pushed!');
         }
-    
+
         // Optionally reset the fields after submission
         $this->reset('studentNo', 'gName', 'sName', 'dept_id');
     }
@@ -415,44 +496,44 @@ class QueueingWindow extends Component
     public function pushClient_s()
     {
         $student = Students::where('studentNo', $this->studentNo)->first();
-   
+
         $randomWindow = QmsWindow::where('p_id', Auth::user()->p_id)
            ->where('dept_id', $this->currentDepartmentId)
            ->first();
-   
-   
+
+
         if (!$randomWindow) {
             session()->flash('error', 'No available window found.');
             return;
         }
-   
+
         if ($student) {
             QmsSharedClient::create([
                 'studentNo' => $this->studentNo,
                 'gName' => $student->GName,
                 'sName' => $student->Sname,
-                'dept_id' => $this->currentDepartmentId,   
+                'dept_id' => $this->currentDepartmentId,
                 'w_name' => $randomWindow->shared_name
             ]);
-       
+
             session()->flash('message', 'Client successfully pushed!');
-   
+
         } else {
             QmsSharedClient::create([
                 'studentNo' => $this->studentNo,
-                'gName' => 'Guest', 
+                'gName' => 'Guest',
                 'sName' => 'Guest',
                 'w_name' => $randomWindow->shared_name,
                 'dept_id' => $this->currentDepartmentId
             ]);
-       
+
             session()->flash('message', 'Client successfully pushed!');
         }
-       
+
            // Optionally reset the fields after submission
         $this->reset('studentNo', 'gName', 'sName', 'dept_id');
     }
-       
+
     public function generateClient_s()
     {
         QmsSharedClient::factory(10)->create();
@@ -468,7 +549,7 @@ class QueueingWindow extends Component
         $userWindow = QmsWindow::where('p_id', $user->p_id)
             ->where('dept_id', $this->currentDepartmentId)
             ->first();
-         
+
         // dd($userWindow->shared_name, gettype($userWindow->shared_name));
         //  dd($userWindow->dept_id, gettype($userWindow->dept_id));
         if ($userWindow) {
@@ -478,11 +559,11 @@ class QueueingWindow extends Component
                 ->where('w_name', $userWindow->w_name)
                 ->take(8)
                 ->get();
-    
+
                 $totalClients = QmsClients::where('dept_id', $this->currentDepartmentId)
                     ->where('w_name', $userWindow->w_name)
                     ->count();
-                
+
                 $this->dispatch('updatePollStatus', [
                     'shouldPoll' => $totalClients > 0 && $this->clients->count() < 8,
                 ]);
@@ -491,17 +572,17 @@ class QueueingWindow extends Component
                 ->where('w_name', $userWindow->shared_name)
                 ->take(8)
                 ->get();
-    
+
                 $totalClients = QmsSharedClient::where('dept_id', $this->currentDepartmentId)
                     ->where('w_name', $userWindow->shared_name)
                     ->count();
-                
+
                 $this->dispatch('updatePollStatus', [
                     'shouldPoll' => $totalClients > 0 && $this->clients->count() < 8,
                 ]);
             }
 
-            
+
         } else {
             $this->clients = collect();
             $this->dispatch('updatePollStatus', [

@@ -37,16 +37,16 @@
                             </div>
                             <div class="window-queue">
                                 <div class="client-number">
-                                    @if ($window->c_status == 'On Break')
+                                    @if ($window->c_status == 'Waiting...')
                                         <h3 style="color: orange">
-                                            {{ $window->c_status ?? 'On Break' }}
+                                            {{ $window->c_status ?? 'Waiting...' }}
                                         </h3>
                                         <h1>
                                             {{ $window->studentNo ?? '---' }}
                                         </h1>
                                     @else
                                         @if ($window->c_status === null)
-                                            <h3 style="color: rgb(236, 242, 49)">
+                                        <h3 style="color: orange">
                                                 Waiting...
                                             </h3>
                                         @else

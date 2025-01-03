@@ -35,7 +35,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgb(255, 255, 255);
+    background: rgb(233, 233, 233);
     /* Scrollbar color */
     border-radius: var(--border-radius-2);
     /* Rounded edges */
