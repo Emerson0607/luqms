@@ -241,7 +241,7 @@
 .queue-ongoing-card {
     height: 95%;
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto auto;
     gap: 2rem;
 }
 

@@ -48,9 +48,9 @@
                     </button>
                 @endif
 
-                <button style="background-color: rgb(178, 0, 149) !important; border:0px;" id="fetch-oldest-pending-client"
-                class="btn btn-primary btn-sm w-100">
-                Pending
+                <button style="background-color: rgb(178, 0, 149) !important; border:0px;"
+                    id="fetch-oldest-pending-client" class="btn btn-primary btn-sm w-100">
+                    Pending
                 </button>
 
                 <button style="background-color: green !important; border:0px;" type="button"
@@ -140,7 +140,33 @@
                 </li>
             @endif
         </ol>
+
     </div>
+
+    <div class="container qms-stack" wire:poll.2s="renderPendingClient">
+        <p class="current_department text-primary">
+            Pending Client
+        </p>
+
+        <ol id="user-list" class="list-group mt-3 allWindowList">
+            @if ($pendingClients->isNotEmpty())
+                @foreach ($pendingClients as $client)
+                    <li class="list-group-item {{ $loop->first ? 'active' : '' }}">
+                        <h5 style="font-size: 14px">{{ $client->studentNo }} - </h5>
+                        {{ $client->gName }} {{ $client->sName }}
+                    </li>
+                @endforeach
+            @else
+                <li class="list-group-item text-danger text-center">
+                    No clients in queue.
+                </li>
+            @endif
+        </ol>
+    </div>
+
+
+
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -183,6 +209,45 @@
         });
     });
 </script>
+
+<script>
+    document.addEventListener('livewire:init', () => {
+        let pollInterval;
+
+        const startPolling = () => {
+            if (!pollInterval) {
+                pollInterval = setInterval(() => {
+                    Livewire.emit('renderPendingClient');
+                }, 2000);
+            }
+        };
+
+        const stopPolling = () => {
+            clearInterval(pollInterval);
+            pollInterval = null;
+        };
+
+        Livewire.on('updatePollStatusPending', (event) => {
+            if (event.shouldPollPending) {
+                startPolling();
+            } else {
+                stopPolling();
+            }
+        });
+
+        // Start polling initially
+        startPolling();
+
+        Livewire.on('log', (event) => {
+            try {
+                console[event.level](event.obj);
+            } catch {
+                console.log(event.obj);
+            }
+        });
+    });
+</script>
+
 
 {{-- for notify button --}}
 <script>
@@ -278,7 +343,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Listen for the 'no-client-to-serve' event and show SweetAlert
+
         window.addEventListener('no-client-to-serve', event => {
             Swal.fire({
                 icon: 'info',
@@ -287,6 +352,16 @@
                 confirmButtonText: 'OK'
             });
         });
+
+        window.addEventListener('no-client-to-pending', event => {
+            Swal.fire({
+                icon: 'info',
+                title: 'No Clients Available',
+                text: 'There are currently no clients to pending.',
+                confirmButtonText: 'OK'
+            });
+        });
+
         window.addEventListener('done-next', event => {
             Swal.fire({
                 icon: 'info',
