@@ -32,13 +32,13 @@ class CurrentDepartment extends Component
 
         $this->fetchAllWindows();
         $this->fetchWaitingList();
-    
+
     }
 
     private function getDepartmentImage($departmentName)
     {
         $images = [
-           
+
             'Cashier\'s Office' => 'img/logo/lu.png',
             'College of Arts and Sciences' => 'img/logo/cas.png',
             'College of Business Administration & Accountancy' => 'img/logo/cbaa.png',
@@ -114,14 +114,14 @@ class CurrentDepartment extends Component
             if ($window->shared_name === 'None') {
                 $window->clients = QmsClients::where('dept_id', $currentDepartmentId)
                     ->where('w_name', $window->w_name)
-                    ->skip(3) // Skip the first 3 items
-                    ->take(4) // Take the next 4 items
+                    ->skip(3)
+                    ->take(4)
                     ->get();
             } else {
                 $window->clients = QmsSharedClient::where('dept_id', $currentDepartmentId)
                     ->where('w_name', $window->shared_name)
-                    ->skip(3) // Skip the first 3 items
-                    ->take(4) // Take the next 4 items
+                    ->skip(3)
+                    ->take(4)
                     ->get();
             }
         }

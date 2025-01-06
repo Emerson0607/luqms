@@ -1,60 +1,65 @@
 <div class="queue-ongoing-card">
-    <div wire:poll.2s="renderQueue" class="d-flex flex-column justify-content-center align-items-center queue-window ">
-
+    <div wire:poll.2s="renderQueue" class="queue-window ">
         @if ($currentUserWindow)
-            @if ($currentUserWindow->c_status == 'Waiting...')
-                <h5 style="color: orange" id="client-status">{{ $currentUserWindow->c_status }}</h5>
-                <h1><span id="client-number">---</span></h1>
 
-                <p>
-                    <span id="client-name">---</span>
-                </p>
-            @else
-                <h5 id="client-status">{{ $currentUserWindow->c_status }}</h5>
-                <h1><span id="client-number">{{ $currentUserWindow->studentNo }}</span></h1>
+            <div class="window-display">
+                @if ($currentUserWindow->c_status == 'Waiting...')
+                    <h5 style="color: orange" id="client-status">{{ $currentUserWindow->c_status }}</h5>
+                    <h1><span id="client-number">---</span></h1>
 
-                {{-- <i class="fab fa-openid"></i> --}}
-                {{-- <h6 class="current_department">{{ session('current_department_name') }}</h6> --}}
-                <p>
-                    <span id="client-name">
-                        @if ($currentUserWindow->gName === 'Guest')
-                            {{ $currentUserWindow->gName }}
-                        @else
-                            {{ $currentUserWindow->gName }} {{ $currentUserWindow->sName }}
-                        @endif
-                    </span>
-                </p>
-            @endif
+                    <p>
+                        <span id="client-name">---</span>
+                    </p>
+                @else
+                    <h5 id="client-status">{{ $currentUserWindow->c_status }}</h5>
+                    <h1><span id="client-number">{{ $currentUserWindow->studentNo }}</span></h1>
+
+                    {{-- <i class="fab fa-openid"></i> --}}
+                    {{-- <h6 class="current_department">{{ session('current_department_name') }}</h6> --}}
+                    <p>
+                        <span id="client-name">
+                            @if ($currentUserWindow->gName === 'Guest')
+                                {{ $currentUserWindow->gName }}
+                            @else
+                                {{ $currentUserWindow->gName }} {{ $currentUserWindow->sName }}
+                            @endif
+                        </span>
+                    </p>
+                @endif
+            </div>
 
             <div class="core-function-card">
                 <button style="background-color: rgb(255, 34, 34) !important; border:0px;" id="fetch-oldest-client"
-                    class="btn btn-primary btn-sm w-100">
+                    class="btn btn-primary">
                     Next
                 </button>
-                <button class="btn btn-primary btn-sm w-100" id="notify-button">
+                <button class="btn btn-primary" id="notify-button">
                     Notify
                 </button>
 
                 @if ($currentUserWindow->c_status == 'Waiting...')
                     <button style="background-color: orange !important; border:0px;" wire:click="continueQueue"
-                        class="btn btn-primary btn-sm w-100" id="wait-button">
+                        class="btn btn-primary" id="wait-button">
                         Continue
                     </button>
                 @else
                     <button
                         style="background-color: rgb(114, 114, 114) !important; border:0px; color:rgb(243, 243, 243);"
-                        wire:click="waitQueue" class="btn btn-primary btn-sm w-100" id="wait-button">
+                        wire:click="waitQueue" class="btn btn-primary" id="wait-button">
                         Wait
                     </button>
                 @endif
-
-                <button style="background-color: rgb(178, 0, 149) !important; border:0px;"
-                    id="fetch-oldest-pending-client" class="btn btn-primary btn-sm w-100">
-                    Pending
-                </button>
-
+                <div class="pending-button">
+                    <button style="background-color: rgb(178, 0, 149) !important; border:0px;"
+                        id="fetch-oldest-pending-client" class="btn btn-primary">
+                        Pending
+                    </button>
+                    <button style="background-color: rgb(178, 0, 149) !important; border:0px;" class="btn btn-primary" onclick="getPending()">
+                        Get Pending
+                    </button>
+                </div>
                 <button style="background-color: green !important; border:0px;" type="button"
-                    class="btn btn-primary btn-sm w-100" id="done-button" onclick="confirmDoneQueue()">
+                    class="btn btn-primary" onclick="confirmDoneQueue()">
                     Done
                 </button>
             </div>
@@ -151,7 +156,8 @@
         <ol id="user-list" class="list-group mt-3 allWindowList">
             @if ($pendingClients->isNotEmpty())
                 @foreach ($pendingClients as $client)
-                    <li class="list-group-item {{ $loop->first ? 'active' : '' }}">
+                    <li class="list-group-item {{ $loop->first ? 'active' : '' }}"
+                        onclick="confirmDelete('{{ $client->id }}')">
                         <h5 style="font-size: 14px">{{ $client->studentNo }} - </h5>
                         {{ $client->gName }} {{ $client->sName }}
                     </li>
@@ -163,13 +169,27 @@
             @endif
         </ol>
     </div>
-
-
-
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function confirmDelete(clientId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete this client?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('deleteClient', clientId);
+            }
+        })
+    }
+</script>
 
 {{-- polling status --}}
 <script>
@@ -248,33 +268,71 @@
     });
 </script>
 
-
 {{-- for notify button --}}
 <script>
     // notify
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     const notifyButton = document.getElementById('notify-button');
+    //     if (notifyButton) {
+    //         notifyButton.addEventListener('click', function() {
+    //             const clientNumber = document.getElementById('client-number').innerText;
+
+    //             if (clientNumber === '---') {
+    //                 Swal.fire({
+    //                     icon: 'info',
+    //                     title: 'No Clients to Notify',
+    //                     text: 'There are currently no clients assigned to this window.',
+    //                     confirmButtonText: 'OK'
+
+    //                 });
+    //                 return;
+    //             }
+
+    //             const message = `The next client number is ${clientNumber}`;
+    //             const speech = new SpeechSynthesisUtterance(message);
+    //             speech.voice = speechSynthesis.getVoices()[0];
+    //             speech.rate = 1;
+    //             speech.pitch = 1;
+    //             speechSynthesis.speak(speech);
+    //         });
+    //     }
+    // });
+
     document.addEventListener('DOMContentLoaded', function() {
         const notifyButton = document.getElementById('notify-button');
+        let voices = [];
+
+        // Force load voices
+        window.speechSynthesis.onvoiceschanged = () => {
+            voices = window.speechSynthesis.getVoices();
+            console.log("Loaded voices:", voices.map(v => `${v.name} (${v.lang})`));
+        };
+
         if (notifyButton) {
-            notifyButton.addEventListener('click', function() {
+            notifyButton.addEventListener('click', async function() {
+                // Wait for voices to load
+                await new Promise(resolve => setTimeout(resolve, 100));
+                voices = window.speechSynthesis.getVoices();
+
                 const clientNumber = document.getElementById('client-number').innerText;
-
-                if (clientNumber === '---') {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'No Clients to Notify',
-                        text: 'There are currently no clients assigned to this window.',
-                        confirmButtonText: 'OK'
-
-                    });
-                    return;
-                }
+                if (clientNumber === '---') return;
 
                 const message = `The next client number is ${clientNumber}`;
                 const speech = new SpeechSynthesisUtterance(message);
-                speech.voice = speechSynthesis.getVoices()[0];
-                speech.rate = 1;
-                speech.pitch = 1;
-                speechSynthesis.speak(speech);
+
+                // Expanded female voice detection
+                const femaleVoice = voices.find(voice =>
+                    voice.name.toLowerCase().includes('zira')
+                );
+
+                if (femaleVoice) {
+                    console.log("Selected voice:", femaleVoice.name);
+                    speech.voice = femaleVoice;
+                }
+
+                speech.rate = 0.9;
+                speech.pitch = 1.2;
+                window.speechSynthesis.speak(speech);
             });
         }
     });
@@ -341,6 +399,23 @@
             }
         });
     }
+
+    function getPending() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Get the pending client to serve.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, proceed!',
+            cancelButtonText: 'No, cancel',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('getPending');
+            }
+        });
+    }
+
 
     document.addEventListener('DOMContentLoaded', function() {
 

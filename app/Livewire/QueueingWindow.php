@@ -3,12 +3,12 @@
 namespace App\Livewire;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\{
     Window, Client, Students, QmsWindow, QmsService,
     DmsService, QmsClients, QmsClientLogs, QmsSharedClient,
     QmsPendingClient
 };
-
 
 class QueueingWindow extends Component
 {
@@ -304,6 +304,100 @@ class QueueingWindow extends Component
         }
     }
 
+    public function getPending()
+    {
+        // Check if a window is assigned to the user
+        $user_w_id = QmsWindow::where('p_id', Auth::user()->p_id)
+            ->where('dept_id', $this->currentDepartmentId)
+            ->first();
+
+        if (!$user_w_id) {
+            // Trigger the SweetAlert2 notification
+            $this->dispatchBrowserEvent('no-personnel-assigned');
+            return;
+        }
+
+        $window = QmsWindow::where('w_name', $user_w_id->w_name)
+            ->where('dept_id', $this->currentDepartmentId)
+            ->first();
+
+        // if shared window
+        if ($window->shared_name === 'None') {
+            if ($window->studentNo !== '---') {
+                $this->dispatch('done-next');
+                return;
+            }
+
+            $getClient = QmsPendingClient::where('dept_id', $this->currentDepartmentId)
+                ->where('w_name',$window->w_name )
+                ->oldest()
+                ->first();
+
+            if ($getClient) {
+                QmsWindow::updateOrCreate([
+                    'w_name' => $user_w_id->w_name,
+                    'dept_id' => $this->currentDepartmentId,
+                    'p_id' => $user_w_id->p_id,
+                    'w_status' => $user_w_id->w_status],
+
+                    [
+                    'gName' => $getClient->gName,
+                    'sName' => $getClient->sName,
+                    'studentNo' => $getClient->studentNo,
+                    'c_status' => "Now Serving",
+                    'c_service' => "No service selected" ]);
+
+                $getClient->delete();
+
+                // Optionally re-fetch the window after updating
+                $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
+                    ->where('dept_id', $this->currentDepartmentId)
+                    ->first();
+
+            } else {
+                // Dispatch event for no client available
+                $this->dispatch('no-client-to-serve');
+            }
+
+            }
+        else {
+            if ($window->studentNo !== '---') {
+                $this->dispatch('done-next');
+                return;
+            }
+
+            $getClient = QmsPendingClient::where('dept_id', $this->currentDepartmentId)
+                ->where('w_name',$window->shared_name )
+                ->oldest()
+                ->first();
+
+            if ($getClient) {
+                QmsWindow::updateOrCreate([
+                    'w_name' => $user_w_id->w_name,
+                    'dept_id' => $this->currentDepartmentId,
+                    'p_id' => $user_w_id->p_id,
+                    'w_status' => $user_w_id->w_status],
+
+                    [
+                    'gName' => $getClient->gName,
+                    'sName' => $getClient->sName,
+                    'studentNo' => $getClient->studentNo,
+                    'c_status' => "Now Serving",
+                    'c_service' => "No service selected" ]);
+
+                $getClient->delete();
+
+                // Optionally re-fetch the window after updating
+                $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
+                    ->where('dept_id', $this->currentDepartmentId)
+                    ->first();
+            } else {
+                // Dispatch event for no client available
+                $this->dispatch('no-client-to-serve');
+            }
+        }
+    }
+
     public function waitQueue()
     {
         // Check if a window is assigned to the user
@@ -366,7 +460,6 @@ class QueueingWindow extends Component
         }
     }
 
-    // to do as of 01-03-2025
     public function pendingQueue()
     {
         // Check if a window is assigned to the user
@@ -382,10 +475,6 @@ class QueueingWindow extends Component
 
         // if shared window is none
         if ($user_w_id->shared_name === 'None') {
-            $client = QmsClients::where('dept_id', $this->currentDepartmentId)->oldest()
-                ->where('w_name', $user_w_id->w_name)
-                ->first();
-
                 if ($user_w_id->studentNo === '---') {
                     $this->dispatch('no-client-to-pending');
                 } else {
@@ -398,51 +487,26 @@ class QueueingWindow extends Component
                         'isShared' => 0,
                     ]);
                 }
-                    if ($client) {
-                        QmsWindow::updateOrCreate([
-                            'w_name' => $user_w_id->w_name,
-                            'dept_id' => $this->currentDepartmentId,
-                            'p_id' => $user_w_id->p_id,
-                            'w_status' => $user_w_id->w_status ],
-    
-                            [
-                            'gName' => $client->gName,
-                            'sName' => $client->sName,
-                            'studentNo' => $client->studentNo,
-                            'c_status' => "Now Serving",
-                            'c_service' => "No service selected" ]
-                        );
-    
-                        $client->delete();
-                        $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
-                            ->where('dept_id', $this->currentDepartmentId)
-                            ->first();
-                    } else {
+
                         QmsWindow::updateOrCreate([
                             'w_name' => $user_w_id->w_name,
                             'dept_id' => $this->currentDepartmentId,
                             'p_id' => $user_w_id->p_id,
                             'shared_name' => $user_w_id->shared_name,
                             'w_status' => $user_w_id->w_status],
-    
+
                             [
                             'gName' => "---",
                             'sName' => "---",
                             'studentNo' =>"---",
                             'c_status' => "Waiting...",
                             'c_service' => "No service selected" ]);
-    
-                        
+
                             $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
                                 ->where('dept_id', $this->currentDepartmentId)
                                 ->first();
-                    }
 
         } else {
-            $client = QmsSharedClient::where('dept_id', $this->currentDepartmentId)->oldest()
-                ->where('w_name', $user_w_id->shared_name)
-                ->first();
-
                 if ($user_w_id->studentNo === '---') {
                     $this->dispatch('no-client-to-pending');
                 } else {
@@ -456,28 +520,6 @@ class QueueingWindow extends Component
                     ]);
                 }
 
-                if ($client) {
-                    QmsWindow::updateOrCreate([
-                        'w_name' => $user_w_id->w_name,
-                        'dept_id' => $this->currentDepartmentId,
-                        'p_id' => $user_w_id->p_id,
-                        'shared_name' => $user_w_id->shared_name,
-                        'w_status' => $user_w_id->w_status ],
-
-                        [
-                        'gName' => $client->gName,
-                        'sName' => $client->sName,
-                        'studentNo' => $client->studentNo,
-                        'c_status' => "Now Serving",
-                        'c_service' => "No service selected" ]
-                    );
-
-                    $client->delete();
-                    $this->currentUserWindow = QmsWindow::where('shared_name', $user_w_id->shared_name)
-                        ->where('dept_id', $this->currentDepartmentId)
-                        ->first();
-
-            }else {
                     QmsWindow::updateOrCreate([
                         'w_name' => $user_w_id->w_name,
                         'dept_id' => $this->currentDepartmentId,
@@ -492,18 +534,16 @@ class QueueingWindow extends Component
                         'c_status' => "Waiting...",
                         'c_service' => "No service selected" ]);
 
-                    
+
                         $this->currentUserWindow = QmsWindow::where('w_name', $user_w_id->w_name)
                             ->where('dept_id', $this->currentDepartmentId)
                             ->first();
-                
-            }
 
         }
 
     }
 
-    // for !shared window factory
+    // for factory
     public function pushClient()
     {
         $student = Students::where('studentNo', $this->studentNo)->first();
@@ -551,7 +591,6 @@ class QueueingWindow extends Component
         session()->flash('message', 'Guest successfully pushed!');
     }
 
-    // for shared window factory
     public function pushClient_s()
     {
         $student = Students::where('studentNo', $this->studentNo)->first();
@@ -601,7 +640,6 @@ class QueueingWindow extends Component
 
     // for clients queue stack
 
-    // for queue stack
     public function renderClient()
     {
         $user = Auth::user();
@@ -694,6 +732,12 @@ class QueueingWindow extends Component
                 'shouldPollPending' => false,
             ]);
         }
+    }
+
+    // for deleting pending client
+    public function deleteClient($clientId){
+        QmsPendingClient::find($clientId)->delete();
+        $this->dispatch('client-deleted');
     }
 
     public function render()
