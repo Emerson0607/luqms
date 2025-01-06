@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
-use App\Models\Department;
-use App\Models\DmsUserDepts;
-use App\Models\DmsDepartment;
-use App\Models\Logs;
+use App\Models\{
+    Department, DmsUserDepts, DmsDepartment, Logs
+};
 
 class SessionController extends Controller{
 
@@ -23,7 +22,7 @@ class SessionController extends Controller{
         ]);
 
         $user = Auth::attempt([
-            'username2' => $validatedAttributes['username2'], 
+            'username2' => $validatedAttributes['username2'],
             'password' => $validatedAttributes['password'],
         ]);
 
@@ -88,27 +87,27 @@ class SessionController extends Controller{
 
         return redirect('/');
     }
-    
+
     public function destroy()
     {
         Logs::where('p_id', Auth::user()->p_id)
         ->where('time_out', null)
         ->update(['time_out' => now()]);
-       
+
         // Destroy all sessions for the user
         $userId = Auth::user()->getAuthIdentifier();
         \Illuminate\Support\Facades\DB::table('sessions')
             ->where('user_id', $userId)
             ->delete();
-    
+
         // Log out the current session
         Auth::logout();
-    
+
         // Regenerate the session to prevent session fixation attacks
         request()->session()->invalidate();
         request()->session()->regenerateToken();
-    
+
         return redirect('/');
     }
-   
+
 }
