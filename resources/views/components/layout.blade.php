@@ -11,7 +11,7 @@
     @livewireStyles
 </head>
 
-<body class="overflow-hidden" style="height: 100%; background-color: rgb(243, 243, 248) !important;">
+<body class="overflow-hidden" style="height: 100%; background-color: #fcfcfc !important;">
 
     <div class="wrapper">
         <x-sidebar />
@@ -218,7 +218,7 @@
             </script>
 
             <script>
-                // const maxInactivityTime = 120 * 60 * 1000; 
+                // const maxInactivityTime = 120 * 60 * 1000;
                 let inactivityTimeout;
                 const maxInactivityTime = 120 * 60 * 1000;
                 const logoutUrl = '{{ route('logout') }}'; // URL for logging out

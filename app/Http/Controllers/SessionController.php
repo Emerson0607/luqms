@@ -16,9 +16,19 @@ class SessionController extends Controller{
 
     public function store()
     {
+
+
         $validatedAttributes = request()->validate([
             'username2' => ['required'],
-            'password' => ['required'],
+            'password' => [
+                'required',
+                'string',
+                'min:8',             // Minimum 8 characters
+                'regex:/[a-z]/',     // At least one lowercase letter
+                'regex:/[A-Z]/',     // At least one uppercase letter
+                'regex:/[0-9]/',     // At least one digit
+                'regex:/[@$!%*?&#]/' // At least one special character
+            ],
         ]);
 
         $user = Auth::attempt([
@@ -26,10 +36,10 @@ class SessionController extends Controller{
             'password' => $validatedAttributes['password'],
         ]);
 
-        if (!$user) {
-            throw ValidationException::withMessages([
-                'username2' => trans('Sorry, credentials do not match'),
-            ]);
+        if (!Auth::attempt($validatedAttributes)) {
+            return back()->withErrors([
+                'username2' => 'Sorry, credentials do not match',
+            ])->onlyInput('username2');
         }
 
         request()->session()->regenerate();
@@ -109,5 +119,4 @@ class SessionController extends Controller{
 
         return redirect('/');
     }
-
 }

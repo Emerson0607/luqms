@@ -14,9 +14,7 @@
                     <h5 id="client-status">{{ $currentUserWindow->c_status }}</h5>
                     <h1><span id="client-number">{{ $currentUserWindow->studentNo }}</span></h1>
 
-                    {{-- <i class="fab fa-openid"></i> --}}
-                    {{-- <h6 class="current_department">{{ session('current_department_name') }}</h6> --}}
-                    <p>
+                   <p>
                         <span id="client-name">
                             @if ($currentUserWindow->gName === 'Guest')
                                 {{ $currentUserWindow->gName }}
@@ -29,37 +27,25 @@
             </div>
 
             <div class="core-function-card">
-                <button style="background-color: rgb(255, 34, 34) !important; border:0px;" id="fetch-oldest-client"
-                    class="btn btn-primary">
+                <button class="btn-queue-next" id="fetch-oldest-client">
                     Next
                 </button>
-                <button class="btn btn-primary" id="notify-button">
+                <button class="btn-queue-notify" id="notify-button">
                     Notify
                 </button>
 
                 @if ($currentUserWindow->c_status == 'Waiting...')
-                    <button style="background-color: orange !important; border:0px;" wire:click="continueQueue"
-                        class="btn btn-primary" id="wait-button">
-                        Continue
-                    </button>
+                    <button class="btn-queue-continue" wire:click="continueQueue" id="wait-button">Continue</button>
                 @else
-                    <button
-                        style="background-color: rgb(114, 114, 114) !important; border:0px; color:rgb(243, 243, 243);"
-                        wire:click="waitQueue" class="btn btn-primary" id="wait-button">
-                        Wait
-                    </button>
+                    <button class="btn-queue-wait" wire:click="waitQueue" id="wait-button">Wait</button>
                 @endif
+
                 <div class="pending-button">
-                    <button style="background-color: rgb(178, 0, 149) !important; border:0px;"
-                        id="fetch-oldest-pending-client" class="btn btn-primary">
-                        Pending
-                    </button>
-                    <button style="background-color: rgb(178, 0, 149) !important; border:0px;" class="btn btn-primary" onclick="getPending()">
-                        Get Pending
-                    </button>
+                    <button class="btn-queue-pending" id="fetch-oldest-pending-client">Pending </button>
+                    <button class="btn-queue-getpending" onclick="getPending()">Get Pending</button>
                 </div>
-                <button style="background-color: green !important; border:0px;" type="button"
-                    class="btn btn-primary" onclick="confirmDoneQueue()">
+
+                <button class="btn-queue-done" onclick="confirmDoneQueue()">
                     Done
                 </button>
             </div>
@@ -70,9 +56,6 @@
                     <option value="" selected>Select a service</option>
                     @if ($services)
                         @foreach ($services as $service)
-                            {{-- <option value="{{ $service['service_id'] }}">
-                                {{ $service['service_name'] }}
-                            </option> --}}
                             <option value="{{ $service['service_id'] }}" title="{{ $service['service_name'] }}">
                                 {{ $service['service_name'] }}
                             </option>
@@ -135,9 +118,9 @@
             @if ($clients->isNotEmpty())
                 @foreach ($clients as $client)
                     <li class="list-group-item {{ $loop->first ? 'active' : '' }}">
-                        <h5 style="font-size: 14px">{{ $client->studentNo }} - </h5>
-                        {{ $client->gName }} {{ $client->sName }}
+                        <h5 style="font-size: 14px">{{ $client->studentNo }} | {{ $client->gName }} {{ $client->sName }}</h5>
                     </li>
+
                 @endforeach
             @else
                 <li class="list-group-item text-danger text-center">

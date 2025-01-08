@@ -1,5 +1,5 @@
 <div style="background-color: rgb(243, 243, 248);" wire:poll.1s="updateDepartment" class="main-header">
-    <nav class="allWindow-nav" style="height: 70px; background-color:green">
+    <nav class="allWindow-nav" style="height: 70px; background-color:#008000">
         {{-- <div class="lu-logo"><img style="width:50px; height:50px; border-radius:50%" src="img/logo/LU.png"></div> --}}
         <div class="dept-logo"> <img style="width:50px; height:50px; border-radius:50%"
                 src="{{ asset($currentDepartmentImage) }}"></div>

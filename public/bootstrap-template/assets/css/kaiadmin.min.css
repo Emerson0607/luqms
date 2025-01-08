@@ -689,7 +689,7 @@ body {
 
 .sidebar .nav>.nav-item.active>a p,
 .sidebar[data-background-color=white] .nav>.nav-item.active>a p {
-   color: rgb(8, 188, 8) !important;
+   color: #14ae64 !important;
    font-weight: 600
 }
 
@@ -738,7 +738,7 @@ body {
 .sidebar .nav>.nav-item a:hover p,
 .sidebar[data-background-color=white] .nav>.nav-item a:focus p,
 .sidebar[data-background-color=white] .nav>.nav-item a:hover p {
-   color: rgb(8, 188, 8) !important;
+   color: #14ae64 !important;
    font-weight: 600
 }
 
@@ -856,7 +856,7 @@ body {
 .sidebar[data-background-color=white] .nav.nav-secondary>.nav-item a:focus i,
 .sidebar[data-background-color=white] .nav.nav-secondary>.nav-item a:hover i,
 .sidebar[data-background-color=white] .nav.nav-secondary>.nav-item a[data-toggle=collapse][aria-expanded=true] i {
-   color: rgb(8, 188, 8) !important
+   color: #14ae64 !important
 }
 
 .sidebar .nav.nav-secondary>.nav-item a[data-toggle=collapse][aria-expanded=true]:before,
@@ -866,12 +866,12 @@ body {
 
 .sidebar .nav.nav-secondary>.nav-item.active a:before,
 .sidebar[data-background-color=white] .nav.nav-secondary>.nav-item.active a:before {
-   background: rgb(8, 188, 8) !important
+   background: #14ae64 !important
 }
 
 .sidebar .nav.nav-secondary>.nav-item.active a i,
 .sidebar[data-background-color=white] .nav.nav-secondary>.nav-item.active a i {
-   color: rgb(8, 188, 8) !important
+   color: #14ae64 !important
 }
 
 .sidebar .nav.nav-secondary>.nav-item .nav-collapse li.active>a,
@@ -914,12 +914,12 @@ body {
 .sidebar[data-background-color=white] .nav.nav-success>.nav-item a:focus i,
 .sidebar[data-background-color=white] .nav.nav-success>.nav-item a:hover i,
 .sidebar[data-background-color=white] .nav.nav-success>.nav-item a[data-toggle=collapse][aria-expanded=true] i {
-   color: #31ce36 !important
+   color: #14ae64 !important
 }
 
 .sidebar .nav.nav-success>.nav-item a[data-toggle=collapse][aria-expanded=true]:before,
 .sidebar[data-background-color=white] .nav.nav-success>.nav-item a[data-toggle=collapse][aria-expanded=true]:before {
-   background: #31ce36 !important
+   background: #14ae64 !important
 }
 
 .sidebar .nav.nav-success>.nav-item.active a:before,
@@ -1461,7 +1461,7 @@ body[data-background-color=dark] .border-top {
 }
 
 .logo-header[data-background-color=dark] {
-   background: rgb(1, 166, 1) !important
+   background: #087830 !important
 }
 
 .navbar-header[data-background-color=dark] {
@@ -2601,8 +2601,8 @@ label.error {
 }
 
 .btn-success {
-   background: #31ce36 !important;
-   border-color: #31ce36 !important
+   background: #14ae64 !important;
+   border-color: #14ae64 !important
 }
 
 .btn-success:disabled,
@@ -2707,14 +2707,14 @@ label.error {
 
 .btn-label-success {
    background: rgba(49, 206, 54, .1);
-   color: #31ce36 !important;
+   color: #14ae64 !important;
    border-color: transparent
 }
 
 .btn-label-success:disabled,
 .btn-label-success:focus,
 .btn-label-success:hover {
-   background: #31ce36;
+   background: #14ae64;
    color: #fff !important;
    opacity: 1
 }
@@ -2862,11 +2862,11 @@ label.error {
 }
 
 .btn-link.btn-success {
-   color: #31ce36 !important
+   color: #14ae64 !important
 }
 
 .btn-link.btn-success:hover {
-   color: #31ce36 !important
+   color: #14ae64 !important
 }
 
 .btn-link.btn-warning {

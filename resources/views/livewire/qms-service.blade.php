@@ -614,7 +614,7 @@
                     console.log("Associated Services: ", associatedServices);
 
                     document.querySelectorAll('.qmsQueueCheckbox').forEach(checkbox => {
-                        // checkbox.checked = false; 
+                        // checkbox.checked = false;
 
                         if (associatedServices.includes(parseInt(checkbox.value))) {
                             checkbox.checked = true; // Check associated services

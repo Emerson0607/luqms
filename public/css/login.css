@@ -1,0 +1,138 @@
+/* -----Root Variable */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* Root Variable */
+:root {
+    --color-background: #fcfcfc;
+    --color-lu: #00bf63;
+    --color-lu-50: #14ae64;
+    --color-text: #292929;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.login-body {
+    height: 100vh;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.login-bg {
+    width: 400px;
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+}
+
+.login-form {
+    width: 400px;
+    padding: var(--card-padding);
+    margin: 0;
+    padding: 0;
+}
+
+.login-title {
+    text-align: center;
+}
+
+.login-lu {
+    color: var(--color-lu);
+    font-size: 23px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.login-qms {
+    margin-top: 24px;
+    margin-bottom: 40px;
+    font-size: 28px;
+    font-family: poppins, sans-serif;
+    font-weight: 400;
+}
+
+.login-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.login-input a {
+    margin-top: 24px;
+    font-size: 14px;
+    font-family: poppins, sans-serif;
+    color: var(--color-text);
+}
+
+.login-input .username-input input,
+.login-input .password-input input,
+.login-input > button {
+    width: 290px;
+    height: 48px;
+    border-radius: 20px;
+    border: 1px solid var(--color-text);
+    background-color: var(--color-background);
+}
+
+.login-input > button {
+    background-color: var(--color-background);
+    color: var(--color-lu-50);
+    border: 2px solid var(--color-lu-50);
+    font-size: 18px;
+    font-weight: 600;
+    font-family: poppins, sans-serif;
+}
+
+.login-input > button:hover {
+    background-color: var(--color-lu);
+    color: white;
+    border: none;
+}
+
+.blob1 {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    right: -10%;
+    bottom: -30%;
+    z-index: -1;
+}
+
+input.form-control:focus {
+    border-color: var(--color-lu);
+    box-shadow: 0 0 0 0.2rem rgba(0, 191, 99, 0.25);
+    outline: none;
+}
+
+.login-input .password-input .invalid-feedback {
+   font-size: 12px;
+}
+
+@media (max-width: 768px) {
+    .login-body {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .login-bg {
+        width: 300px;
+        height: 300px;
+    }
+
+    .login-form {
+        width: 90%;
+    }
+}

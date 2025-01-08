@@ -4,7 +4,7 @@
         <div class="d-flex justify-content-center pl-5">
             <div class="row">
                 <div class="row">
-                    <h2 class="op-7">Laguna University Queuing System</h2>
+                    <h2 style="color: #292929" class="op-7">Laguna University Queuing System</h2>
                 </div>
 
                 @guest

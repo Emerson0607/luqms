@@ -44,7 +44,7 @@ class PersonnelController extends Controller
         }
         return view('user.personnel');
     }
-    
+
     public function p_store(){
         $validatedAttributes = request()->validate([
             'p_id' => ['required'],
@@ -85,11 +85,11 @@ class PersonnelController extends Controller
                     'service_id' => $serviceId,
                 ]);
             }
-      
+
 
         return redirect()->route('personnel');
     }
-    
+
     public function update(Request $request, $pId)
     {
         // Validate the incoming request
@@ -115,9 +115,9 @@ class PersonnelController extends Controller
             'editWName.unique' => 'The window name already exists. Please choose a different name.',
             'editPersonnel.unique' => 'A window can only be assigned to one personnel.',
         ]);
-    
-        $window = QmsWindow::findOrFail($pId); 
-    
+
+        $window = QmsWindow::findOrFail($pId);
+
         $qmsServiceWindow = QmsService::where('w_name', $window->w_name)
             ->where('dept_id', $window->dept_id);
 
@@ -135,7 +135,7 @@ class PersonnelController extends Controller
                 ]);
             }
         }
-    
+
          // Update all QmsWindow records where shared_name matches
         QmsClients::where('w_name', $window->w_name)
             ->where('dept_id', $window->dept_id)
@@ -147,7 +147,7 @@ class PersonnelController extends Controller
         $window->w_status = $request->editStatus;
         $window->shared_name = $request->editShared;
         $window->save();
-        
+
         return redirect()->back()->with('success', 'Window updated successfully.');
     }
 
@@ -158,7 +158,7 @@ class PersonnelController extends Controller
             $associatedServices = QmsService::where('w_name', $wName)
                                            ->where('dept_id', $deptId)
                                            ->pluck('service_id');
-    
+
             return response()->json($associatedServices);
         } catch (\Exception $e) {
             Log::error('Error fetching associated services: ' . $e->getMessage());
@@ -190,16 +190,16 @@ class PersonnelController extends Controller
             'w_name' => ['required'],
             'dept_id' => ['required'],
         ]);
-    
+
         // Check if w_id already exists in the Window table
         $wIdExists = QmsSharedWindow::where('w_name', $validatedAttributes['w_name'])
             ->where('dept_id', $validatedAttributes['dept_id'])
             ->exists();
-    
+
         if ($wIdExists) {
             return redirect()->back()->with('sweetalert', 'The provided window already exists.')->withInput();
         }
-    
+
         // Create a new record in the Window table
         QmsSharedWindow::create($validatedAttributes);
         return redirect()->route('personnel');
@@ -224,7 +224,7 @@ class PersonnelController extends Controller
             QmsSharedClient::where('w_name', $windowName)
                 ->where('dept_id', $deptId)
                 ->delete();
-            
+
             return redirect()->back()->with('success', 'Window deleted successfully.');
         } else {
             return redirect()->back()->with('error', 'Window not found.');
@@ -243,23 +243,23 @@ class PersonnelController extends Controller
                 Rule::unique('qms_shared_window', 'w_name')->ignore($pId)->where('dept_id', $request->input('editSDeptId')),
             ],
             'editSDeptId' => ['required'],
-          
+
         ], [
             'editSWName.unique' => 'The shared window name already exists. Please choose a different name.',
         ]);
-    
-        $window = QmsSharedWindow::findOrFail($pId); 
+
+        $window = QmsSharedWindow::findOrFail($pId);
 
         // Update all QmsWindow records where shared_name matches
         QmsWindow::where('shared_name', $window->w_name)
             ->where('dept_id', $window->dept_id)
             ->update(['shared_name' => $request->editSWName]);
-        
+
         // Update all QmsWindow records where shared_name matches
         QmsSharedClient::where('w_name', $window->w_name)
             ->where('dept_id', $window->dept_id)
             ->update(['w_name' => $request->editSWName]);
-            
+
         // Update the model's attributes
         $window->w_name = $request->editSWName;
         $window->save();
