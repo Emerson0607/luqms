@@ -79,11 +79,11 @@
                     <div>
                         <!-- Student Number Input -->
                         <input type="text" wire:model="studentNo" wire:keydown.enter="pushClient" id="studentNo"
-                            placeholder="Enter Student No." class="form-control">
+                            placeholder="Enter Student No." class="input-generated-client">
                     </div>
                     <div class="or">or</div>
                     <div>
-                        <button wire:click="generateClient" type="submit" class="btn btn-primary">Generate
+                        <button wire:click="generateClient" type="submit" class="button-generated-client">Generate
                             Client</button>
                     </div>
                 </div>
@@ -92,11 +92,11 @@
                     <div>
                         <!-- Student Number Input -->
                         <input type="text" wire:model="studentNo" wire:keydown.enter="pushClient_s" id="studentNo_s"
-                            placeholder="Enter Student No." class="form-control">
+                            placeholder="Enter Student No."  class="input-generated-client">
                     </div>
                     <div class="or">or</div>
                     <div>
-                        <button wire:click="generateClient_s" type="submit" class="btn btn-primary">Generate
+                        <button wire:click="generateClient_s" type="submit" class="button-generated-client">Generate
                             Client</button>
                     </div>
                 </div>
@@ -110,7 +110,7 @@
     </div>
 
     <div class="container qms-stack" wire:poll.2s="renderClient">
-        <p class="current_department text-primary">
+        <p class="queue-stack-title">
             {{ session('current_department_name', 'No department selected') }}
         </p>
 
@@ -120,7 +120,6 @@
                     <li class="list-group-item {{ $loop->first ? 'active' : '' }}">
                         <h5 style="font-size: 14px">{{ $client->studentNo }} | {{ $client->gName }} {{ $client->sName }}</h5>
                     </li>
-
                 @endforeach
             @else
                 <li class="list-group-item text-danger text-center">
@@ -132,7 +131,7 @@
     </div>
 
     <div class="container qms-stack" wire:poll.2s="renderPendingClient">
-        <p class="current_department text-primary">
+        <p class="queue-stack-title">
             Pending Client
         </p>
 
@@ -141,8 +140,7 @@
                 @foreach ($pendingClients as $client)
                     <li class="list-group-item {{ $loop->first ? 'active' : '' }}"
                         onclick="confirmDelete('{{ $client->id }}')">
-                        <h5 style="font-size: 14px">{{ $client->studentNo }} - </h5>
-                        {{ $client->gName }} {{ $client->sName }}
+                        <h5 style="font-size: 14px">{{ $client->studentNo }} | {{ $client->gName }} {{ $client->sName }}</h5>
                     </li>
                 @endforeach
             @else

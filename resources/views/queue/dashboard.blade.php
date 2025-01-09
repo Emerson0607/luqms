@@ -3,10 +3,6 @@
     <div class="page-inner auto-refresh-dashboard" style="padding-left:50px;">
         <div class="d-flex justify-content-center pl-5">
             <div class="row">
-                <div class="row">
-                    <h2 style="color: #292929" class="op-7">Laguna University Queuing System</h2>
-                </div>
-
                 @guest
                     <div>
                         <x-nav-link href="/login" :active="request()->is('/login')">Log In</x-nav-link>

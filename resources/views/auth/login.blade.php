@@ -23,18 +23,6 @@
                 <h1 class="login-qms"> Queue Management <br>System</h1>
             </div>
 
-            {{-- <div class="login-input">
-                <input type="text" name="username2" id="username2"
-                    value="{{ old('username2') }}" placeholder="Username" required
-                    class="@error('username2') is-invalid @enderror">
-
-                <input type="password" name="password" id="password" placeholder="Password" required
-                    class="@error('password') is-invalid @enderror">
-
-                <button type="submit">Login</button>
-                <a href="#">Forgot Password?</a>
-            </div> --}}
-
             <div class="login-input">
                 <div class="username-input">
                     <input type="text"
@@ -72,11 +60,10 @@
 
         </form>
 
-        <img class="blob1" src="../img/blob1.svg" alt="">
+        <img class="blob2" src="../img/blob2.svg" alt="">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     </div>
 
 
 </body>
-
 </html>

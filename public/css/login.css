@@ -6,6 +6,7 @@
     --color-background: #fcfcfc;
     --color-lu: #00bf63;
     --color-lu-50: #14ae64;
+    --color-lu-75: #0ae279;
     --color-text: #292929;
 }
 
@@ -90,7 +91,7 @@ html, body {
 .login-input > button {
     background-color: var(--color-background);
     color: var(--color-lu-50);
-    border: 2px solid var(--color-lu-50);
+    border: 1.7px solid var(--color-lu-50);
     font-size: 18px;
     font-weight: 600;
     font-family: poppins, sans-serif;
@@ -102,7 +103,7 @@ html, body {
     border: none;
 }
 
-.blob1 {
+.blob2 {
     position: absolute;
     width: 400px;
     height: 400px;
@@ -134,5 +135,29 @@ input.form-control:focus {
 
     .login-form {
         width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-bg {
+        width: 100px;
+        height: 100px;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .login-input > button {
+        background-color: var(--color-lu);
+        color: white;
+        border: none;
+    }
+
+    .blob2 {
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        right: -40%;
+        bottom: -30%;
+        z-index: -1;
     }
 }

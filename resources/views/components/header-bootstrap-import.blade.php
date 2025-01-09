@@ -27,4 +27,5 @@
  <link rel="stylesheet" href="bootstrap-template/assets/css/demo.css" />
  <link rel="stylesheet" href="css/queue-stack.css" />
  <link rel="stylesheet" href="css/sidebar.css" />
+ <link rel="stylesheet" href="css/manage-window.css" />
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
