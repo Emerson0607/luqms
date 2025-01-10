@@ -654,7 +654,7 @@ class QueueingWindow extends Component
             if ($userWindow->shared_name === 'None') {
                 $this->clients = QmsClients::where('dept_id', $this->currentDepartmentId)
                 ->where('w_name', $userWindow->w_name)
-                ->take(8)
+                ->take(6)
                 ->get();
 
                 $totalClients = QmsClients::where('dept_id', $this->currentDepartmentId)
@@ -662,12 +662,12 @@ class QueueingWindow extends Component
                     ->count();
 
                 $this->dispatch('updatePollStatus', [
-                    'shouldPoll' => $totalClients > 0 && $this->clients->count() < 8,
+                    'shouldPoll' => $totalClients > 0 && $this->clients->count() < 6,
                 ]);
             }else{
                 $this->clients = QmsSharedClient::where('dept_id', $this->currentDepartmentId)
                 ->where('w_name', $userWindow->shared_name)
-                ->take(8)
+                ->take(6)
                 ->get();
 
                 $totalClients = QmsSharedClient::where('dept_id', $this->currentDepartmentId)
@@ -675,7 +675,7 @@ class QueueingWindow extends Component
                     ->count();
 
                 $this->dispatch('updatePollStatus', [
-                    'shouldPoll' => $totalClients > 0 && $this->clients->count() < 8,
+                    'shouldPoll' => $totalClients > 0 && $this->clients->count() < 6,
                 ]);
             }
 
@@ -700,7 +700,7 @@ class QueueingWindow extends Component
             if ($userWindow->shared_name === 'None') {
                 $this->pendingClients = QmsPendingClient::where('dept_id', $this->currentDepartmentId)
                 ->where('w_name', $userWindow->w_name)
-                ->take(8)
+                ->take(6)
                 ->get();
 
                 $totalClients = QmsPendingClient::where('dept_id', $this->currentDepartmentId)
@@ -708,12 +708,12 @@ class QueueingWindow extends Component
                     ->count();
 
                 $this->dispatch('updatePollStatusPending', [
-                    'shouldPollPending' => $totalClients > 0 && $this->pendingClients->count() < 8,
+                    'shouldPollPending' => $totalClients > 0 && $this->pendingClients->count() < 6,
                 ]);
             }else{
                 $this->pendingClients = QmsPendingClient::where('dept_id', $this->currentDepartmentId)
                 ->where('w_name', $userWindow->shared_name)
-                ->take(8)
+                ->take(6)
                 ->get();
 
                 $totalClients = QmsPendingClient::where('dept_id', $this->currentDepartmentId)
@@ -721,7 +721,7 @@ class QueueingWindow extends Component
                     ->count();
 
                 $this->dispatch('updatePollStatusPending', [
-                    'shouldPollPending' => $totalClients > 0 && $this->pendingClients->count() < 8,
+                    'shouldPollPending' => $totalClients > 0 && $this->pendingClients->count() < 6,
                 ]);
             }
 

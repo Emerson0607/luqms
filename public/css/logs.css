@@ -1,0 +1,111 @@
+/* -----Root Variable */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+/* Root Variable */
+:root {
+    --color-background: #fcfcfc;
+    --color-lu: #00bf63;
+    --color-lu-50: #14ae64;
+    --color-text: #3b3b3b;
+
+    --color-admin: #303396;
+    --color-primary: #7380ec;
+    --color-danger: #ff7782;
+    --color-success: #41f1b6;
+    --color-warning: #ffbb55;
+    --color-white: #fff;
+    --color-info-dark: #7d8da1;
+    --color-info-light: #dce1eb;
+    --color-dark: #363949;
+    --color-light: rgba(132, 139, 200, 0.18);
+    --color-primary-variant: #111e88;
+    --color-dark-variant: #677483;
+
+    --card-border-radius: 2rem;
+    --border-radius-1: 0.4rem;
+    --border-radius-2: 0.8rem;
+    --border-radius-3: 1.2rem;
+    --color-lu: #087830;
+    --card-padding: 1.8rem;
+    --padding-1: 1.2rem;
+    --box-shadow: 0 2rem 3rem var(--color-light);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(233, 233, 233);
+    border-radius: var(--border-radius-2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(255, 255, 255);
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(255, 255, 255);
+    border-radius: var(--border-radius-2);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.logs-table{
+    border: 0 !important;
+    border-radius: var(--border-radius-2);
+    box-shadow: var(--box-shadow);
+}
+
+.logs-header{
+    padding: 1rem;
+    margin: 0;
+    /* border: 1px solid black; */
+}
+
+.bread-title {
+    text-decoration: none;
+    color:#3b3b3b;
+}
+
+.bread-title:hover {
+    text-decoration: none;
+    color:var(--color-lu-50);
+}
+
+
+.logs-table-body{
+    padding: 0;
+    overflow-y: auto;
+    max-height: 28rem;
+}
+
+.logs-title{
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--color-text);
+    font-family: poppins, sans-serif;
+}
+
+.logs-column-name >th {
+    background-color: rgba(164, 251, 164, 0.59) !important;
+    border: none;
+    height: 3rem;
+    color: var(--color-text);
+    padding: 1rem;
+}
+
+.logs-column-name >td{
+    height: 4rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    vertical-align: middle;
+    color: var(--color-text);
+    font-size: 1rem;
+    border-bottom: 2px solid rgba(239, 239, 239, 0.815) ;
+}
+
+.logs-column-name td div > button {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}

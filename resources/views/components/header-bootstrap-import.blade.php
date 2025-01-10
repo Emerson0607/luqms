@@ -28,4 +28,5 @@
  <link rel="stylesheet" href="css/queue-stack.css" />
  <link rel="stylesheet" href="css/sidebar.css" />
  <link rel="stylesheet" href="css/manage-window.css" />
+ <link rel="stylesheet" href="css/logs.css" />
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
