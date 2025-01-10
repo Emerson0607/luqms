@@ -46,7 +46,7 @@
                                 @endif
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="logs-column-body">
                             @forelse ($logs as $log)
                                 <tr class="logs-column-name">
                                     @if ($currentTab === 'personnel')

@@ -410,7 +410,6 @@
 
     .dept-dropdown {
         margin-right: 8px !important;
-        border: #00bf63 solid black 1px;
     }
 
     .queue-ongoing-card {
@@ -553,6 +552,171 @@
 
     }
 
+
+    .or {
+        padding-top: 8px;
+        color: var(--color-text);
+        font-weight: 400;
+        margin: 0;
+    }
+
+    .queue-ongoing-card .queue-window {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    .qms-stack {
+        padding: 16px !important;
+        background-color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 16px;
+    }
+
+}
+
+@media (max-width: 380px) {
+    .dept-dropdown {
+        margin-left: 16px !important;
+    }
+
+    .queue-ongoing-card {
+        height: 95%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        grid-template-areas:
+            "first first"
+            "second third"; /* Place second and third divs in the second row */
+        gap: 2rem;
+        margin-left: -1rem;
+    }
+
+    .queue-ongoing-card > div:nth-child(1) {
+        grid-area: first; /* First div spans both columns in the first row */
+    }
+
+    .queue-ongoing-card > div:nth-child(2) {
+        grid-area: second; /* Second div in the first column of the second row */
+    }
+
+    .queue-ongoing-card > div:nth-child(3) {
+        grid-area: third; /* Third div in the second column of the second row */
+    }
+
+    .core-function-card {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        margin-top: 1rem;
+        width: 80%;
+        font-family: poppins, sans-serif;
+        gap: 1px;
+        padding: 0;
+    }
+
+    .core-function-card > button {
+        width: 3rem;
+        height: 3rem;
+        font-size: .7rem;
+        border: 1px solid var(--color-text);
+        background-color: var(--color-background);
+        font-family: poppins, sans-serif;
+        font-weight: 500;
+        border-radius: .7rem;
+    }
+
+    .core-function-card .pending-button{
+        width: 3rem;
+        height: 3rem;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: .2rem;
+    }
+
+    .core-function-card .pending-button > button{
+        width: 3rem;
+        height: 5rem !important;
+        padding: 0.5px;
+        font-size:6px;
+        border: 1px solid var(--color-text);
+        background-color: var(--color-background);
+        font-family: poppins, sans-serif;
+        font-weight: 500;
+        border-radius: .3rem;
+    }
+
+    .core-function-card .btn-queue-next {
+        background-color: #28a745; /* Green for next action */
+        border: none;
+        color: white;
+    }
+
+    .core-function-card .btn-queue-notify{
+        background-color: #17a2b8; /* Teal for notify action */
+        border: none;
+        color: white;
+    }
+
+    .core-function-card .btn-queue-wait, .core-function-card .btn-queue-continue{
+        background-color: #ffc107; /* Yellow for wait action */
+        border: none;
+        color: white;
+    }
+
+    .core-function-card .pending-button .btn-queue-pending{
+        background-color: #fd7e14; /* Orange for pending action */
+        border: none;
+        color: white;
+    }
+
+    .core-function-card .pending-button .btn-queue-getpending {
+        background-color: #6c757d; /* Gray for get pending action */
+        border: none;
+        color: white;
+    }
+
+    .core-function-card .btn-queue-done{
+        background-color: #dc3545; /* Red for done action */
+        border: none;
+        color: white;
+    }
+
+    .queue-ongoing-card .queue-window h5,
+    .queue-ongoing-card .queue-window h1,
+    .queue-ongoing-card .queue-window h6 {
+        font-weight: 900;
+    }
+
+    .queue-ongoing-card .queue-window h5 {
+        font-size: 24px;
+        color: #00bf63;
+    }
+
+    .queue-ongoing-card .queue-window h1 {
+        font-size: 40px;
+        color: var(--color-text);
+    }
+
+
+    .generate-client-card {
+        display: grid;
+        width: 95%;
+        grid-template-columns: auto auto auto;
+        margin-top: 1rem;
+        font-family: poppins, sans-serif;
+        gap:8px;
+    }
+
+    .generate-client-card input {
+        font-size: 0.8rem;
+        width: 8rem;
+    }
+
+    .generate-client-card button {
+        width: 8rem;
+
+    }
 
     .or {
         padding-top: 8px;

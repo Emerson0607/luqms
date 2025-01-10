@@ -109,3 +109,12 @@
     padding-left: 1rem;
     padding-right: 1rem;
 }
+
+@media (max-width: 480px) {
+
+    .logs-table-body{
+        padding: 0;
+        max-height: 18rem;
+    }
+
+}
