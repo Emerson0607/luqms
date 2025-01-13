@@ -7,9 +7,11 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
+
 
 use App\Models\{
-    QmsWindow, QmsService, QmsSharedWindow, QmsSharedClient, QmsClients
+    QmsWindow, QmsService, QmsSharedWindow, QmsSharedClient, QmsClients, QmsCharter
 };
 
 class PersonnelController extends Controller
@@ -266,4 +268,88 @@ class PersonnelController extends Controller
 
         return redirect()->back()->with('success', 'Window updated successfully.');
     }
+
+
+    public function charter1_store(Request $request)
+    {
+        // Validate input data
+        $validatedAttributes = $request->validate([
+            'dept_id' => ['required', 'integer'],
+            'video1' => ['required', 'file', 'max:102400'],  // Maximum file size: 100MB (102400KB)
+        ]);
+
+        // Handle file upload if present
+        if ($request->hasFile('video1')) {
+            $file = $request->file('video1');
+            $filePath = $file->store('videos', 'public');
+            $validatedAttributes['video1'] = $filePath;
+        }
+
+        // Add or update the record in the database
+        QmsCharter::updateOrCreate(
+            ['dept_id' => $validatedAttributes['dept_id']], // Condition to check if the record exists
+            $validatedAttributes // Attributes to update or create
+        );
+
+        return redirect()->back()->with('success', 'File uploaded successfully.');
+    }
+
+    public function deleteVideo($id)
+    {
+        $charter = QmsCharter::findOrFail($id);
+
+        // Delete the video file from storage
+        if ($charter->video1 && Storage::disk('public')->exists($charter->video1)) {
+            Storage::disk('public')->delete($charter->video1);
+        }
+
+        $charter->video1 = null;
+        $charter->save();
+
+        // Redirect with success message
+        return redirect()->back()->with('success', 'Video deleted successfully!');
+    }
+
+
+    public function charter2_store(Request $request)
+    {
+        // Validate input data
+        $validatedAttributes = $request->validate([
+            'dept_id' => ['required', 'integer'],
+            'video2' => ['required', 'file', 'max:102400'],  // Maximum file size: 100MB (102400KB)
+        ]);
+
+        // Handle file upload if present
+        if ($request->hasFile('video2')) {
+            $file = $request->file('video2');
+            $filePath = $file->store('videos', 'public');
+            $validatedAttributes['video2'] = $filePath;
+        }
+
+        // Add or update the record in the database
+        QmsCharter::updateOrCreate(
+            ['dept_id' => $validatedAttributes['dept_id']], // Condition to check if the record exists
+            $validatedAttributes // Attributes to update or create
+        );
+
+        return redirect()->back()->with('success', 'File uploaded successfully.');
+    }
+
+    public function deleteVideo2($id)
+    {
+        $charter = QmsCharter::findOrFail($id);
+
+        // Delete the video file from storage
+        if ($charter->video1 && Storage::disk('public')->exists($charter->video1)) {
+            Storage::disk('public')->delete($charter->video1);
+        }
+
+        $charter->video2 = null;
+        $charter->save();
+
+        // Redirect with success message
+        return redirect()->back()->with('success', 'Video deleted successfully!');
+    }
+
+
 }

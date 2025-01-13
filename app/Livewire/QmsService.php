@@ -4,12 +4,12 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\{
-    DmsService, QmsWindow, Personnel, DmsUserDepts, DmsUsers, QmsSharedWindow
+    DmsService, QmsWindow, Personnel, DmsUserDepts, DmsUsers, QmsSharedWindow, QmsCharter
 };
 
 class QmsService extends Component
 {
-    public $currentUserDepartmentId, $services, $windowLists, $personnels, $inactiveWindows, $sharedWindows;
+    public $currentUserDepartmentId, $services, $windowLists, $personnels, $inactiveWindows, $sharedWindows,  $charters;
 
     public function mount()
     {
@@ -28,6 +28,7 @@ class QmsService extends Component
             ->where('w_status', 0)
             ->get();
         $this->sharedWindows = QmsSharedWindow::where('dept_id', $this->currentUserDepartmentId)->get();
+        $this->charters = QmsCharter::where('dept_id', $this->currentUserDepartmentId)->first();
     }
 
     public function render()

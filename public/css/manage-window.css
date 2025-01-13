@@ -60,6 +60,15 @@
     padding: 2rem;
 }
 
+.manage-charter{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    font-family: poppins, sans-serif;
+    padding: 2rem;
+}
+
 
 .manage-window-card > div{
     max-height: 36rem;
@@ -157,6 +166,32 @@
 
 .mw-add-window-body{
     padding: 1.5rem;
+}
+
+.video1{
+    position: relative;
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+}
+
+.video1 form{
+    position: absolute;
+    top: -3.5rem;
+    right: 1rem;
+    background-color: transparent;
+}
+
+.video1 form button {
+    border: none;
+    color: red;
+    width: 1rem;
+    height: 1rem;
+    background-color: rgba(255, 255, 255, 0);
+    transition: transform 0.2s ease-in-out; /* Smooth transition */
+}
+
+.video1 form button:hover {
+    transform: scale(1.5); /* Enlarge the button on hover */
 }
 
 @media (max-width: 480px) {

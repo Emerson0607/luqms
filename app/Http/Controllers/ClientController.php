@@ -31,7 +31,7 @@ class ClientController extends Controller
     }
 
     public function index()
-    { 
+    {
         return view('queue.dashboard', ['current_department_name' => $this->currentDepartment]);
     }
 
