@@ -651,7 +651,10 @@
         });
     });
 
-    document.getElementById('deleteVideoButton2').addEventListener('click', function(e) {
+
+</script>
+<script>
+     document.getElementById('deleteVideoButton2').addEventListener('click', function(e) {
         e.preventDefault(); // Prevent default button behavior
 
         // Display SweetAlert confirmation dialog
@@ -739,61 +742,62 @@
         });
 
     </script>
-<script>
-    document.getElementById("uploadForm2").addEventListener("submit", function(e) {
-        e.preventDefault(); // Prevent the form from submitting the usual way
-        var formData = new FormData(this); // Create a FormData object from the form
 
-        var file = document.getElementById('video2').files[0]; // Access the file
+    <script>
+        document.getElementById("uploadForm2").addEventListener("submit", function(e) {
+            e.preventDefault(); // Prevent the form from submitting the usual way
+            var formData = new FormData(this); // Create a FormData object from the form
 
-        // Check file size (100MB limit)
-        if (file.size > 102400000) { // 100MB = 102400000 bytes
-            alert('File size exceeds the 100MB limit!');
-            return;
-        }
+            var file = document.getElementById('video2').files[0]; // Access the file
 
-        var xhr = new XMLHttpRequest(); // Create a new XMLHttpRequest
-        xhr.open("POST", "/charter2", true);
-
-        // Include CSRF token in the request
-        xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
-
-        // Show the loading spinner and hide the progress bar
-        document.getElementById("loadingSpinner").style.display = 'block';
-        document.getElementById("progressBar").style.width = '0%'; // Reset progress bar
-
-        // Update progress bar on file upload progress
-        xhr.upload.addEventListener("progress", function(e) {
-            if (e.lengthComputable) {
-                var percentage = (e.loaded / e.total) * 100; // Calculate upload progress
-                document.getElementById("progressBar").style.width = percentage + "%"; // Update progress bar width
+            // Check file size (100MB limit)
+            if (file.size > 102400000) { // 100MB = 102400000 bytes
+                alert('File size exceeds the 100MB limit!');
+                return;
             }
+
+            var xhr = new XMLHttpRequest(); // Create a new XMLHttpRequest
+            xhr.open("POST", "/charter2", true);
+
+            // Include CSRF token in the request
+            xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+
+            // Show the loading spinner and hide the progress bar
+            document.getElementById("loadingSpinner").style.display = 'block';
+            document.getElementById("progressBar").style.width = '0%'; // Reset progress bar
+
+            // Update progress bar on file upload progress
+            xhr.upload.addEventListener("progress", function(e) {
+                if (e.lengthComputable) {
+                    var percentage = (e.loaded / e.total) * 100; // Calculate upload progress
+                    document.getElementById("progressBar").style.width = percentage + "%"; // Update progress bar width
+                }
+            });
+
+            // Handle the response after upload completes
+            xhr.onload = function() {
+                // Hide the loading spinner when done
+                document.getElementById("loadingSpinner").style.display = 'none';
+
+                if (xhr.status === 200) {
+                    alert("File uploaded successfully!");
+                    // Refresh the page
+                    location.reload();
+                } else {
+                    alert("Error uploading file!");
+                }
+            };
+
+            // Handle any errors during the request
+            xhr.onerror = function() {
+                alert('Error uploading file!');
+                document.getElementById("loadingSpinner").style.display = 'none';
+            };
+
+            xhr.send(formData); // Send the form data (including the file)
         });
 
-        // Handle the response after upload completes
-        xhr.onload = function() {
-            // Hide the loading spinner when done
-            document.getElementById("loadingSpinner").style.display = 'none';
-
-            if (xhr.status === 200) {
-                alert("File uploaded successfully!");
-                // Refresh the page
-                location.reload();
-            } else {
-                alert("Error uploading file!");
-            }
-        };
-
-        // Handle any errors during the request
-        xhr.onerror = function() {
-            alert('Error uploading file!');
-            document.getElementById("loadingSpinner").style.display = 'none';
-        };
-
-        xhr.send(formData); // Send the form data (including the file)
-    });
-
-</script>
+    </script>
 
 {{-- INPUT VALIDATION --}}
 <script>
