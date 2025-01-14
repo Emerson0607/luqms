@@ -6,7 +6,7 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\{
-    QmsWindow, WindowList, QmsClients, QmsSharedClient
+    QmsWindow, WindowList, QmsClients, QmsSharedClient, QmsCharter
 };
 
 class CurrentDepartment extends Component
@@ -17,6 +17,7 @@ class CurrentDepartment extends Component
     public $allWindowQueue = [];
     public $allWaitingList = [];
     public $clients = [];
+    public $charters;
 
     public function mount()
     {
@@ -27,9 +28,10 @@ class CurrentDepartment extends Component
 
     public function updateDepartment()
     {
+        $this->currentUserDepartmentId = session('current_department_id');
         $this->currentUserDepartment = session('current_department_name');
         $this->currentDepartmentImage = $this->getDepartmentImage($this->currentUserDepartment);
-
+        $this->charters = QmsCharter::where('dept_id', $this->currentUserDepartmentId)->first();
         $this->fetchAllWindows();
         $this->fetchWaitingList();
 
@@ -96,7 +98,6 @@ class CurrentDepartment extends Component
         }
     }
 
-
     public function fetchWaitingList()
     {
         $currentDepartmentId = session('current_department_id');
@@ -126,8 +127,6 @@ class CurrentDepartment extends Component
             }
         }
     }
-
-
 
     public function render()
     {

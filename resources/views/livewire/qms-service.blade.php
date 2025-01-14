@@ -303,7 +303,7 @@
                                             <button type="button" data-bs-toggle="modal" data-bs-target="#editQueueModal"
                                                 class="btn btn-link btn-primary btn-lg"
                                                 onclick="editQueueWindow({{ $i->id }}, '{{ $i->w_name }}', {{ $i->dept_id }})">
-                                                <i class="fa fa-edit mw-btn-edit"><span class="mw-btn-edit-text">Edit</span></i>
+                                                <i class="fa fa-pen mw-btn-edit"><span class="mw-btn-edit-text">Edit</span></i>
                                             </button>
                                             <!-- Delete Button -->
                                             <button type="button" data-bs-toggle="modal" data-bs-target="#deleteQueueModal"
@@ -450,7 +450,7 @@
                                             <button type="button" data-bs-toggle="modal" data-bs-target="#editSharedModal"
                                                 class="btn btn-link btn-primary btn-lg"
                                                 onclick="editSharedWindow({{ $sharedWindow->id }}, '{{ $sharedWindow->w_name }}', {{ $sharedWindow->dept_id }})">
-                                                <i class="fa fa-edit mw-btn-edit"><span class="mw-btn-edit-text">Edit</span></i>
+                                                <i class="fa fa-pen mw-btn-edit"><span class="mw-btn-edit-text">Edit</span></i>
                                             </button>
                                             <!-- Delete Button -->
                                             <button type="button" data-bs-toggle="modal" data-bs-target="#deleteSharedModal"
@@ -474,16 +474,59 @@
 
 </div>
 
-<div class="manage-charter">
-    @if ($charters)
-        @if ($charters->video1 ===  NULL)
+    <div class="manage-charter">
+        @if ($charters)
+            @if ($charters->video1 ===  NULL)
+                <!-- Show the form if video1 is null -->
+                <form action="/charter1" method="POST" enctype="multipart/form-data" class="space-y-4 mt-4 p-6 mx-auto form-container" id="uploadForm">
+                    @csrf
+                    <div class="charter1-card">
+                        <label class="block text-black charter1" for="video1">Charter 1 *</label>
+                        <input class="border border-border rounded-lg p-2 w-full" type="file" name="video1" id="video1" required />
+                        <input type="text" style="display:none;" readonly name="dept_id" id="dept_id" value="{{ session('current_department_id') }}">
+                        <button class="charter1-upload" type="submit" class="">Upload</button>
+                    </div>
+
+                    <!-- Simple Progress Bar -->
+                    <div class="w-full bg-gray-200 rounded-full h-4 mt-4">
+                        <div id="progressBar" class="bg-blue-500 h-4 rounded-full" style="width: 0%"></div>
+                    </div>
+
+                    <!-- Loading Spinner -->
+                    <div id="loadingSpinner" style="display: none;" class="mt-4">
+                        <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-500" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </form>
+            @else
+                <div class="video1">
+                    <h1>Charter 1</h1>
+                    <!-- Display the video if video1 is not null -->
+                    <video width="100%" height="240" controls>
+                        <source src="{{ asset('storage/' . $charters->video1) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+
+                    <!-- Delete button for video1 -->
+                    <form id="deleteVideoForm" action="{{ route('charter.deleteVideo', $charters->id) }}" method="POST" class="mt-4">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" id="deleteVideoButton">
+                            <i class="fas fa-times mr-2"></i>
+                        </button>
+                    </form>
+                </div>
+            @endif
+        @else
             <!-- Show the form if video1 is null -->
             <form action="/charter1" method="POST" enctype="multipart/form-data" class="space-y-4 mt-4 p-6 mx-auto form-container" id="uploadForm">
                 @csrf
-                <div>
-                    <label class="block text-black" for="video1">Upload Residential ID *</label>
+                <div class="charter1-card">
+                    <label class="block text-black charter1" for="video1">Charter 1 *</label>
                     <input class="border border-border rounded-lg p-2 w-full" type="file" name="video1" id="video1" required />
-                    <input type="text" readonly name="dept_id" id="dept_id" value="{{ session('current_department_id') }}">
+                    <input type="text" style="display:none;" readonly name="dept_id" id="dept_id" value="{{ session('current_department_id') }}">
+                    <button class="charter1-upload" type="submit" class="">Upload</button>
                 </div>
 
                 <!-- Simple Progress Bar -->
@@ -497,133 +540,79 @@
                         <span class="sr-only">Loading...</span>
                     </div>
                 </div>
-
-                <button type="submit" class="bg-blue-500 text-white hover:bg-blue-600 p-2 rounded-lg w-full mt-4">Register</button>
             </form>
-        @else
-
-        <div class="video1">
-            <h1>Charter 1</h1>
-            <!-- Display the video if video1 is not null -->
-            <video width="100%" height="240" controls>
-                <source src="{{ asset('storage/' . $charters->video1) }}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-
-            <!-- Delete button for video1 -->
-            <form id="deleteVideoForm" action="{{ route('charter.deleteVideo', $charters->id) }}" method="POST" class="mt-4">
-                @csrf
-                @method('DELETE')
-                <button type="button" id="deleteVideoButton">
-                    <i class="fas fa-times mr-2"></i>
-                </button>
-            </form>
-        </div>
         @endif
-    @else
-       <!-- Show the form if video1 is null -->
-       <form action="/charter1" method="POST" enctype="multipart/form-data" class="space-y-4 mt-4 p-6 mx-auto form-container" id="uploadForm">
-        @csrf
-        <div>
-            <label class="block text-black" for="video1">Upload Residential ID *</label>
-            <input class="border border-border rounded-lg p-2 w-full" type="file" name="video1" id="video1" required />
-            <input type="text" readonly name="dept_id" id="dept_id" value="{{ session('current_department_id') }}">
-        </div>
 
-        <!-- Simple Progress Bar -->
-        <div class="w-full bg-gray-200 rounded-full h-4 mt-4">
-            <div id="progressBar" class="bg-blue-500 h-4 rounded-full" style="width: 0%"></div>
-        </div>
+        {{-- for video2 --}}
+        @if ($charters)
+            @if ($charters->video2 ===  NULL)
+                <!-- Show the form if video2 is null -->
+                <form action="/charter2" method="POST" enctype="multipart/form-data" class="space-y-4 mt-4 p-6 mx-auto form-container" id="uploadForm2">
+                    @csrf
+                    <div class="charter2-card">
+                        <label class="block text-black charter2" for="video2">Charter 2 *</label>
+                        <input class="border border-border rounded-lg p-2 w-full" type="file" name="video2" id="video2" required />
+                        <input type="text" style="display:none;" readonly name="dept_id" id="dept_id" value="{{ session('current_department_id') }}">
+                        <button class="charter2-upload" type="submit" class="">Upload</button>
+                    </div>
 
-        <!-- Loading Spinner -->
-        <div id="loadingSpinner" style="display: none;" class="mt-4">
-            <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-500" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
+                    <!-- Simple Progress Bar -->
+                    <div class="w-full bg-gray-200 rounded-full h-4 mt-4">
+                        <div id="progressBar" class="bg-blue-500 h-4 rounded-full" style="width: 0%"></div>
+                    </div>
 
-        <button type="submit" class="bg-blue-500 text-white hover:bg-blue-600 p-2 rounded-lg w-full mt-4">Register</button>
-    </form>
-    @endif
+                    <!-- Loading Spinner -->
+                    <div id="loadingSpinner" style="display: none;" class="mt-4">
+                        <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-500" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </form>
+            @else
+                <div class="video1">
+                    <h1>Charter 2</h1>
+                    <!-- Display the video if video2 is not null -->
+                    <video width="100%" height="240" controls>
+                        <source src="{{ asset('storage/' . $charters->video2) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
 
-
-    {{-- for video2 --}}
-    @if ($charters)
-    @if ($charters->video2 ===  NULL)
-        <!-- Show the form if video1 is null -->
-        <form action="/charter2" method="POST" enctype="multipart/form-data" class="space-y-4 mt-4 p-6 mx-auto form-container" id="uploadForm2">
-            @csrf
-            <div>
-                <label class="block text-black" for="video2">Upload Residential ID *</label>
-                <input class="border border-border rounded-lg p-2 w-full" type="file" name="video2" id="video2" required />
-                <input type="text" readonly name="dept_id" id="dept_id" value="{{ session('current_department_id') }}">
-            </div>
-
-            <!-- Simple Progress Bar -->
-            <div class="w-full bg-gray-200 rounded-full h-4 mt-4">
-                <div id="progressBar" class="bg-blue-500 h-4 rounded-full" style="width: 0%"></div>
-            </div>
-
-            <!-- Loading Spinner -->
-            <div id="loadingSpinner" style="display: none;" class="mt-4">
-                <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-500" role="status">
-                    <span class="sr-only">Loading...</span>
+                    <!-- Delete button for video2 -->
+                    <form id="deleteVideoForm2" action="{{ route('charter.deleteVideo2', $charters->id) }}" method="POST" class="mt-4">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" id="deleteVideoButton2">
+                            <i class="fas fa-times mr-2"></i>
+                        </button>
+                    </form>
                 </div>
-            </div>
+            @endif
+        @else
+            <!-- Show the form if video2 is null -->
+            <form action="/charter2" method="POST" enctype="multipart/form-data" class="space-y-4 mt-4 p-6 mx-auto form-container" id="uploadForm2">
+                @csrf
+                <div class="charter2-card">
+                    <label class="block text-black charter2" for="video2">Charter 2 *</label>
+                    <input class="border border-border rounded-lg p-2 w-full" type="file" name="video2" id="video2" required />
+                    <input type="text" style="display:none;" readonly name="dept_id" id="dept_id" value="{{ session('current_department_id') }}">
+                    <button class="charter2-upload" type="submit" class="">Upload</button>
+                </div>
 
-            <button type="submit" class="bg-blue-500 text-white hover:bg-blue-600 p-2 rounded-lg w-full mt-4">Register</button>
-        </form>
-    @else
+                <!-- Simple Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-4 mt-4">
+                    <div id="progressBar" class="bg-blue-500 h-4 rounded-full" style="width: 0%"></div>
+                </div>
 
-    {{--charter 2 button not working when the charter1 is delete  --}}
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" style="display: none;" class="mt-4">
+                    <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-500" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </form>
+        @endif
 
-
-
-
-    <div class="video1">
-        <h1>Charter 2</h1>
-        <!-- Display the video if video1 is not null -->
-        <video width="100%" height="240" controls>
-            <source src="{{ asset('storage/' . $charters->video2) }}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-
-        <!-- Delete button for video1 -->
-        <form id="deleteVideoForm2" action="{{ route('charter.deleteVideo2', $charters->id) }}" method="POST" class="mt-4">
-            @csrf
-            @method('DELETE')
-            <button type="button" id="deleteVideoButton2">
-                <i class="fas fa-times mr-2"></i>
-            </button>
-        </form>
     </div>
-    @endif
-@else
-   <!-- Show the form if video1 is null -->
-   <form action="/charter2" method="POST" enctype="multipart/form-data" class="space-y-4 mt-4 p-6 mx-auto form-container" id="uploadForm2">
-    @csrf
-    <div>
-        <label class="block text-black" for="video2">Upload video to display</label>
-        <input class="border border-border rounded-lg p-2 w-full" type="file" name="video2" id="video2" required />
-        <input type="text" readonly name="dept_id" id="dept_id" value="{{ session('current_department_id') }}">
-    </div>
-
-    <!-- Simple Progress Bar -->
-    <div class="w-full bg-gray-200 rounded-full h-4 mt-4">
-        <div id="progressBar" class="bg-blue-500 h-4 rounded-full" style="width: 0%"></div>
-    </div>
-
-    <!-- Loading Spinner -->
-    <div id="loadingSpinner" style="display: none;" class="mt-4">
-        <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-500" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-
-    <button type="submit" class="bg-blue-500 text-white hover:bg-blue-600 p-2 rounded-lg w-full mt-4">Register</button>
-</form>
-@endif
-</div>
 </div>
 
 <!-- Include SweetAlert library (if not already included) -->

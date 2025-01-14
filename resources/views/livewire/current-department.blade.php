@@ -17,16 +17,37 @@
         </button>
     </nav>
 
+
+
     <div class="active-window-card">
         <div class="charter-card">
-            <video class="corporate-video" width="320" height="240" controls loop>
-                <source src="{{ asset('charter/lu-cv.mp4') }}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+            @if ($charters)
+                @if ($charters->video1 === NULL && $charters->video2 === NULL)
+                    <div class="flex items-center justify-center h-60 bg-gray-200 rounded-lg">
+                        <p class="text-gray-500">No video available.</p>
+                    </div>
+                @else
+                @if ($charters->video1 !== NULL)
+                    <video width="100%" height="240" controls loop>
+                        <source src="{{ asset('storage/' . $charters->video1) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                @endif
 
-            @livewire('slide-show')
-
+                @if ($charters->video2 !== NULL)
+                    <video width="100%" height="240" controls loop class="mt-4">
+                        <source src="{{ asset('storage/' . $charters->video2) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                @endif
+                @endif
+            @else
+                <div class="flex items-center justify-center h-60 bg-gray-200 rounded-lg">
+                    <p class="text-gray-500">No charters available. Please upload a video.</p>
+                </div>
+            @endif
         </div>
+
         <div class="queue-card">
             <div class="serving-card">
                 @if (isset($allWindowQueue) && $allWindowQueue->isNotEmpty())
@@ -80,57 +101,6 @@
                     </div>
                 @endif
             </div> {{-- end of serving-card --}}
-
-            {{-- <div class="waiting-card">
-                <div class="waiting-title">
-                    Waiting List
-                </div>
-                <div class="waiting-stack-card">
-                    @if (isset($allWaitingList) && $allWaitingList->isNotEmpty())
-                        @php
-                            $groupedWindows = $allWaitingList->groupBy(function ($item) {
-                                return $item->shared_name === 'None' ? $item->w_name : $item->shared_name;
-                            });
-                        @endphp
-                        @foreach ($groupedWindows as $groupName => $windows)
-                            <div>
-                                <div class="waiting-window-name">
-                                    {{ $groupName }}
-                                </div>
-                                <div class="waiting-window-client">
-                                    <ul>
-                                        @php
-                                            $uniqueClients = collect();
-                                            foreach ($windows as $window) {
-                                                if (isset($window->clients) && $window->clients->isNotEmpty()) {
-                                                    foreach ($window->clients as $client) {
-                                                        if (
-                                                            !$uniqueClients->contains('studentNo', $client->studentNo)
-                                                        ) {
-                                                            $uniqueClients->push($client);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        @endphp
-                                        @if ($uniqueClients->isNotEmpty())
-                                            @foreach ($uniqueClients as $client)
-                                                <li>{{ $client->studentNo }}</li>
-                                            @endforeach
-                                        @else
-                                            <li>No clients in queue.</li>
-                                        @endif
-                                    </ul>
-                                </div>
-                            </div>
-                        @endforeach
-                    @else
-                        <div class="col-12 text-center">
-                            <p style="font-size: 18px; color: gray;">No window available</p>
-                        </div>
-                    @endif
-                </div>
-            </div> --}}
 
             <div class="waiting-card">
                 <div class="waiting-title">

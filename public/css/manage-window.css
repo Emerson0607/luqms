@@ -194,6 +194,21 @@
     transform: scale(1.5); /* Enlarge the button on hover */
 }
 
+.charter1, .charter2{
+  display: block;
+  margin-bottom: .5rem;
+}
+
+.charter1-upload, .charter2-upload{
+    border: none;
+    background-color: var(--color-text);
+    color: white;
+    border-radius: 8px;
+    margin-left: 1rem;
+    height: 3rem;
+    width: 5rem;
+}
+
 @media (max-width: 480px) {
     .manage-window-card{
         width: 100%;
